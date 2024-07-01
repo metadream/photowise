@@ -1,0 +1,36 @@
+<html layout:decorate="~{_layout}">
+<body>
+
+<main layout:fragment="main" th:with="
+  Numbers=${T(com.arraywork.springforce.util.Numbers)},
+  Times=${T(com.arraywork.springforce.util.Times)}">
+  <div class="covers">
+    <a class="cover" th:each="metadata: ${pagination.content}" th:href="|/${metadata.code}|">
+      <div class="thumb" th:style="|background-image:url(/cover/${metadata.id})|">
+        <div class="quality" th:if="${metadata.quality.code!='SD' && metadata.quality.code!='XX'}">[[${metadata.quality.code}]]</div>
+        <div class="duration">[[${Times.formatDuration(metadata.mediaInfo.duration)}]]</div>
+      </div>
+      <div class="caption">
+        <div class="footnote">
+          <span>[[${#temporals.format(metadata.lastModified, 'yyyy-MM-dd')}]]</span>
+          <span>[[${Numbers.formatSiBytes(metadata.fileSize)}]]</span>
+          <span th:if="${metadata.starred}" class="right"><img src="/assets/circle.svg"/></span>
+        </div>
+        <div class="title">[[${metadata.title}]]</div>
+      </div>
+    </a>
+  </div>
+
+  <div th:replace="~{_pager}"></div>
+</main>
+
+</body>
+</html>
+
+<script>
+function turnPage(n) {
+  const params = new URLSearchParams(location.search);
+  params.set('page', n);
+  location.href = '?' + params.toString();
+}
+</script>
