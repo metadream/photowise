@@ -3,7 +3,7 @@ package com.arraywork.photowise.entity;
 import lombok.Data;
 
 /**
- * Geo Parameter
+ * GEO Location
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/01
@@ -14,5 +14,7 @@ public class GeoLocation {
     private double latitude;
     private double longitude;
     private double altitude;
+    private String country;
+    private String city;
 
 }

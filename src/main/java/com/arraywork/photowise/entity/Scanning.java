@@ -3,13 +3,13 @@ package com.arraywork.photowise.entity;
 import lombok.ToString;
 
 /**
- * Scanning Info
+ * Scanning Status Information
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/04/21
  */
 @ToString
-public class ScanningInfo {
+public class Scanning {
 
     public boolean inProgess;
     public int total;
@@ -17,13 +17,13 @@ public class ScanningInfo {
     public long elapsedTime;
     public String message;
 
-    private static ScanningInfo singleton;
+    private static Scanning singleton;
 
-    private ScanningInfo() {}
+    private Scanning() {}
 
-    public static ScanningInfo getSingleton() {
+    public static Scanning getSingleton() {
         if (singleton == null) {
-            singleton = new ScanningInfo();
+            singleton = new Scanning();
         }
         return singleton;
     }

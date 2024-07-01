@@ -10,7 +10,7 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
 /**
- * Application Initializer
+ * Application Context Initializer
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/01

@@ -1,7 +1,10 @@
 package com.arraywork.photowise.entity;
 
+import java.time.LocalDateTime;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.arraywork.springforce.id.NanoIdGeneration;
 
@@ -14,7 +17,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /**
- * Photo Information Entity
+ * Photo Information
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/01
@@ -43,22 +46,19 @@ public class Photo {
     private MediaInfo mediaInfo;
 
     @Type(JsonStringType.class)
-    private Parameter parameter;
+    private CameraInfo cameraInfo;
 
     @Type(JsonStringType.class)
     private GeoLocation geoLocation;
 
-    // Additional metadata
+    ////////////////////////////// Additional metadata
 
     @Size(max = 80, message = "Title cannot exceed {max} characters")
     private String title;
 
-    @Size(max = 255, message = "Location cannot exceed {max} characters")
-    private String location;
-
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
-    private String[] figures;
+    private String[] people;
 
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
@@ -78,6 +78,16 @@ public class Photo {
     private long creationTime;
     private long modifiedTime;
 
+    @UpdateTimestamp
+    private LocalDateTime lastModified;
+
     private boolean favored;
+
+    public CameraInfo getCameraInfo() {
+        if (cameraInfo == null) {
+            cameraInfo = new CameraInfo();
+        }
+        return cameraInfo;
+    }
 
 }
