@@ -1,36 +1,42 @@
-<html layout:decorate="~{_layout}">
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
+
+  <!-- Android Chrome -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" href="/images/favicon.png">
+
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon-precomposed" href="/images/favicon.png">
+
+  <!-- win8+ -->
+  <meta name="msapplication-TileImage" content="/images/favicon.png">
+  <meta name="msapplication-TileColor" content="default">
+
+  <link rel="stylesheet" th:href="|/assets/photowise.css?${version}|"/>
+  <script src="/assets/thyme.js"></script>
+  <script th:src="|/assets/photowise.js?${version}|"></script>
+  <title>[[${title}]]</title>
+</head>
+
 <body>
+  <header>
+    <div>logo</div>
+    <div>setting</div>
+  </header>
 
-<main layout:fragment="main" th:with="
-  Numbers=${T(com.arraywork.springforce.util.Numbers)},
-  Times=${T(com.arraywork.springforce.util.Times)}">
-  <div class="covers">
-    <a class="cover" th:each="metadata: ${pagination.content}" th:href="|/${metadata.code}|">
-      <div class="thumb" th:style="|background-image:url(/cover/${metadata.id})|">
-        <div class="quality" th:if="${metadata.quality.code!='SD' && metadata.quality.code!='XX'}">[[${metadata.quality.code}]]</div>
-        <div class="duration">[[${Times.formatDuration(metadata.mediaInfo.duration)}]]</div>
-      </div>
-      <div class="caption">
-        <div class="footnote">
-          <span>[[${#temporals.format(metadata.lastModified, 'yyyy-MM-dd')}]]</span>
-          <span>[[${Numbers.formatSiBytes(metadata.fileSize)}]]</span>
-          <span th:if="${metadata.starred}" class="right"><img src="/assets/circle.svg"/></span>
-        </div>
-        <div class="title">[[${metadata.title}]]</div>
-      </div>
-    </a>
-  </div>
+  <aside>
+    <a data-path="/places">* Places</a>
+    <a data-path="/people">* People</a>
+  </aside>
 
-  <div th:replace="~{_pager}"></div>
-</main>
-
+  <main id="segment">
+    <div th:replace="~{${template}}"></div>
+  </main>
 </body>
 </html>
-
-<script>
-function turnPage(n) {
-  const params = new URLSearchParams(location.search);
-  params.set('page', n);
-  location.href = '?' + params.toString();
-}
-</script>

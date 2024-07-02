@@ -40,7 +40,6 @@ import com.drew.metadata.mp4.media.Mp4VideoDirectory;
 import com.drew.metadata.png.PngDirectory;
 import com.drew.metadata.webp.WebpDirectory;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 
 /**
@@ -65,7 +64,7 @@ public class LibraryService {
     private String storage;
 
     @Async // Scan photo library
-    @PostConstruct
+    // @PostConstruct
     public void scan() {
         File lib = new File(library);
         Assert.isTrue(lib.exists() && lib.isDirectory(), "Library does not exist or is not a directory");

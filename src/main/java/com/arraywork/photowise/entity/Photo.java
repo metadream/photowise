@@ -56,6 +56,9 @@ public class Photo {
     @Size(max = 80, message = "Title cannot exceed {max} characters")
     private String title;
 
+    @Size(max = 80, message = "Place cannot exceed {max} characters")
+    private String place;
+
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     private String[] people;
@@ -70,7 +73,7 @@ public class Photo {
 
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
-    private String[] labels;
+    private String[] albums;
 
     // Date and time
 
