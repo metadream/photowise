@@ -17,22 +17,50 @@
   <!-- win8+ -->
   <meta name="msapplication-TileImage" content="/images/favicon.png">
   <meta name="msapplication-TileColor" content="default">
-
-  <link rel="stylesheet" th:href="|/assets/photowise.css?${version}|"/>
+  
   <script src="/assets/thyme.js"></script>
   <script th:src="|/assets/photowise.js?${version}|"></script>
+  <link rel="stylesheet" th:href="|/assets/photowise.css?${version}|"/>
   <title>[[${title}]]</title>
 </head>
 
 <body>
   <header>
-    <div>logo</div>
-    <div>setting</div>
+    <a href="/" class="logo">
+      <img src="/images/logo.svg"/>[[${title}]]
+    </a>
+    <div class="searchbar">
+      <img class="tinyicon" src="/images/search.svg"/>
+      <input type="search" placeholder="Search your photos ..."/>
+    </div>
+    <div class="toolbar">
+      <a><img class="icon" src="/images/upload.svg"/></a>
+      <a><img class="icon" src="/images/grid.svg"/></a>
+      <a><img class="icon" src="/images/library.svg"/></a>
+      <a><img class="icon" src="/images/setting.svg"/></a>
+    </a>
   </header>
 
   <aside>
-    <a data-path="/places">* Places</a>
-    <a data-path="/people">* People</a>
+    <nav>
+      <a data-path="/timeline"><img class="icon" src="/images/gallery.svg"/>Timeline</a>
+      <a data-path="/places"><img class="icon" src="/images/place.svg"/>Places</a>
+      <a data-path="/people"><img class="icon" src="/images/people.svg"/>People</a>
+      <a data-path="/animals"><img class="icon" src="/images/animal.svg"/>Animals</a>
+      <a data-path="/things"><img class="icon" src="/images/bubble.svg"/>Things</a>
+      <a data-path="/albums"><img class="icon" src="/images/album.svg"/>Albums</a>
+      <hr>
+      <a data-path="/videos"><img class="icon" src="/images/video.svg"/>Videos</a>
+      <a data-path="/favorites"><img class="icon" src="/images/star.svg"/>Favorites</a>
+      <a data-path="/folders"><img class="icon" src="/images/folder.svg"/>Folders</a>
+      <a data-path="/trash"><img class="icon" src="/images/trash.svg"/>Trash</a>
+    </nav>
+    
+    <div class="storage">
+      <div><img class="icon" src="/images/cloud.svg"/>Storage</div>
+      <div class="usage-bar"><div style="width:80%"></div></div>
+      <div>14GB of 100GB used</div>
+    </div>
   </aside>
 
   <main id="segment">

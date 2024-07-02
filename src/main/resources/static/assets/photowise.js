@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
-    initNavigation();
+    initRoutes();
     window.pathname = location.pathname;
+    window.$aside = document.querySelector('aside');
     window.$segment = document.querySelector('#segment');
 });
 
@@ -8,11 +9,22 @@ window.addEventListener('popstate', function() {
     loadSegment(location.pathname);
 });
 
-function initNavigation(selector) {
+function initRoutes(selector) {
     selector = selector || document;
-    const $links = selector.querySelectorAll('[data-path]');
+    const $links = selector.querySelectorAll('[data-path]:not([data-path=""])');
     for (const $link of $links) {
-        $link.onclick = () => loadSegment($link.dataset.path);
+        $link.onclick = () => {
+            loadSegment($link.dataset.path);
+            checkNavigationState($link);
+        };
+    }
+}
+
+function checkNavigationState($currLink) {
+    const $activedLink = $aside.querySelector('a.actived');
+    $activedLink && $activedLink.removeClass('actived');
+    if ($aside.contains($currLink)) {
+        $currLink.addClass('actived');
     }
 }
 
@@ -21,13 +33,13 @@ async function loadSegment(path) {
     setTimeout(async () => {
         const response = await fetch(path, { headers: { 'x-http-request': true } });
         $segment.innerHTML = await response.text();
-        initNavigation($segment);
-        changeState(path);
+        initRoutes($segment);
+        changeHistoryState(path);
         progress.done();
     }, 500);
 }
 
-function changeState(path) {
+function changeHistoryState(path) {
     if (pathname != path) {
         pathname = path;
         history.pushState(null, null, path);
@@ -39,7 +51,7 @@ const progress = {
         if (this.status) return;
 
         this.$instance = Thyme.util.createElement(`<div style="
-            position: absolute; z-index: 999; left: 0; top: 0; width: 0; height: 1px;
+            position: absolute; z-index: 999; left: 0; top: -1px; width: 0; height: 1px;
             background: #0c7; transition: width .3s linear"></div>`);
         container = container || document.body;
         container.append(this.$instance);

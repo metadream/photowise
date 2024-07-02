@@ -3,39 +3,159 @@
 }
 
 :root {
-  --primary-color: #0646a5;
+  --primaryColor: #67ba6f;
+  --fontFamily: Monda;
+  --mainTop: 60px;
+  --mainLeft: 240px;
+}
 
-  --main-top: 60px;
-  --main-left: 240px;
+@font-face {
+  font-family: Monda;
+  src: url(Monda.woff2) format('woff2')
 }
 
 header {
   position: fixed;
   width: 100%;
-  height: var(--main-top);
+  height: var(--mainTop);
   background: #f6f6f6;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 30px;
+  border-bottom: 1px solid #eee;
+}
+
+header .logo {
+  display: flex;
+  align-items: center;
+  width: var(--mainLeft);
+  padding: 0 25px;
+}
+
+header .logo:hover {
+  text-decoration: none;
+}
+
+header .logo img {
+  width: 42px;
+  height: 42px;
+}
+
+header .searchbar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: #fafafa;
+  border-radius: 5px;
+  padding: 0 10px;
+  transition: .3s all;
+}
+
+header .searchbar:focus-within {
+  background: #fff;
+}
+
+header .searchbar input {
+  outline: 0;
+  border: 0;
+  flex: 1;
+  padding: 5px;
+  background: transparent;
+  font: inherit;
+}
+
+header .toolbar {
+  display: flex;
+  margin: 0 15px;
+}
+
+header .toolbar>a {
+  padding: 10px;
 }
 
 aside {
   position: fixed;
-  width: var(--main-left);
-  top: var(--main-top);
+  width: var(--mainLeft);
+  top: var(--mainTop);
   bottom: 0;
-  background: #fafafa;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-right: 1px solid #eee;
 }
 
+.storage {
+  padding: 0 30px;
+}
 
+.storage .icon {
+  margin-right: 10px;
+}
+
+.storage>*:first-child {
+  display: flex;
+}
+
+.storage .usage-bar {
+  background: #ddd;
+  height: 5px;
+  margin: 10px 0 5px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.storage .usage-bar>div {
+  background: #b3261e;
+  height: 100%;
+}
+
+nav>a {
+  display: flex;
+  align-items: center;
+  padding: 10px 30px;
+  color: var(--fontColor);
+  transition: .3s;
+}
+
+nav>a .icon {
+  margin-right: 10px;    
+}
+
+nav>a:hover {
+  text-decoration: none;
+  background: #f6f6f6;
+}
+
+nav>a.actived {
+  background: #e7f2c3;
+}
+
+nav hr {
+  border: 0;
+  height: 0;
+  width: 100%;
+  background: #eee;
+}
 
 main {
   position: fixed;
   width: 100%;
-  left: var(--main-left);
-  top: var(--main-top);
+  left: var(--mainLeft);
+  top: var(--mainTop);
   bottom: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+img.icon {
+  width: 24px;
+  height: 24px;
+}
+
+img.tinyicon {
+  width: 16px;
+  height: 16px;
 }
