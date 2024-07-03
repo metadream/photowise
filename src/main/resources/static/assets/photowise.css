@@ -79,7 +79,7 @@ aside {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 20px 0;
+  padding: 25px 0;
   border-right: 1px solid var(--lineColor);
 }
 
@@ -141,6 +141,7 @@ main {
   left: var(--mainLeft);
   top: var(--mainTop);
   bottom: 0;
+  padding: 30px;
 }
 
 img {
