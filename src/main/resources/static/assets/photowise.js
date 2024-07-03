@@ -52,7 +52,7 @@ const progress = {
 
         this.$instance = Thyme.util.createElement(`<div style="
             position: absolute; z-index: 999; left: 0; top: -1px; width: 0; height: 1px;
-            background: #0c7; transition: width .3s linear"></div>`);
+            background: #b3261e; transition: width .3s linear"></div>`);
         container = container || document.body;
         container.append(this.$instance);
 

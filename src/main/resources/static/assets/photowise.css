@@ -3,7 +3,11 @@
 }
 
 :root {
-  --primaryColor: #67ba6f;
+  --primaryColor: #79b458;
+  --undertoneColor: #e7f2c3;
+  --contrastColor: #c44840;
+  --lineColor: #ddd;
+  --bgColor: #f6f6f6;
   --fontFamily: Monda;
   --mainTop: 60px;
   --mainLeft: 240px;
@@ -18,47 +22,42 @@ header {
   position: fixed;
   width: 100%;
   height: var(--mainTop);
-  background: #f6f6f6;
+  background: var(--bgColor);
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--primaryColor);
 }
 
-header .logo {
+header .logos {
   display: flex;
   align-items: center;
   width: var(--mainLeft);
+  height: 100%;
   padding: 0 25px;
 }
 
-header .logo:hover {
-  text-decoration: none;
+header .logos .icon {
+  width: auto;
+  height: 32px;
 }
 
-header .logo img {
-  width: 42px;
-  height: 42px;
+header .logos .text {
+  height: 18px;
+  margin-left: 5px;
 }
 
 header .searchbar {
   flex: 1;
   display: flex;
   align-items: center;
-  background: #fafafa;
-  border-radius: 5px;
-  padding: 0 10px;
   transition: .3s all;
-}
-
-header .searchbar:focus-within {
-  background: #fff;
 }
 
 header .searchbar input {
   outline: 0;
   border: 0;
   flex: 1;
-  padding: 5px;
+  padding: 0 10px;
   background: transparent;
   font: inherit;
 }
@@ -81,7 +80,7 @@ aside {
   flex-direction: column;
   justify-content: space-between;
   padding: 20px 0;
-  border-right: 1px solid #eee;
+  border-right: 1px solid var(--lineColor);
 }
 
 .storage {
@@ -97,7 +96,7 @@ aside {
 }
 
 .storage .usage-bar {
-  background: #ddd;
+  background: var(--lineColor);
   height: 5px;
   margin: 10px 0 5px;
   border-radius: 3px;
@@ -105,7 +104,7 @@ aside {
 }
 
 .storage .usage-bar>div {
-  background: #b3261e;
+  background: var(--contrastColor);
   height: 100%;
 }
 
@@ -123,18 +122,17 @@ nav>a .icon {
 
 nav>a:hover {
   text-decoration: none;
-  background: #f6f6f6;
+  background: var(--bgColor);
 }
 
 nav>a.actived {
-  background: #e7f2c3;
+  background: var(--undertoneColor);
 }
 
 nav hr {
   border: 0;
   height: 0;
   width: 100%;
-  background: #eee;
 }
 
 main {
