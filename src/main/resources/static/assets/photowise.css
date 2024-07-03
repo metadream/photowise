@@ -15,7 +15,7 @@
 
 @font-face {
   font-family: Monda;
-  src: url(Monda.woff2) format('woff2')
+  src: url(monda.woff2) format('woff2')
 }
 
 header {
@@ -43,7 +43,7 @@ header .logos .icon {
 
 header .logos .text {
   height: 18px;
-  margin-left: 5px;
+  margin-left: 10px;
 }
 
 header .searchbar {
