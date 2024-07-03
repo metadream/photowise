@@ -83,31 +83,6 @@ aside {
   border-right: 1px solid var(--lineColor);
 }
 
-.storage {
-  padding: 0 30px;
-}
-
-.storage .icon {
-  margin-right: 10px;
-}
-
-.storage>*:first-child {
-  display: flex;
-}
-
-.storage .usage-bar {
-  background: var(--lineColor);
-  height: 5px;
-  margin: 10px 0 5px;
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.storage .usage-bar>div {
-  background: var(--contrastColor);
-  height: 100%;
-}
-
 nav>a {
   display: flex;
   align-items: center;
@@ -157,4 +132,29 @@ img.icon {
 img.tinyicon {
   width: 16px;
   height: 16px;
+}
+
+.storage {
+  padding: 0 30px;
+}
+
+.storage .icon {
+  margin-right: 10px;
+}
+
+.storage>*:first-child {
+  display: flex;
+}
+
+.storage .usage-bar {
+  background: var(--lineColor);
+  height: 5px;
+  margin: 10px 0 5px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.storage .usage-bar>div {
+  background: var(--contrastColor);
+  height: 100%;
 }
