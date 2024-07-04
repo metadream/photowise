@@ -149,15 +149,28 @@ main {
   bottom: 0;
   right: 0;
   padding: 30px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+main::-webkit-scrollbar {
+  width: 8px;
+}
+
+main::-webkit-scrollbar-thumb {
+  background-color: var(--lineColor);
+}
+
+main::-webkit-scrollbar-track {
+  background-color: var(--bgColor);
 }
 
 section {
-  margin: 30px 0;
+  margin-top: 30px;
 }
 
 img {
   display: block;
-  max-width: 100%;
 }
 
 img.icon {
@@ -189,4 +202,63 @@ img.tinyicon {
 
 .button-group>*:not(:first-child) {
   margin-left: 10px;
+}
+
+.covers {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -10px -15px;
+}
+
+.covers>* {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 15px;
+}
+
+.covers .name {
+  margin-top: 5px;
+}
+
+.covers img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.covers.square img {
+  border-radius: 5px;
+}
+
+.covers.rectangle {
+  margin: -10px;
+}
+
+.covers.rectangle>* {
+  margin: 10px;
+}
+
+.covers.rectangle img {
+  border-radius: 5px;
+  width: 210px;
+  height: 150px;
+}
+
+.asset-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.grid-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 200px;
+}
+
+.grid-item>a {
+  height: 100%;
 }

@@ -34,13 +34,11 @@ function initRoutes(selector) {
 
 async function loadSegment(path) {
     progress.start($segment);
-    setTimeout(async () => {
         const response = await fetch(path, { headers: { 'x-http-request': true } });
         $segment.innerHTML = await response.text();
         initRoutes($segment);
         changeHistoryState(path);
         progress.done();
-    }, 500);
 }
 
 function changeHistoryState(path) {
