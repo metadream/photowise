@@ -84,6 +84,7 @@ public class Photo {
     @UpdateTimestamp
     private LocalDateTime lastModified;
 
+    private boolean video;
     private boolean favored;
 
     public CameraInfo getCameraInfo() {

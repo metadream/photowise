@@ -1,13 +1,25 @@
 document.addEventListener('DOMContentLoaded', function() {
-    initRoutes();
-    window.pathname = location.pathname;
     window.$aside = document.querySelector('aside');
     window.$segment = document.querySelector('#segment');
+    window.pathname = location.pathname;
+
+    activeNavigation();
+    initRoutes();
 });
 
 window.addEventListener('popstate', function() {
     loadSegment(location.pathname);
 });
+
+function activeNavigation($currLink) {
+  const $activedLink = $aside.querySelector('a.actived');
+  $activedLink && $activedLink.removeClass('actived');
+
+  $currLink = $currLink || $aside.querySelector(`[data-path="${pathname}"]`);
+  if ($aside.contains($currLink)) {
+    $currLink.addClass('actived');
+  }
+}
 
 function initRoutes(selector) {
     selector = selector || document;
@@ -15,16 +27,8 @@ function initRoutes(selector) {
     for (const $link of $links) {
         $link.onclick = () => {
             loadSegment($link.dataset.path);
-            checkNavigationState($link);
+            activeNavigation($link);
         };
-    }
-}
-
-function checkNavigationState($currLink) {
-    const $activedLink = $aside.querySelector('a.actived');
-    $activedLink && $activedLink.removeClass('actived');
-    if ($aside.contains($currLink)) {
-        $currLink.addClass('actived');
     }
 }
 

@@ -6,6 +6,7 @@
   --primaryColor: #79b458;
   --undertoneColor: #e7f2c3;
   --contrastColor: #c44840;
+  --minorColor: #aaa; 
   --lineColor: #ddd;
   --bgColor: #f6f6f6;
   --fontFamily: Monda;
@@ -16,6 +17,10 @@
 @font-face {
   font-family: Monda;
   src: url(monda.woff2) format('woff2')
+}
+
+body {
+  overflow: hidden;
 }
 
 header {
@@ -79,8 +84,14 @@ aside {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 25px 0;
+  padding: 25px 0 10px;
   border-right: 1px solid var(--lineColor);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+aside::-webkit-scrollbar {
+  display: none;
 }
 
 nav>a {
@@ -110,6 +121,40 @@ nav hr {
   width: 100%;
 }
 
+footer {
+  padding: 0 30px;
+}
+
+footer .storage {
+  margin: 10px 0;
+}
+
+footer .storage .icon {
+  margin-right: 10px;
+}
+
+footer .storage>*:first-child {
+  display: flex;
+}
+
+footer .storage .usage-bar {
+  background: var(--lineColor);
+  height: 5px;
+  margin: 8px 0 5px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+footer .storage .usage-bar>div {
+  background: var(--contrastColor);
+  height: 100%;
+}
+
+footer .copyright {
+  color: var(--minorColor);
+  font-size: 13px;
+}
+
 main {
   position: fixed;
   width: 100%;
@@ -132,29 +177,4 @@ img.icon {
 img.tinyicon {
   width: 16px;
   height: 16px;
-}
-
-.storage {
-  padding: 0 30px;
-}
-
-.storage .icon {
-  margin-right: 10px;
-}
-
-.storage>*:first-child {
-  display: flex;
-}
-
-.storage .usage-bar {
-  background: var(--lineColor);
-  height: 5px;
-  margin: 10px 0 5px;
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.storage .usage-bar>div {
-  background: var(--contrastColor);
-  height: 100%;
 }

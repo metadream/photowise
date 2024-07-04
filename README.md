@@ -7,10 +7,6 @@
 - 国际化
 - 时间线
 - 懒加载 loading=lazy
-- 当前导航不允许重复点击；
-- 从地址栏进入时自动激活对应的导航；
-- footer 版权
-- photo增加isvideo字段
 - 图片勾选模仿iphone照片app
 - Files.walkFileTree
 
