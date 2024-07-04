@@ -249,16 +249,28 @@ img.tinyicon {
 .asset-grid {
   display: flex;
   flex-wrap: wrap;
+  margin: -5px;
 }
 
 .grid-item {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 200px;
   height: 200px;
+  margin: 5px;
 }
 
-.grid-item>a {
+.grid-item>img {
+  max-height: 100%;
+}
+
+.asset-grid.square .grid-item {
+  width: 80px;
+  height: 80px;
+}
+
+.asset-grid.square .grid-item img {
+  width: 100%;
   height: 100%;
+  object-fit: cover;
 }
