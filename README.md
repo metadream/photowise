@@ -3,7 +3,7 @@
 ## TODO
 - 缩略图测试（ffmpeg、thumbnaitor）
 - 地图添加点：leaflet
-- 图片预览 photoswipe
+- 图片预览参考 photoswipe
 - 国际化
 - 时间线
 - 懒加载 loading=lazy
@@ -12,7 +12,6 @@
 - footer 版权
 - photo增加isvideo字段
 - 图片勾选模仿iphone照片app
-- 搜索和
 - Files.walkFileTree
 
 
