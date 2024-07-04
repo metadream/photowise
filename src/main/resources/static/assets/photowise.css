@@ -137,19 +137,6 @@ footer .storage>*:first-child {
   display: flex;
 }
 
-footer .storage .usage-bar {
-  background: var(--lineColor);
-  height: 5px;
-  margin: 8px 0 5px;
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-footer .storage .usage-bar>div {
-  background: var(--contrastColor);
-  height: 100%;
-}
-
 footer .copyright {
   color: var(--minorColor);
   font-size: 13px;
@@ -157,11 +144,15 @@ footer .copyright {
 
 main {
   position: fixed;
-  width: 100%;
   left: var(--mainLeft);
   top: var(--mainTop);
   bottom: 0;
+  right: 0;
   padding: 30px;
+}
+
+section {
+  margin: 30px 0;
 }
 
 img {
@@ -177,4 +168,25 @@ img.icon {
 img.tinyicon {
   width: 16px;
   height: 16px;
+}
+
+.footnote {
+  color: var(--minorColor);
+}
+
+.progress {
+  background: var(--lineColor);
+  height: 5px;
+  margin: 8px 0 5px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress>div {
+  background: var(--contrastColor);
+  height: 100%;
+}
+
+.button-group>*:not(:first-child) {
+  margin-left: 10px;
 }
