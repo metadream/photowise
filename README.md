@@ -7,8 +7,8 @@
 - 国际化
 - 时间线
 - 懒加载 loading=lazy
-- 图片勾选模仿iphone照片app
 - Files.walkFileTree
+- 用户管理/public/只读权限、菜单setting与权限
 
 
 ## Deployment

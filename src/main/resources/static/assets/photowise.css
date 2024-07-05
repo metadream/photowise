@@ -246,31 +246,79 @@ img.tinyicon {
   height: 150px;
 }
 
-.asset-grid {
+.photo-wall {
   display: flex;
   flex-wrap: wrap;
+}
+
+.photo-wall img {
+  transition: .3s;
+}
+
+.photo-wall>a {
+  position: relative;
+}
+
+.photo-wall>a input[type="checkbox"] {
+  appearance: none;
+  cursor: pointer;
+  position: absolute;
+  z-index: 1;
+  width: 21px;
+  height: 21px;
+  margin: 7px;
+  opacity: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .3);
+  transition: .3s;
+}
+
+.photo-wall>a input[type="checkbox"]:after {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 12px;
+  margin: 3px 0 0 7px;
+  border-bottom: 2px solid #fff;
+  border-right: 2px solid #fff;
+  transform: rotate(45deg);
+}
+
+.photo-wall>a input[type="checkbox"]:checked {
+  background: var(--primaryColor);
+  opacity: 1;
+}
+
+.photo-wall>a:hover input[type="checkbox"] {
+  opacity: 1;
+}
+
+.photo-wall>a input:checked+img {
+  opacity: .5;
+}
+
+.photo-wall.brick {
   margin: -5px;
 }
 
-.grid-item {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
+.photo-wall.brick>a {
   margin: 5px;
 }
 
-.grid-item>img {
-  max-height: 100%;
+.photo-wall.brick img {
+  max-height: 150px;
 }
 
-.asset-grid.square .grid-item {
-  width: 80px;
-  height: 80px;
+.photo-wall.grid {
+  margin: -5px;
 }
 
-.asset-grid.square .grid-item img {
-  width: 100%;
-  height: 100%;
+.photo-wall.grid>a {
+  margin: 5px;
+}
+
+.photo-wall.grid img {
+  width: 100px;
+  height: 100px;
   object-fit: cover;
 }

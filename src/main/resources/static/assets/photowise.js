@@ -11,14 +11,26 @@ window.addEventListener('popstate', function() {
     loadSegment(location.pathname);
 });
 
-function activeNavigation($currLink) {
-  const $activedLink = $aside.querySelector('a.actived');
-  $activedLink && $activedLink.removeClass('actived');
+const viewModes = ['brick', 'grid'];
+let modeIndex = 0;
 
-  $currLink = $currLink || $aside.querySelector(`[data-path="${pathname}"]`);
-  if ($aside.contains($currLink)) {
-    $currLink.addClass('actived');
-  }
+function toggleView() {
+    const preMode = viewModes[modeIndex];
+    modeIndex = modeIndex^1;
+    const newMode = viewModes[modeIndex];
+
+    const photoWall = document.querySelector('.photo-wall');
+    photoWall.classList.replace(preMode, newMode);
+}
+
+function activeNavigation($currLink) {
+    const $activedLink = $aside.querySelector('a.actived');
+    $activedLink && $activedLink.removeClass('actived');
+
+    $currLink = $currLink || $aside.querySelector(`[data-path="${pathname}"]`);
+    if ($aside.contains($currLink)) {
+      $currLink.addClass('actived');
+    }
 }
 
 function initRoutes(selector) {
