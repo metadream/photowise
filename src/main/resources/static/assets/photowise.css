@@ -34,6 +34,10 @@
   color: var(--errorColor);
 }
 
+.FINISHED {
+  color: var(--primaryColor);
+}
+
 body {
   overflow: hidden;
 }
@@ -188,6 +192,13 @@ input {
   outline: none;
 }
 
+table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
 img {
   display: block;
 }
@@ -216,7 +227,9 @@ img.tinyicon {
 
 .progress>div {
   background: var(--contrastColor);
+  width: 0;
   height: 100%;
+  transition: .3s;
 }
 
 .button-group>*:not(:first-child) {

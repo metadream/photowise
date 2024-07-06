@@ -12,7 +12,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.arraywork.photowise.entity.CameraInfo;
 import com.arraywork.photowise.entity.GeoLocation;
@@ -20,6 +19,7 @@ import com.arraywork.photowise.entity.MediaInfo;
 import com.arraywork.photowise.entity.Photo;
 import com.arraywork.photowise.entity.ScanningLog;
 import com.arraywork.photowise.enums.LogLevel;
+import com.arraywork.springforce.channel.ChannelService;
 import com.arraywork.springforce.util.Assert;
 import com.arraywork.springforce.util.Files;
 import com.drew.imaging.FileType;
@@ -55,8 +55,10 @@ public class LibraryService {
 
     private static final String SUPPORTED_MEDIA = "JPEG|PNG|HEIF|WebP|MP4|MOV";
     public static boolean isScanning = false;
-    public static List<ScanningLog> scanninglogs = new ArrayList<>();
+    // public static List<ScanningLog> scanninglogs = new ArrayList<>();
 
+    @Resource
+    private ChannelService channelService;
     @Resource
     private PhotoService photoService;
 
@@ -66,16 +68,8 @@ public class LibraryService {
     @Value("${photowise.storage}")
     private String storage;
 
-    @Async
-    public void sendLog(SseEmitter emitter) throws IOException {
-        System.out.println("--------------------send log");
-        if (scanninglogs.isEmpty()) return;
-        ScanningLog lastLog = scanninglogs.get(scanninglogs.size() - 1);
-        System.out.println(lastLog);
-        emitter.send(lastLog);
-    }
-
     // Scan the photo library
+    @Async
     public void scan() {
         File lib = new File(library);
         Assert.isTrue(lib.exists() && lib.isDirectory(), "Library does not exist or is not a directory");
@@ -92,7 +86,7 @@ public class LibraryService {
 
         for (File file : files) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -112,7 +106,9 @@ public class LibraryService {
                 && _photo.getModifiedTime() == file.lastModified()) {
                 log.setLevel(LogLevel.SKIPPED);
                 log.setMessage("The same modified time and size.");
-                scanninglogs.add(log);
+                // scanninglogs.add(log);
+
+                channelService.broadcast("library", log);
                 continue;
             }
 
@@ -128,15 +124,19 @@ public class LibraryService {
                 log.setLevel(LogLevel.ERROR);
                 log.setMessage(e.getMessage());
             } finally {
-                scanninglogs.add(log);
+                // scanninglogs.add(log);
+                channelService.broadcast("library", log);
             }
         }
 
         ScanningLog log = new ScanningLog();
-        log.setLevel(LogLevel.INFO);
+        log.setCount(count);
+        log.setTotal(total);
+        log.setLevel(LogLevel.FINISHED);
         log.setMessage(total + " files were found and " + count + " indexes were created. "
-            + "Elapsed " + (System.currentTimeMillis() - startTime) + " ms");
-        scanninglogs.add(log);
+            + "Elapsed " + (System.currentTimeMillis() - startTime) / 1000 + " s");
+        // scanninglogs.add(log);
+        channelService.broadcast("library", log);
         isScanning = false;
     }
 
@@ -152,7 +152,7 @@ public class LibraryService {
             // Detect file type and support "JPEG|PNG|HEIF|WebP|MP4|MOV" only
             FileType fileType = FileTypeDetector.detectFileType(bufferedStream);
             String typeName = fileType.getName();
-            Assert.isTrue(typeName.matches("(" + SUPPORTED_MEDIA + ")"), "Unsupported media.");
+            Assert.isTrue(typeName.matches("(" + SUPPORTED_MEDIA + ")"), "Unsupported media format.");
 
             MediaInfo mediaInfo = new MediaInfo();
             mediaInfo.setMimeType(fileType.getMimeType());

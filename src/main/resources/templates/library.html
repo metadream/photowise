@@ -1,52 +1,82 @@
 <h3>Library</h3>
 
 <section>
-  <div class="progress"><div></div></div>
+  <div class="progress" id="scan-progress"><div></div></div>
   <div class="footnote">点击下方按钮开始扫描...</div>
   <p>
     <th-checkbox>完全扫描</th-checkbox>
     <th-checkbox>清理无效索引</th-checkbox>
   </p>
   <p class="button-group">
-    <th-button onclick="scanLibrary()" id="scan-btn">开始扫描</th-button>
+    <th-button onclick="scanLibrary()" id="scan-btn" th:disabled="${isScanning}">[[${isScanning ? '正在扫描' : '开始扫描'}]]</th-button>
     <th-button variant="outlined">取消扫描</th-button>
   </p>
 </section>
 
-<section id="logs"></section>
+<section>
+  <table id="logs">
+    <tr>
+      <td width="15%"></td>
+      <td width="6%"></td>
+      <td width="8%"></td>
+      <td></td>
+    </tr>
+  </table>
+</section>
 
 <script>
 const $message = document.querySelector('.footnote');
-const $progress = document.querySelector('.progress>div');
 const $logs = document.querySelector('#logs');
 const $scanBtn = document.querySelector('#scan-btn');
+const $progress = document.querySelector('#scan-progress>div');
 
-const source = new EventSource('/library/status');
-source.onmessage = e => render(JSON.parse(e.data));
-source.onerror = e => {
-    console.log('---------------',e);
-};
+const channel = Channel.subscribe('library');
+channel.on('message', data => render(data));
 
 function scanLibrary() {
   Thyme.confirm('扫描照片库可能会耗费很长时间，确定继续吗？', async (cfm) => {
-    cfm.hide(); $scanBtn.loading = true;
+    cfm.hide(); 
+    $scanBtn.disabled = true;
+    $scanBtn.innerHTML = '正在扫描';
     Thyme.http.post('/library');
   });
 }
 
 function render(log) {
-  console.log(log);
-  const message = `(${log.count}/${log.total}) <span class="${log.level.name}">${log.level.name}</span> ${log.path}`;
-  $progress.style.width = (100 * log.count / log.total) + '%';
-  console.log(100 * log.count / log.total);
-  $message.innerHTML = message;
+  const count = log.count;
+  const total = log.total;
+  const level = log.level.name;
+  let message = log.path;
+  if (!message) {
+      message = log.message;
+      log.message = null;
+  }
   
-  if (log.level) {
-    const div = `<div>[${log.time}] ${message}<br><span class="footnote">${log.message}</span></div>`;
-    $logs.append(Thyme.util.createElement(div));
+  const html = `(${count}/${total})　<span class="${level}">${level}</span>　${message}`;
+  $progress.style.width = (100 * count / total) + '%';
+  $message.innerHTML = html;
 
-    if (log.count == log.total) {
-      $scanBtn.loading = false;
+  if (level != 'INFO') {
+    const time = Thyme.util.formatDate(new Date(log.time), 'yyyy-MM-dd hh:mm:ss');
+    const $log = Thyme.util.createElement(`<div>[${time}]　${html}</div>`);
+    
+    let row = $logs.insertRow();
+    row.insertCell().innerHTML = time;
+    row.insertCell().innerHTML = `(${count}/${total})`;
+    row.insertCell().innerHTML = `<span class="${level}">${level}</span>`;
+    row.insertCell().innerHTML = message;
+
+    if (log.message) {
+        row = $logs.insertRow();
+        row.insertCell();
+        row.insertCell();
+        const cell = row.insertCell();
+        cell.colSpan = 2;
+        cell.innerHTML = `<span class="footnote">${log.message}</span>`
+    }
+    if (level == 'FINISHED') {
+      $scanBtn.disabled = false;
+      $scanBtn.innerHTML = '开始扫描';
     }
   }
 }
