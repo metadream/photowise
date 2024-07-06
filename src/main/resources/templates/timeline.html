@@ -1,11 +1,14 @@
-<script src="/assets/photoviewer.js"></script>
+<script src="/assets/photoswipe.umd.min.js"></script>
+<script src="/assets/photoswipe-lightbox.umd.min.js"></script>
+<script src="/assets/photoswipe-ext.js" defer></script>
+<link rel="stylesheet" href="/assets/photoswipe.min.css">
 <h3>2024-03</h3>
 
 <section>
   <div class="photo-wall brick">
-    <a href="/image/001.jpg"><input type="checkbox"/><img src="/image/001.jpg" loading="lazy"/></a>
-    <a href="/image/002.jpg"><input type="checkbox"/><img src="/image/002.jpg" loading="lazy"/></a>
-    <a href="/image/003.jpg"><input type="checkbox"/><img src="/image/003.jpg"/></a>
+    <a href="/image/001.jpg" data-cropped="true" data-pswp-width="3600" data-pswp-height="2400"><input type="checkbox"/><img src="/image/001.jpg" loading="lazy"/></a>
+    <a href="/image/002.jpg" data-cropped="true" data-pswp-width="1600" data-pswp-height="2400"><input type="checkbox"/><img src="/image/002.jpg" loading="lazy"/></a>
+    <a href="/image/003.jpg" data-cropped="true" data-pswp-width="5400" data-pswp-height="3603"><input type="checkbox"/><img src="/image/003.jpg"/></a>
     <a href="/image/004.jpg"><input type="checkbox"/><img src="/image/004.jpg"/></a>
     <a href="/image/005.jpg"><input type="checkbox"/><img src="/image/005.jpg"/></a>
     <a href="/image/006.jpg"><input type="checkbox"/><img src="/image/006.jpg"/></a>
@@ -33,7 +36,3 @@
     <a href="/image/013.jpg"><input type="checkbox"/><img src="/image/013.jpg"/></a>
   </div>
 </section>
-
-<script>
-new PhotoViewer('.photo-wall');
-</script>

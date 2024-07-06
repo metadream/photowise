@@ -1,38 +1,29 @@
-document.addEventListener('DOMContentLoaded', function() {
-    window.$aside = document.querySelector('aside');
-    window.$segment = document.querySelector('#segment');
-    window.pathname = location.pathname;
+// 初始化
+const viewModes = ['brick', 'grid'];
+const $aside = document.querySelector('aside');
+const $segment = document.querySelector('#segment');
+const $photoWall = document.querySelector('.photo-wall');
+let pathname = location.pathname;
+let modeIndex = 0;
+activeNavigation();
+initRoutes();
 
-    activeNavigation();
-    initRoutes();
-});
-
+// 页面回退事件
 window.addEventListener('popstate', function() {
     loadSegment(location.pathname);
 });
 
-const viewModes = ['brick', 'grid'];
-let modeIndex = 0;
-
-function toggleView() {
-    const preMode = viewModes[modeIndex];
-    modeIndex = modeIndex^1;
-    const newMode = viewModes[modeIndex];
-
-    const photoWall = document.querySelector('.photo-wall');
-    photoWall.classList.replace(preMode, newMode);
-}
-
+// 激活导航菜单
 function activeNavigation($currLink) {
     const $activedLink = $aside.querySelector('a.actived');
     $activedLink && $activedLink.removeClass('actived');
-
     $currLink = $currLink || $aside.querySelector(`[data-path="${pathname}"]`);
     if ($aside.contains($currLink)) {
       $currLink.addClass('actived');
     }
 }
 
+// 初始化单页路由
 function initRoutes(selector) {
     selector = selector || document;
     const $links = selector.querySelectorAll('[data-path]:not([data-path=""])');
@@ -44,15 +35,25 @@ function initRoutes(selector) {
     }
 }
 
-async function loadSegment(path) {
-    progress.start($segment);
-        const response = await fetch(path, { headers: { 'x-http-request': true } });
-        $segment.innerHTML = await response.text();
-        initRoutes($segment);
-        changeHistoryState(path);
-        progress.done();
+// 切换视图模式
+function toggleView() {
+    const preMode = viewModes[modeIndex];
+    modeIndex = modeIndex^1;
+    const newMode = viewModes[modeIndex];
+    $photoWall.classList.replace(preMode, newMode);
 }
 
+// 根据路由加载页面
+async function loadSegment(path) {
+    progress.start();
+    const response = await fetch(path, { headers: { 'x-http-request': true } });
+    $segment.innerHTML = await response.text();
+    initRoutes($segment);
+    changeHistoryState(path);
+    progress.done();
+}
+
+// 动态设置地址栏
 function changeHistoryState(path) {
     if (pathname != path) {
         pathname = path;
@@ -60,15 +61,15 @@ function changeHistoryState(path) {
     }
 }
 
+// 进度条组件
 const progress = {
-    start(container) {
+    start() {
         if (this.status) return;
-
+        const rect = $segment.getBoundingClientRect();
         this.$instance = Thyme.util.createElement(`<div style="
-            position: absolute; z-index: 999; left: 0; top: -1px; width: 0; height: 1px;
+            position: fixed; z-index: 999; left: ${rect.x}px; top: ${rect.y-1}px; width: 0; height: 1px;
             background: #b3261e; transition: width .3s linear"></div>`);
-        container = container || document.body;
-        container.append(this.$instance);
+        document.body.append(this.$instance);
 
         this._observe();
         this.status = 1;
