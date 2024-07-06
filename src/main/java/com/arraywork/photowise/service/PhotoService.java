@@ -1,6 +1,9 @@
 package com.arraywork.photowise.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,13 +26,15 @@ public class PhotoService {
     @Resource
     private PhotoRepo photoRepo;
 
+    @Value("${photowise.pagesize}")
+    private int pagesize;
+
     // 查询分页元数据
     public Pagination<Photo> getPhotos(String page, Photo condition) {
-        Sort sort = Sort.by("lastModified").descending().and(Sort.by("code").descending());
+        Sort sort = Sort.by("modifiedTime").descending();
         page = page != null && page.matches("\\d+") ? page : "1";
-        // Pageable pageable = PageRequest.of(Integer.parseInt(page) - 1, pageSize,
-        // sort);
-        Page<Photo> pageInfo = null;// photoRepo.findAll(new MetadataSpec(condition), pageable);
+        Pageable pageable = PageRequest.of(Integer.parseInt(page) - 1, pagesize, sort);
+        Page<Photo> pageInfo = photoRepo.findAll(pageable);
         return new Pagination<Photo>(pageInfo);
     }
 

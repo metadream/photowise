@@ -1,16 +1,19 @@
-// 初始化
-const viewModes = ['brick', 'grid'];
-const $aside = document.querySelector('aside');
-const $segment = document.querySelector('#segment');
-const $photoWall = document.querySelector('.photo-wall');
+const VIEW_MODES = ['brick', 'grid'];
 let pathname = location.pathname;
 let modeIndex = 0;
-activeNavigation();
-initRoutes();
+
+// 初始化
+document.addEventListener("DOMContentLoaded", function() {
+    window.$aside = document.querySelector('aside');
+    window.$main = document.querySelector('main');
+    window.$photoWall = document.querySelector('.photo-wall');
+    activeNavigation();
+    initRoutes();
+});
 
 // 页面回退事件
 window.addEventListener('popstate', function() {
-    loadSegment(location.pathname);
+    loadMainPage(location.pathname);
 });
 
 // 激活导航菜单
@@ -19,7 +22,7 @@ function activeNavigation($currLink) {
     $activedLink && $activedLink.removeClass('actived');
     $currLink = $currLink || $aside.querySelector(`[data-path="${pathname}"]`);
     if ($aside.contains($currLink)) {
-      $currLink.addClass('actived');
+        $currLink.addClass('actived');
     }
 }
 
@@ -29,7 +32,7 @@ function initRoutes(selector) {
     const $links = selector.querySelectorAll('[data-path]:not([data-path=""])');
     for (const $link of $links) {
         $link.onclick = () => {
-            loadSegment($link.dataset.path);
+            loadMainPage($link.dataset.path);
             activeNavigation($link);
         };
     }
@@ -37,20 +40,53 @@ function initRoutes(selector) {
 
 // 切换视图模式
 function toggleView() {
-    const preMode = viewModes[modeIndex];
+    const preMode = VIEW_MODES[modeIndex];
     modeIndex = modeIndex^1;
-    const newMode = viewModes[modeIndex];
+    const newMode = VIEW_MODES[modeIndex];
     $photoWall.classList.replace(preMode, newMode);
 }
 
 // 根据路由加载页面
-async function loadSegment(path) {
-    progress.start();
+async function loadMainPage(path) {
+    progress.start($main);
     const response = await fetch(path, { headers: { 'x-http-request': true } });
-    $segment.innerHTML = await response.text();
-    initRoutes($segment);
+    setHTMLWithScript($main, await response.text());
+    initRoutes($main);
     changeHistoryState(path);
     progress.done();
+}
+
+// 设置 innerHTML 并执行其中的脚本
+function setHTMLWithScript(el, html) {
+    el.innerHTML = html;
+    const scripts = el.querySelectorAll('script');
+    for (const script of scripts) {
+        if (script.innerHTML) {
+            const newScript = document.createElement('script');
+            newScript.innerHTML = script.innerHTML;
+            script.replaceWith(newScript);
+        }
+    }
+}
+
+// 初始化 PhotoSwipe 组件
+function initPhotoSwipe() {
+    // 勾选元素捕获 Photoswipe 点击缩略图事件以防止传播
+    const checkboxes = document.querySelectorAll('.photo-wall input[type="checkbox"]');
+    for (const checkbox of checkboxes) {
+        checkbox.onclick = (e) => e.stopPropagation();
+    }
+
+    // 初始化 PhotoSwipe Lightbox 实例
+    const lightbox = new PhotoSwipeLightbox({
+        gallery: '.photo-wall',
+        children: 'a',
+        pswpModule: PhotoSwipe,
+        loop: false,
+        zoom: false,
+        wheelToZoom: true,
+    });
+    lightbox.init();
 }
 
 // 动态设置地址栏
@@ -63,9 +99,9 @@ function changeHistoryState(path) {
 
 // 进度条组件
 const progress = {
-    start() {
+    start(container) {
         if (this.status) return;
-        const rect = $segment.getBoundingClientRect();
+        const rect = container.getBoundingClientRect();
         this.$instance = Thyme.util.createElement(`<div style="
             position: fixed; z-index: 999; left: ${rect.x}px; top: ${rect.y-1}px; width: 0; height: 1px;
             background: #b3261e; transition: width .3s linear"></div>`);

@@ -19,7 +19,11 @@
   <meta name="msapplication-TileColor" content="default">
   
   <script src="/assets/thyme@0.0.13.js"></script>
-  <script th:src="|/assets/photowise.js?${version}|" defer></script>
+  <script src="/assets/photoswipe@5.4.4.js"></script>
+  <script src="/assets/photoswipe-lightbox@5.4.4.js"></script>
+  <script th:src="|/assets/photowise.js?${version}|"></script>
+
+  <link rel="stylesheet" href="/assets/photoswipe@5.4.4.css">
   <link rel="stylesheet" th:href="|/assets/photowise.css?${version}|"/>
   <title>[[${title}]]</title>
 </head>
@@ -67,7 +71,7 @@
     </footer>
   </aside>
 
-  <main id="segment">
+  <main>
     <div th:replace="~{${template}}"></div>
   </main>
 </body>

@@ -25,53 +25,57 @@ public class SpaController {
         return "redirect:/timeline";
     }
 
-    @GetMapping("/timeline")
-    public String timeline(Model model) {
-        return "timeline";
-    }
-
+    @SpaRoute
     @GetMapping("/places")
     public String places(Model model) {
         model.addAttribute("places", "beijing, shanghai");
         return "places";
     }
 
+    @SpaRoute
     @GetMapping("/people")
     public String people(Model model) {
         model.addAttribute("people", "zhangsan, lisi");
         return "people";
     }
 
+    @SpaRoute
     @GetMapping("/animals")
     public String animals(Model model) {
         return "animals";
     }
 
+    @SpaRoute
     @GetMapping("/things")
     public String things(Model model) {
         return "things";
     }
 
+    @SpaRoute
     @GetMapping("/albums")
     public String albums(Model model) {
         return "albums";
     }
 
+    @SpaRoute
     @GetMapping("/videos")
     public String videos(Model model) {
         return "videos";
     }
 
+    @SpaRoute
     @GetMapping("/favorites")
     public String favorites(Model model) {
         return "favorites";
     }
 
+    @SpaRoute
     @GetMapping("/folders")
     public String folders(Model model) {
         return "folders";
     }
 
+    @SpaRoute
     @GetMapping("/trash")
     public String trash(Model model) {
         return "/trash";

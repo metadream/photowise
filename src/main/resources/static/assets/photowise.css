@@ -6,6 +6,9 @@
   --primaryColor: #79b458;
   --undertoneColor: #e7f2c3;
   --contrastColor: #c44840;
+  --infoColor: #007bff;
+  --warningColor: #ff8500;
+  --errorColor: #fa5151;
   --minorColor: #aaa; 
   --lineColor: #ddd;
   --bgColor: #f6f6f6;
@@ -17,6 +20,18 @@
 @font-face {
   font-family: Monda;
   src: url(monda.woff2) format('woff2')
+}
+
+.INFO {
+  color: var(--infoColor);
+}
+
+.SKIPPED {
+  color: var(--warningColor);
+}
+
+.ERROR {
+  color: var(--errorColor);
 }
 
 body {

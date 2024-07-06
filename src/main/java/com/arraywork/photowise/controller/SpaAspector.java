@@ -5,7 +5,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,16 +24,13 @@ public class SpaAspector {
     @Resource
     private SpaController controller;
 
-    @Around("@annotation(getMapping)")
-    public Object dispatch(ProceedingJoinPoint joinPoint, GetMapping getMapping) throws Throwable {
+    @Around("@annotation(spaRoute)")
+    public Object dispatch(ProceedingJoinPoint joinPoint, SpaRoute spaRoute) throws Throwable {
+        // If a partial page requested, process the original method
         Object template = joinPoint.proceed();
-        String path = getMapping.value()[0];
-
-        // If root or a partial page requested, process the original method
-        if ("/".equals(path) || request.getHeader("x-http-request") != null) {
+        if (request.getHeader("x-http-request") != null) {
             return template;
         }
-
         // Otherwise, process both layout and original method and return layout
         Object[] args = joinPoint.getArgs();
         Model model = (Model) args[0];

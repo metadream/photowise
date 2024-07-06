@@ -1,18 +1,53 @@
 <h3>Library</h3>
 
 <section>
-  <div class="progress"><div style="width:80%"></div></div>
+  <div class="progress"><div></div></div>
   <div class="footnote">点击下方按钮开始扫描...</div>
   <p>
-    <label><input type="checkbox"/>完全扫描</label>
-    <label><input type="checkbox"/>清理索引</label>
+    <th-checkbox>完全扫描</th-checkbox>
+    <th-checkbox>清理无效索引</th-checkbox>
   </p>
   <p class="button-group">
-    <th-button>开始扫描</th-button>
+    <th-button onclick="scanLibrary()" id="scan-btn">开始扫描</th-button>
     <th-button variant="outlined">取消扫描</th-button>
   </p>
 </section>
 
-<section>
-  错误日志
-</section>
+<section id="logs"></section>
+
+<script>
+const $message = document.querySelector('.footnote');
+const $progress = document.querySelector('.progress>div');
+const $logs = document.querySelector('#logs');
+const $scanBtn = document.querySelector('#scan-btn');
+
+const source = new EventSource('/library/status');
+source.onmessage = e => render(JSON.parse(e.data));
+source.onerror = e => {
+    console.log('---------------',e);
+};
+
+function scanLibrary() {
+  Thyme.confirm('扫描照片库可能会耗费很长时间，确定继续吗？', async (cfm) => {
+    cfm.hide(); $scanBtn.loading = true;
+    Thyme.http.post('/library');
+  });
+}
+
+function render(log) {
+  console.log(log);
+  const message = `(${log.count}/${log.total}) <span class="${log.level.name}">${log.level.name}</span> ${log.path}`;
+  $progress.style.width = (100 * log.count / log.total) + '%';
+  console.log(100 * log.count / log.total);
+  $message.innerHTML = message;
+  
+  if (log.level) {
+    const div = `<div>[${log.time}] ${message}<br><span class="footnote">${log.message}</span></div>`;
+    $logs.append(Thyme.util.createElement(div));
+
+    if (log.count == log.total) {
+      $scanBtn.loading = false;
+    }
+  }
+}
+</script>

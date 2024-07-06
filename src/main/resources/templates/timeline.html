@@ -1,38 +1,17 @@
-<script src="/assets/photoswipe.umd.min.js"></script>
-<script src="/assets/photoswipe-lightbox.umd.min.js"></script>
-<script src="/assets/photoswipe-ext.js" defer></script>
-<link rel="stylesheet" href="/assets/photoswipe.min.css">
 <h3>2024-03</h3>
 
 <section>
   <div class="photo-wall brick">
-    <a href="/image/001.jpg" data-cropped="true" data-pswp-width="3600" data-pswp-height="2400"><input type="checkbox"/><img src="/image/001.jpg" loading="lazy"/></a>
-    <a href="/image/002.jpg" data-cropped="true" data-pswp-width="1600" data-pswp-height="2400"><input type="checkbox"/><img src="/image/002.jpg" loading="lazy"/></a>
-    <a href="/image/003.jpg" data-cropped="true" data-pswp-width="5400" data-pswp-height="3603"><input type="checkbox"/><img src="/image/003.jpg"/></a>
-    <a href="/image/004.jpg"><input type="checkbox"/><img src="/image/004.jpg"/></a>
-    <a href="/image/005.jpg"><input type="checkbox"/><img src="/image/005.jpg"/></a>
-    <a href="/image/006.jpg"><input type="checkbox"/><img src="/image/006.jpg"/></a>
-    <a href="/image/007.jpg"><input type="checkbox"/><img src="/image/007.jpg"/></a>
-    <a href="/image/008.jpg"><input type="checkbox"/><img src="/image/008.jpg"/></a>
-    <a href="/image/009.jpg"><input type="checkbox"/><img src="/image/009.jpg"/></a>
-    <a href="/image/010.jpg"><input type="checkbox"/><img src="/image/010.jpg"/></a>
-    <a href="/image/011.jpg"><input type="checkbox"/><img src="/image/011.jpg"/></a>
-    <a href="/image/012.jpg"><input type="checkbox"/><img src="/image/012.jpg"/></a>
-    <a href="/image/013.jpg"><input type="checkbox"/><img src="/image/013.jpg"/></a>
-    <a href="/image/014.jpg"><input type="checkbox"/><img src="/image/014.jpg"/></a>
-    <a href="/image/009.jpg"><input type="checkbox"/><img src="/image/009.jpg"/></a>
-    <a href="/image/010.jpg"><input type="checkbox"/><img src="/image/010.jpg"/></a>
-    <a href="/image/011.jpg"><input type="checkbox"/><img src="/image/011.jpg"/></a>
-    <a href="/image/012.jpg"><input type="checkbox"/><img src="/image/012.jpg"/></a>
-    <a href="/image/013.jpg"><input type="checkbox"/><img src="/image/013.jpg"/></a>
-    <a href="/image/014.jpg"><input type="checkbox"/><img src="/image/014.jpg"/></a>
-    <a href="/image/006.jpg"><input type="checkbox"/><img src="/image/006.jpg"/></a>
-    <a href="/image/007.jpg"><input type="checkbox"/><img src="/image/007.jpg"/></a>
-    <a href="/image/008.jpg"><input type="checkbox"/><img src="/image/008.jpg"/></a>
-    <a href="/image/009.jpg"><input type="checkbox"/><img src="/image/009.jpg"/></a>
-    <a href="/image/010.jpg"><input type="checkbox"/><img src="/image/010.jpg"/></a>
-    <a href="/image/011.jpg"><input type="checkbox"/><img src="/image/011.jpg"/></a>
-    <a href="/image/012.jpg"><input type="checkbox"/><img src="/image/012.jpg"/></a>
-    <a href="/image/013.jpg"><input type="checkbox"/><img src="/image/013.jpg"/></a>
+    <a th:each="photo: ${pagination.content}"
+       th:href="|/res${photo.path}|"
+       th:data-pswp-width="${photo.mediaInfo.width}"
+       th:data-pswp-height="${photo.mediaInfo.height}"
+       data-cropped="true">
+       <input type="checkbox"/><img th:src="|/res${photo.path}|"/>
+    </a>
   </div>
 </section>
+
+<script>
+initPhotoSwipe();
+</script>
