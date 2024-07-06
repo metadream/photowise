@@ -14,6 +14,12 @@ public class MediaInfo {
     private String mimeType;
     private int width;
     private int height;
+    private double aspectRatio;
     private String duration;
+
+    public double getAspectRatio() {
+        aspectRatio = 1.0 * width / height;
+        return aspectRatio;
+    }
 
 }

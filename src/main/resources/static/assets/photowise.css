@@ -268,14 +268,20 @@ img.tinyicon {
 .photo-wall {
   display: flex;
   flex-wrap: wrap;
-}
-
-.photo-wall img {
-  transition: .3s;
+  margin: -5px;
 }
 
 .photo-wall>a {
   position: relative;
+  background: var(--bgColor);
+  height: 150px;
+  margin: 5px;
+}
+
+.photo-wall img {
+  height: 100%;
+  object-fit: cover;
+  transition: .3s;
 }
 
 .photo-wall>a input[type="checkbox"] {
@@ -316,28 +322,11 @@ img.tinyicon {
   opacity: .5;
 }
 
-.photo-wall.brick {
-  margin: -5px;
-}
-
-.photo-wall.brick>a {
-  margin: 5px;
-}
-
-.photo-wall.brick img {
-  max-height: 150px;
-}
-
-.photo-wall.grid {
-  margin: -5px;
-}
-
 .photo-wall.grid>a {
-  margin: 5px;
+  width: 100px;
+  height: 100px;
 }
 
 .photo-wall.grid img {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
+  width: 100%;
 }

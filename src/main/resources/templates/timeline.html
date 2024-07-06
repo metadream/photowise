@@ -4,6 +4,7 @@
   <div class="photo-wall brick">
     <a th:each="photo: ${pagination.content}"
        th:href="|/res${photo.path}|"
+       th:style="|aspect-ratio:${photo.mediaInfo.aspectRatio}|"
        th:data-pswp-width="${photo.mediaInfo.width}"
        th:data-pswp-height="${photo.mediaInfo.height}"
        data-cropped="true">
