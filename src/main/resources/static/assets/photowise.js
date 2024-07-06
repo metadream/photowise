@@ -1,12 +1,9 @@
-const VIEW_MODES = ['brick', 'grid'];
-let pathname = location.pathname;
-let modeIndex = 0;
-
 // 初始化
 document.addEventListener("DOMContentLoaded", function() {
     window.$aside = document.querySelector('aside');
     window.$main = document.querySelector('main');
     window.$photoWall = document.querySelector('.photo-wall');
+    window.pathname = location.pathname;
     activeNavigation();
     initRoutes();
 });
@@ -36,14 +33,6 @@ function initRoutes(selector) {
             activeNavigation($link);
         };
     }
-}
-
-// 切换视图模式
-function toggleView() {
-    const preMode = VIEW_MODES[modeIndex];
-    modeIndex = modeIndex^1;
-    const newMode = VIEW_MODES[modeIndex];
-    $photoWall.classList.replace(preMode, newMode);
 }
 
 // 根据路由加载页面

@@ -17,13 +17,17 @@ import jakarta.annotation.Resource;
 @Controller
 public class PhotoController {
 
+    private static String viewMode = "grid";
+
     @Resource
     private PhotoService photoService;
 
     @SpaRoute
     @GetMapping("/timeline")
     public String timeline(Model model) {
+        viewMode = "brick".equals(viewMode) ? "grid" : "brick";
         model.addAttribute("pagination", photoService.getPhotos(null, null));
+        model.addAttribute("viewMode", viewMode);
         return "timeline";
     }
 

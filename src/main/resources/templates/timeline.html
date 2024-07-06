@@ -1,7 +1,7 @@
 <h3>2024-03</h3>
 
 <section>
-  <div class="photo-wall brick">
+  <div th:class="|photo-wall ${viewMode}|">
     <a th:each="photo: ${pagination.content}"
        th:href="|/res${photo.path}|"
        th:style="|aspect-ratio:${photo.mediaInfo.aspectRatio}|"
