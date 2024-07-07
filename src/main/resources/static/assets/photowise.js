@@ -49,10 +49,11 @@ async function loadMainPage(path) {
 function setHTMLWithScript(el, html) {
     el.innerHTML = html;
     const scripts = el.querySelectorAll('script');
+
     for (const script of scripts) {
-        if (script.innerHTML) {
+        if (script.text) {
             const newScript = document.createElement('script');
-            newScript.innerHTML = script.innerHTML;
+            newScript.text = '(function() { '+script.text+' })()';
             script.replaceWith(newScript);
         }
     }
