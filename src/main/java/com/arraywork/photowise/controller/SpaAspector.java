@@ -26,15 +26,13 @@ public class SpaAspector {
 
     @Around("@annotation(spaRoute)")
     public Object dispatch(ProceedingJoinPoint joinPoint, SpaRoute spaRoute) throws Throwable {
-        // If a partial page requested, process the original method
-        Object template = joinPoint.proceed();
-        if (request.getHeader("x-http-request") != null) {
-            return template;
+        // If spa requested, process the original method
+        if (request.getHeader("x-spa-request") != null) {
+            return joinPoint.proceed();
         }
-        // Otherwise, process both layout and original method and return layout
+        // Otherwise, process the layout method
         Object[] args = joinPoint.getArgs();
         Model model = (Model) args[0];
-        model.addAttribute("template", template);
         return controller.layout(model);
     }
 

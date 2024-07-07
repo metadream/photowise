@@ -7,8 +7,7 @@
 - 国际化
 - 时间线
 - 取消扫描、扫描参数、日志滚动、日志历史记录、
-- websocket 每load一次增加一个客户端，导致重复发送消息；
-- timeline 切换模式时进度条有问题
+- timeline 切换模式时进度条有问题、 toggleView太慢
 
 ## Deployment
 

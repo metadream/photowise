@@ -22,6 +22,7 @@
   <script src="/assets/photoswipe-lightbox@5.4.4.js"></script>
   <script src="/assets/thyme@0.0.13.js"></script>
   <script src="/assets/channel.js"></script>
+  <script th:src="|/assets/app.js?${version}|"></script>
   <script th:src="|/assets/photowise.js?${version}|"></script>
 
   <link rel="stylesheet" href="/assets/photoswipe@5.4.4.css">
@@ -72,8 +73,10 @@
     </footer>
   </aside>
 
-  <main>
-    <div th:replace="~{${template}}"></div>
-  </main>
+  <main></main>
 </body>
 </html>
+
+<script>
+App.mount('main');
+</script>
