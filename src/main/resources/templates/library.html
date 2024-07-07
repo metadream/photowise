@@ -43,25 +43,20 @@ function render(log) {
   const count = log.count;
   const total = log.total;
   const level = log.level.name;
-  let message = log.path;
-  if (!message) {
-      message = log.message;
-      log.message = null;
-  }
   
-  const html = `(${count}/${total})　<span class="${level}">${level}</span>　${message}`;
+  const html = `
+    <span>(${count}/${total})&#160;</span>
+    <span class="${level}">${level}&#160;</span>
+    <span>${log.path || ''}&#160;</span>
+    <span class="footnote">${log.message || ''}</span>`;
   $progress.style.width = log.progress + '%';
   $message.innerHTML = html;
 
   if (level != 'INFO') {
     const time = Thyme.util.formatDate(new Date(log.time), 'yyyy-MM-dd hh:mm:ss');
-    const $log = Thyme.util.createElement(`<div>[${time}]　${html}</div>`);
+    const $log = Thyme.util.createElement(`<div>[${time}]&#160;${html}</div>`);
     $logs.append($log);
 
-    if (log.message) {
-        const $error = Thyme.util.createElement(`<span class="footnote">　${log.message}</span>`);
-        $log.append($error);
-    }
     if (level == 'FINISHED') {
       $scanBtn.disabled = false;
       $scanBtn.innerHTML = '开始扫描';
