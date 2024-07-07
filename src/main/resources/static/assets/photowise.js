@@ -47,6 +47,8 @@ async function loadMainPage(path) {
 
 // 设置 innerHTML 并执行其中的脚本
 function setHTMLWithScript(el, html) {
+    const event = new Event("unload");
+    el.dispatchEvent(event);
     el.innerHTML = html;
     const scripts = el.querySelectorAll('script');
 

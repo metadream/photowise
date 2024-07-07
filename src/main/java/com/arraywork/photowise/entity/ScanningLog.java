@@ -15,12 +15,20 @@ import lombok.Data;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public class ScanningLog {
 
-    private int total;
-    private int count;
-    private int success;
+    private LogLevel level;
     private String path;
     private String message;
-    private LogLevel level;
+    private int total;
+    private int count;
+    private int progress;
+    private int success;
     private long time = System.currentTimeMillis();
+
+    public ScanningLog(LogLevel level, int total, int count) {
+        this.level = level;
+        this.total = total;
+        this.count = count;
+        this.progress = 100 * count / total;
+    }
 
 }

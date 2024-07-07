@@ -14,12 +14,15 @@ class Channel {
         this.#endpoint = endpoint;
         this.#createWebSocket();
     }
+    
+    close() {
+        this.#socket.close();
+    }
 
     #createWebSocket() {
         this.#socket = new WebSocket(this.#endpoint);
         this.#socket.onopen = () => console.log('Channel is opened.');
-        this.#socket.onerror = () => this.#socket.close();
-        this.#socket.onclose = () => this.#reconnect();
+        this.#socket.onerror = () => this.#reconnect();
 
         this.#socket.onmessage = e => {
             const { event, data } = JSON.parse(e.data);

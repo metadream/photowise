@@ -54,8 +54,8 @@ import jakarta.annotation.Resource;
 public class LibraryService {
 
     private static final String SUPPORTED_MEDIA = "JPEG|PNG|HEIF|WebP|MP4|MOV";
-    public static boolean isScanning = false;
-    // public static List<ScanningLog> scanninglogs = new ArrayList<>();
+    public static int scanningProgress = -1;
+    public static List<ScanningLog> scanninglogs = new ArrayList<>();
 
     @Resource
     private ChannelService channelService;
@@ -74,8 +74,8 @@ public class LibraryService {
         File lib = new File(library);
         Assert.isTrue(lib.exists() && lib.isDirectory(), "Library does not exist or is not a directory");
 
-        if (isScanning) return;
-        isScanning = true;
+        if (scanningProgress > -1) return;
+        scanningProgress = 0;
         long startTime = System.currentTimeMillis();
 
         List<File> files = new ArrayList<>();
@@ -93,11 +93,9 @@ public class LibraryService {
             }
 
             String filePath = file.getPath().substring(library.length());
-            ScanningLog log = new ScanningLog();
-            log.setTotal(total);
-            log.setCount(++count);
+            ScanningLog log = new ScanningLog(LogLevel.INFO, total, ++count);
             log.setPath(filePath);
-            log.setLevel(LogLevel.INFO);
+            scanningProgress = log.getProgress();
 
             // Find photo data based on path relative to photo library
             Photo _photo = photoService.getPhoto(filePath);
@@ -106,9 +104,8 @@ public class LibraryService {
                 && _photo.getModifiedTime() == file.lastModified()) {
                 log.setLevel(LogLevel.SKIPPED);
                 log.setMessage("The same modified time and size.");
-                // scanninglogs.add(log);
-
                 channelService.broadcast("library", log);
+                scanninglogs.add(log);
                 continue;
             }
 
@@ -124,20 +121,17 @@ public class LibraryService {
                 log.setLevel(LogLevel.ERROR);
                 log.setMessage(e.getMessage());
             } finally {
-                // scanninglogs.add(log);
                 channelService.broadcast("library", log);
+                scanninglogs.add(log);
             }
         }
 
-        ScanningLog log = new ScanningLog();
-        log.setCount(count);
-        log.setTotal(total);
-        log.setLevel(LogLevel.FINISHED);
-        log.setMessage(total + " files were found and " + count + " indexes were created. "
-            + "Elapsed " + (System.currentTimeMillis() - startTime) / 1000 + " s");
-        // scanninglogs.add(log);
+        ScanningLog log = new ScanningLog(LogLevel.FINISHED, total, count);
+        log.setMessage(total + " files were found and " + success + " indexes were created."
+            + " Elapsed " + (System.currentTimeMillis() - startTime) / 1000 + " s");
         channelService.broadcast("library", log);
-        isScanning = false;
+        scanninglogs.add(log);
+        scanningProgress = -1;
     }
 
     // Extract metadata

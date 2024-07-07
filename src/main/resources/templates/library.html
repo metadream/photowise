@@ -1,29 +1,21 @@
 <h3>Library</h3>
 
 <section>
-  <div class="progress" id="scan-progress"><div></div></div>
+  <div class="progress" id="scan-progress"><div th:style="|width:${scanningProgress}%|"></div></div>
   <div class="footnote">点击下方按钮开始扫描...</div>
   <p>
     <th-checkbox>完全扫描</th-checkbox>
     <th-checkbox>清理无效索引</th-checkbox>
   </p>
   <p class="button-group">
-    <th-button onclick="scanLibrary()" id="scan-btn" th:disabled="${isScanning}">[[${isScanning ? '正在扫描' : '开始扫描'}]]</th-button>
+    <th-button onclick="scanLibrary()" id="scan-btn" th:disabled="${scanningProgress > -1}">
+        [[${scanningProgress > -1 ? '正在扫描' : '开始扫描'}]]
+    </th-button>
     <th-button variant="outlined">取消扫描</th-button>
   </p>
 </section>
 
-<section>
-  <table id="logs">
-    <tr>
-      <td width="15%"></td>
-      <td width="6%"></td>
-      <td width="8%"></td>
-      <td></td>
-    </tr>
-  </table>
-</section>
-
+<section id="logs"></section>
 <script>
 const $message = document.querySelector('.footnote');
 const $logs = document.querySelector('#logs');
@@ -32,6 +24,11 @@ const $progress = document.querySelector('#scan-progress>div');
 
 const channel = Channel.subscribe('library');
 channel.on('message', data => render(data));
+
+const $main = document.querySelector('main');
+$main.addEventListener("unload", (event) => {
+    channel.close();
+});
 
 function scanLibrary() {
   Thyme.confirm('扫描照片库可能会耗费很长时间，确定继续吗？', async (cfm) => {
@@ -53,26 +50,17 @@ function render(log) {
   }
   
   const html = `(${count}/${total})　<span class="${level}">${level}</span>　${message}`;
-  $progress.style.width = (100 * count / total) + '%';
+  $progress.style.width = log.progress + '%';
   $message.innerHTML = html;
 
   if (level != 'INFO') {
     const time = Thyme.util.formatDate(new Date(log.time), 'yyyy-MM-dd hh:mm:ss');
     const $log = Thyme.util.createElement(`<div>[${time}]　${html}</div>`);
-    
-    let row = $logs.insertRow();
-    row.insertCell().innerHTML = time;
-    row.insertCell().innerHTML = `(${count}/${total})`;
-    row.insertCell().innerHTML = `<span class="${level}">${level}</span>`;
-    row.insertCell().innerHTML = message;
+    $logs.append($log);
 
     if (log.message) {
-        row = $logs.insertRow();
-        row.insertCell();
-        row.insertCell();
-        const cell = row.insertCell();
-        cell.colSpan = 2;
-        cell.innerHTML = `<span class="footnote">${log.message}</span>`
+        const $error = Thyme.util.createElement(`<span class="footnote">　${log.message}</span>`);
+        $log.append($error);
     }
     if (level == 'FINISHED') {
       $scanBtn.disabled = false;

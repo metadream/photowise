@@ -25,7 +25,7 @@ public class LibraryController {
     @SpaRoute
     @GetMapping("/library")
     public String library(Model model) {
-        model.addAttribute("isScanning", LibraryService.isScanning);
+        model.addAttribute("scanningProgress", LibraryService.scanningProgress);
         return "library";
     }
 
