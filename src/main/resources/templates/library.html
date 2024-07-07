@@ -24,11 +24,7 @@ const $progress = document.querySelector('#scan-progress>div');
 
 const channel = Channel.subscribe('library');
 channel.on('message', data => render(data));
-
-const $main = document.querySelector('main');
-$main.addEventListener("unload", (event) => {
-    channel.close();
-});
+App.onPageUnload(channel.close);
 
 function scanLibrary() {
   Thyme.confirm('扫描照片库可能会耗费很长时间，确定继续吗？', async (cfm) => {

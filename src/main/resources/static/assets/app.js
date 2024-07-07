@@ -1,7 +1,7 @@
 class App {
     static instance;
-    routes = {};
-    currPage = null;
+    events = {};
+    currPath = null;
     
     constructor() {
         window.addEventListener('popstate', () => this.#loadPage());
@@ -20,17 +20,11 @@ class App {
         return app;
     }
     
-    static Page(options = {}) {
+    static onPageUnload(fn) {
         const app = App.getInstance();
         const path = location.pathname;
-
-        let page = app.routes[path];
-        if (!page) {
-            page = new Page(app, options);
-            app.routes[path] = page;
-        }
-        app.currPage = page.load();
-        return page;
+        app.events[path] = fn;
+        app.currPath = path;
     }
     
     // Init elements with 'data-path' attribute
@@ -53,7 +47,10 @@ class App {
         const response = await fetch(path, { headers: { 'x-spa-request': true } });
         const html = await response.text();
         
-        this.currPage && this.currPage.unload();
+        const unload = this.events[this.currPath];
+        unload && unload();
+        this.currPath = path;
+        
         this.#setInnerHTML(this.$mount, html);
         this.#initRoutes(this.$mount);
         this.#activeRoutes(path);
@@ -67,7 +64,7 @@ class App {
         for (const script of scripts) {
             if (script.text) {
                 const newScript = document.createElement('script');
-                newScript.text = script.text;
+                newScript.text = '(function() { '+script.text+' })()';
                 script.replaceWith(newScript);
             }
         }
@@ -75,33 +72,14 @@ class App {
     
     // Active routes style
     #activeRoutes(path) {
-        const $activedRoutes = document.querySelectorAll('[data-path].actived');
-        for (const $route of $activedRoutes) {
+        let $routes = document.querySelectorAll('[data-path].actived');
+        for (const $route of $routes) {
             $route.removeClass('actived');
         }
-        const $routes = document.querySelectorAll(`[data-path="${path}"]`);
+        $routes = document.querySelectorAll(`[data-path="${path}"]`);
         for (const $route of $routes) {
             $route.addClass('actived');
         }
-    }
-}
-
-class Page {
-    constructor(app, options = {}) {
-        this.app = app;
-        this.options = options;
-    }
-    
-    load() {
-        const { onLoad } = this.options;
-        onLoad && onLoad();
-        return this;
-    }
-    
-    unload() {
-        const { onUnload } = this.options;
-        onUnload && onUnload();
-        return this;
     }
 }
 
