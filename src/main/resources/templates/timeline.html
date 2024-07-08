@@ -7,6 +7,7 @@
        th:style="|aspect-ratio:${photo.mediaInfo.aspectRatio}|"
        th:data-pswp-width="${photo.mediaInfo.width}"
        th:data-pswp-height="${photo.mediaInfo.height}"
+       th:data-pswp-type="${photo.mediaInfo.mimeType.startsWith('video/')?'video':'image'}"
        data-cropped="true">
        <input type="checkbox"/><img th:src="|/res${photo.path}|"/>
     </a>

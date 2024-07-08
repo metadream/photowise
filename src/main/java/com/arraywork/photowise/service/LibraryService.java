@@ -161,7 +161,6 @@ public class LibraryService {
             // Parse metadata to photo
             Metadata metadata = ImageMetadataReader.readMetadata(bufferedStream, photo.getLength(), fileType);
             for (Directory dir : metadata.getDirectories()) {
-
                 // Generic exif
                 if (dir instanceof ExifIFD0Directory) {
                     // Shooting time
@@ -237,8 +236,9 @@ public class LibraryService {
 
                 // video/mp4
                 else if (dir instanceof Mp4Directory) {
-                    String duration = dir.getDescription(Mp4Directory.TAG_DURATION_SECONDS);
-                    if (duration != null) mediaInfo.setDuration(duration);
+                    if (dir.containsTag(Mp4Directory.TAG_DURATION)) {
+                        mediaInfo.setDuration(dir.getLong(Mp4Directory.TAG_DURATION));
+                    }
                     if (dir instanceof Mp4VideoDirectory) {
                         mediaInfo.setWidth(dir.getInteger(Mp4VideoDirectory.TAG_WIDTH));
                         mediaInfo.setHeight(dir.getInteger(Mp4VideoDirectory.TAG_HEIGHT));
@@ -246,8 +246,9 @@ public class LibraryService {
                 }
                 // video/mov
                 else if (dir instanceof QuickTimeDirectory) {
-                    String duration = dir.getDescription(QuickTimeDirectory.TAG_DURATION_SECONDS);
-                    if (duration != null) mediaInfo.setDuration(duration);
+                    if (dir.containsTag(QuickTimeDirectory.TAG_DURATION)) {
+                        mediaInfo.setDuration(dir.getLong(QuickTimeDirectory.TAG_DURATION));
+                    }
                     if (dir instanceof QuickTimeVideoDirectory) {
                         mediaInfo.setWidth(dir.getInteger(QuickTimeVideoDirectory.TAG_WIDTH));
                         mediaInfo.setHeight(dir.getInteger(QuickTimeVideoDirectory.TAG_HEIGHT));

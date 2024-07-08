@@ -1,4 +1,5 @@
 import PhotoSwipeLightbox from '/assets/photoswipe-lightbox@5.4.4.js';
+import PhotoSwipeVideo from '/assets/photoswipe-video@1.0.2.js';
 
 export function initPhotoSwipe() {
     // 勾选元素捕获 Photoswipe 点击缩略图事件以防止传播
@@ -16,5 +17,8 @@ export function initPhotoSwipe() {
         zoom: false,
         wheelToZoom: true,
     });
+
+    // 添加视频插件
+    new PhotoSwipeVideo(lightbox, {});
     lightbox.init();
 }
