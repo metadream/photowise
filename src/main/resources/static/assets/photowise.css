@@ -213,6 +213,15 @@ img.tinyicon {
   height: 16px;
 }
 
+.lazyload, .lazyloading {
+  opacity: 0;
+}
+
+.lazyloaded {
+  opacity: 1;
+  transition: opacity .3s;
+}
+
 .footnote {
   color: var(--minorColor);
 }
