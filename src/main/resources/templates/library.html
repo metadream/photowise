@@ -18,16 +18,15 @@
 <section id="logs"></section>
 <script type="module">
 import spa from '/assets/spa.js';
-import { Channel } from '/assets/channel.js';
 
 const $message = document.querySelector('.footnote');
 const $logs = document.querySelector('#logs');
 const $scanBtn = document.querySelector('#scan-btn');
 const $progress = document.querySelector('#scan-progress>div');
 
-const channel = new Channel('/channel/library');
+const channel = new Thyme.Channel('/channel/library');
 channel.on('message', data => render(data));
-spa.onPageUnload(() => channel.close());
+spa.onPageUnload = () => channel.close();
 
 window.scanLibrary = function() {
   Thyme.confirm('扫描照片库可能会耗费很长时间，确定继续吗？', async (cfm) => {

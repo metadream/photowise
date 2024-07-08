@@ -74,16 +74,13 @@ class Spa {
         const scripts = el.querySelectorAll('script');
 
         for (const script of scripts) {
-            if (script.text) {
-                const newScript = document.createElement('script');
-                const attrNames = script.getAttributeNames();
-
-                for (const name of attrNames) {
-                    newScript.setAttribute(name, script.getAttribute(name));
-                }
-                newScript.text = script.text;
-                script.replaceWith(newScript);
+            const newScript = document.createElement('script');
+            newScript.text = script.text;
+            
+            for (const name of script.getAttributeNames()) {
+                newScript.setAttribute(name, script.getAttribute(name));
             }
+            script.replaceWith(newScript);
         }
     }
 }
