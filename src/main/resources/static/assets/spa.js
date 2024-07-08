@@ -15,7 +15,7 @@ class Spa {
     }
 
     // Add unload handler to route
-    onPageUnload(fn) {
+    set onPageUnload(fn) {
         this.router.update(location.pathname, fn);
     }
 
