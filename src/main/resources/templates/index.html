@@ -17,14 +17,9 @@
   <!-- win8+ -->
   <meta name="msapplication-TileImage" content="/icons/favicon.svg">
   <meta name="msapplication-TileColor" content="default">
-  
-  <script src="/assets/photoswipe@5.4.4.js"></script>
-  <script src="/assets/photoswipe-lightbox@5.4.4.js"></script>
-  <script src="/assets/thyme@0.0.13.js"></script>
-  <script src="/assets/channel.js"></script>
-  <script th:src="|/assets/app.js?${version}|"></script>
-  <script th:src="|/assets/photowise.js?${version}|"></script>
 
+  <!-- Imports -->
+  <script src="/assets/thyme@0.0.13.js"></script>
   <link rel="stylesheet" href="/assets/photoswipe@5.4.4.css">
   <link rel="stylesheet" th:href="|/assets/photowise.css?${version}|"/>
   <title>[[${title}]]</title>
@@ -62,7 +57,7 @@
       <a data-path="/folders"><img class="icon" src="/icons/folder.svg"/>Folders</a>
       <a data-path="/trash"><img class="icon" src="/icons/trash.svg"/>Trash</a>
     </nav>
-    
+
     <footer>
       <div class="storage">
         <div><img class="icon" src="/icons/cloud.svg"/>Storage</div>
@@ -77,6 +72,7 @@
 </body>
 </html>
 
-<script>
-App.mount('main');
+<script type="module">
+import spa from '/assets/spa.js';
+spa.mount('main');
 </script>

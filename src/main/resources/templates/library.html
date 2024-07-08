@@ -16,19 +16,22 @@
 </section>
 
 <section id="logs"></section>
-<script>
+<script type="module">
+import spa from '/assets/spa.js';
+import { Channel } from '/assets/channel.js';
+
 const $message = document.querySelector('.footnote');
 const $logs = document.querySelector('#logs');
 const $scanBtn = document.querySelector('#scan-btn');
 const $progress = document.querySelector('#scan-progress>div');
 
-const channel = Channel.subscribe('library');
+const channel = new Channel('/channel/library');
 channel.on('message', data => render(data));
-App.onPageUnload(channel.close);
+spa.onPageUnload(() => channel.close());
 
-function scanLibrary() {
+window.scanLibrary = function() {
   Thyme.confirm('扫描照片库可能会耗费很长时间，确定继续吗？', async (cfm) => {
-    cfm.hide(); 
+    cfm.hide();
     $scanBtn.disabled = true;
     $scanBtn.innerHTML = '正在扫描';
     Thyme.http.post('/library');
@@ -39,7 +42,7 @@ function render(log) {
   const count = log.count;
   const total = log.total;
   const level = log.level.name;
-  
+
   const html = `
     <span>(${count}/${total})&#160;</span>
     <span class="${level}">${level}&#160;</span>

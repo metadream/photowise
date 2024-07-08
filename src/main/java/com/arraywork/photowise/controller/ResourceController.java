@@ -1,6 +1,7 @@
 package com.arraywork.photowise.controller;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.nio.file.Path;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +33,7 @@ public class ResourceController {
     @GetMapping("/res/**")
     public void cover(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String path = HttpUtils.getWildcard(request, "/res");
+        path = URLDecoder.decode(path, "UTF-8");
         resourceHandler.serve(Path.of(library, path), request, response);
     }
 
