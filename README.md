@@ -9,6 +9,8 @@
 - 取消扫描、扫描参数、日志滚动、日志历史记录、
 - toggleView太慢
 
+library js 移到独立的esm文件
+
 ## Deployment
 
 ```
