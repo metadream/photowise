@@ -1,7 +1,7 @@
 class Spa {
-    router = new Router();
-    route = null;
     $mount = null;
+    route = null;
+    router = new Router();
 
     // Mount target and init
     mount(target) {
