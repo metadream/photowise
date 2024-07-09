@@ -76,7 +76,7 @@ class Spa {
         for (const script of scripts) {
             const newScript = document.createElement('script');
             newScript.text = script.text;
-            
+
             for (const name of script.getAttributeNames()) {
                 newScript.setAttribute(name, script.getAttribute(name));
             }
