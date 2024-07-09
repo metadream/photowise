@@ -12,12 +12,13 @@
         [[${scanningProgress > -1 ? '正在扫描' : '开始扫描'}]]
     </th-button>
     <th-button variant="outlined">取消扫描</th-button>
+    <th-button variant="outlined minor" onclick="clearLogs(this)" th:if="${scanningLogs.size>0}">清空日志</th-button>
   </p>
 </section>
 
 <section id="logs">
   <div th:each="log: ${scanningLogs}">
-    <span>[[${log.time}]]&#160;</span>
+    <span>[[${'['+#dates.format(log.time, 'yyyy-MM-dd HH:mm:ss')+']'}]]&#160;</span>
     <span>([[${log.count}]]/[[${log.total}]])&#160;</span>
     <span th:class="${log.level}">[[${log.level}]]&#160;</span>
     <span>[[${log.path}]]&#160;</span>
@@ -43,6 +44,17 @@ window.scanLibrary = function() {
     $scanBtn.disabled = true;
     $scanBtn.innerHTML = '正在扫描';
     Thyme.http.post('/library');
+  });
+}
+
+window.clearLogs = function(btn) {
+  Thyme.confirm('确定清空所有日志吗？', () => {
+    btn.loading = true;
+    Thyme.http.delete('/library/logs').then(() => {
+      btn.loading = false;
+      btn.remove();
+      $logs.innerHTML = '';
+    });
   });
 }
 

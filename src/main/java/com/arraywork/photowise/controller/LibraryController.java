@@ -2,6 +2,7 @@ package com.arraywork.photowise.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -34,6 +35,12 @@ public class LibraryController {
     @ResponseBody
     public void scan() {
         libraryService.scan();
+    }
+
+    @DeleteMapping("/library/logs")
+    @ResponseBody
+    public void purgeLogs() {
+        LibraryService.scanningLogs.clear();
     }
 
 }
