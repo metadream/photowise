@@ -55,7 +55,7 @@ public class LibraryService {
 
     private static final String SUPPORTED_MEDIA = "JPEG|PNG|HEIF|WebP|MP4|MOV";
     public static int scanningProgress = -1;
-    public static List<ScanningLog> scanninglogs = new ArrayList<>();
+    public static List<ScanningLog> scanningLogs = new ArrayList<>();
 
     @Resource
     private ChannelService channelService;
@@ -105,7 +105,7 @@ public class LibraryService {
                 log.setLevel(LogLevel.SKIPPED);
                 log.setMessage("The same modified time and size.");
                 channelService.broadcast("library", log);
-                scanninglogs.add(log);
+                scanningLogs.add(0, log);
                 continue;
             }
 
@@ -122,7 +122,7 @@ public class LibraryService {
                 log.setMessage(e.getMessage());
             } finally {
                 channelService.broadcast("library", log);
-                scanninglogs.add(log);
+                scanningLogs.add(0, log);
             }
         }
 
@@ -130,7 +130,7 @@ public class LibraryService {
         log.setMessage(total + " files were found and " + success + " indexes were created."
             + " Elapsed " + (System.currentTimeMillis() - startTime) / 1000 + " s");
         channelService.broadcast("library", log);
-        scanninglogs.add(log);
+        scanningLogs.add(0, log);
         scanningProgress = -1;
     }
 

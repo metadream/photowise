@@ -26,6 +26,7 @@ public class LibraryController {
     @GetMapping("/library")
     public String library(Model model) {
         model.addAttribute("scanningProgress", LibraryService.scanningProgress);
+        model.addAttribute("scanningLogs", LibraryService.scanningLogs);
         return "library";
     }
 

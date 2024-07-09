@@ -26,12 +26,13 @@ public class SpaAspector {
 
     @Around("@annotation(spaRoute)")
     public Object dispatch(ProceedingJoinPoint joinPoint, SpaRoute spaRoute) throws Throwable {
+        Object[] args = joinPoint.getArgs();
+
         // If spa requested, process the original method
         if (request.getHeader("x-spa-request") != null) {
-            return joinPoint.proceed();
+            return joinPoint.proceed(args);
         }
         // Otherwise, process the layout method
-        Object[] args = joinPoint.getArgs();
         Model model = (Model) args[0];
         return controller.layout(model);
     }

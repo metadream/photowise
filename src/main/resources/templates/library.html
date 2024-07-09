@@ -15,7 +15,16 @@
   </p>
 </section>
 
-<section id="logs"></section>
+<section id="logs">
+  <div th:each="log: ${scanningLogs}">
+    <span>[[${log.time}]]&#160;</span>
+    <span>([[${log.count}]]/[[${log.total}]])&#160;</span>
+    <span th:class="${log.level}">[[${log.level}]]&#160;</span>
+    <span>[[${log.path}]]&#160;</span>
+    <span class="footnote">[[${log.message}]]</span>;
+  </div>
+</section>
+
 <script type="module">
 import spa from '/assets/spa.js';
 
@@ -53,7 +62,7 @@ function render(log) {
   if (level != 'INFO') {
     const time = Thyme.util.formatDate(new Date(log.time), 'yyyy-MM-dd hh:mm:ss');
     const $log = Thyme.util.createElement(`<div>[${time}]&#160;${html}</div>`);
-    $logs.append($log);
+    $logs.insertBefore($log, $logs.firstChild);
 
     if (level == 'FINISHED') {
       $scanBtn.disabled = false;
