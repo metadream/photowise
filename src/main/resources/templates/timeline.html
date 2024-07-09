@@ -10,7 +10,7 @@
        th:data-pswp-type="${photo.mediaInfo.mimeType.startsWith('video/')?'video':'image'}"
        data-cropped="true">
        <input type="checkbox"/>
-       <img th:data-src="|/res${photo.path}|"/>
+       <img th:data-src="|/res${photo.path}|" class="lazyload"/>
     </a>
   </div>
 </section>
