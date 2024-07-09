@@ -2,11 +2,11 @@
 
 ## TODO
 - 用户管理/public/只读权限、菜单setting与权限
-- 缩略图测试（ffmpeg、thumbnaitor）
 - 地图添加点：leaflet
 - 国际化
 - 时间线
-- 取消扫描、扫描参数
+- 缩略图测试（ffmpeg、thumbnaitor）
+- 取消扫描（中止异步线程）
 
 ## Deployment
 

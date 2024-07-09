@@ -1,5 +1,7 @@
 package com.arraywork.photowise.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,6 +40,11 @@ public class PhotoService {
         return new Pagination<Photo>(pageInfo);
     }
 
+    // 查询所有照片索引
+    public List<Photo> getAllPhotos() {
+        return photoRepo.findAll();
+    }
+
     // Get photo by file path
     public Photo getPhoto(String path) {
         return photoRepo.findByPath(path);
@@ -47,6 +54,12 @@ public class PhotoService {
     @Transactional(rollbackFor = Exception.class)
     public Photo save(Photo photo) {
         return photoRepo.save(photo);
+    }
+
+    // Delete photo
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(Photo photo) {
+        photoRepo.delete(photo);
     }
 
 }

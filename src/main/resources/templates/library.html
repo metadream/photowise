@@ -3,9 +3,9 @@
 <section>
   <div class="progress" id="scan-progress"><div th:style="|width:${scanningProgress}%|"></div></div>
   <div class="footnote">点击下方按钮开始扫描...</div>
-  <p>
-    <th-checkbox>完全扫描</th-checkbox>
-    <th-checkbox>清理无效索引</th-checkbox>
+  <p class="option-group">
+    <th-checkbox name="fullScan" value="true">完全扫描</th-checkbox>
+    <th-checkbox name="cleanIndexes" value="true">清理无效索引</th-checkbox>
   </p>
   <p class="button-group">
     <th-button onclick="scanLibrary()" id="scan-btn" th:disabled="${scanningProgress > -1}">
@@ -39,11 +39,12 @@ channel.on('message', data => render(data));
 spa.onPageUnload = () => channel.close();
 
 window.scanLibrary = function() {
+  const options = Thyme.form.getJsonObject('.option-group');
   Thyme.confirm('扫描照片库可能会耗费很长时间，确定继续吗？', async (cfm) => {
     cfm.hide();
     $scanBtn.disabled = true;
     $scanBtn.innerHTML = '正在扫描';
-    Thyme.http.post('/library');
+    Thyme.http.post('/library', options);
   });
 }
 

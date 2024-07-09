@@ -26,7 +26,7 @@
   color: var(--infoColor);
 }
 
-.SKIPPED {
+.SKIPPED, .CLEAN {
   color: var(--warningColor);
 }
 
@@ -241,7 +241,7 @@ img.tinyicon {
   transition: .3s;
 }
 
-.button-group>*:not(:first-child) {
+.button-group>*:not(:first-child), .option-group>*:not(:first-child) {
   margin-left: 10px;
 }
 

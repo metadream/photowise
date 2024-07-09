@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +19,7 @@ import com.arraywork.photowise.entity.GeoLocation;
 import com.arraywork.photowise.entity.MediaInfo;
 import com.arraywork.photowise.entity.Photo;
 import com.arraywork.photowise.entity.ScanningLog;
+import com.arraywork.photowise.entity.ScanningOption;
 import com.arraywork.photowise.enums.LogLevel;
 import com.arraywork.springforce.channel.ChannelService;
 import com.arraywork.springforce.util.Assert;
@@ -70,13 +72,18 @@ public class LibraryService {
 
     // Scan the photo library
     @Async
-    public void scan() {
+    public void scan(ScanningOption option) {
         File lib = new File(library);
         Assert.isTrue(lib.exists() && lib.isDirectory(), "Library does not exist or is not a directory");
 
         if (scanningProgress > -1) return;
         scanningProgress = 0;
         long startTime = System.currentTimeMillis();
+
+        // Clean invalid indexes
+        if (option.isCleanIndexes()) {
+            cleanIndexes();
+        }
 
         List<File> files = new ArrayList<>();
         Files.walk(lib, files);
@@ -100,7 +107,7 @@ public class LibraryService {
             // Find photo data based on path relative to photo library
             Photo _photo = photoService.getPhoto(filePath);
             // Compare the file size and time
-            if (_photo != null && _photo.getLength() == file.length()
+            if (!option.isFullScan() && _photo != null && _photo.getLength() == file.length()
                 && _photo.getModifiedTime() == file.lastModified()) {
                 log.setLevel(LogLevel.SKIPPED);
                 log.setMessage("The same modified time and size.");
@@ -132,6 +139,24 @@ public class LibraryService {
         channelService.broadcast("library", log);
         scanningLogs.add(0, log);
         scanningProgress = -1;
+    }
+
+    // Clean indexes with invalid file path
+    private void cleanIndexes() {
+        List<Photo> photos = photoService.getAllPhotos();
+        int total = photos.size();
+        int count = 0;
+
+        for (Photo photo : photos) {
+            Path path = Path.of(library, photo.getPath());
+            if (!path.toFile().exists()) {
+                photoService.delete(photo);
+
+                ScanningLog log = new ScanningLog(LogLevel.CLEAN, total, ++count);
+                log.setPath(photo.getPath());
+                channelService.broadcast("library", log);
+            }
+        }
     }
 
     // Extract metadata

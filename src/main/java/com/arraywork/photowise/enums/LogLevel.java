@@ -18,7 +18,8 @@ public enum LogLevel {
 
     INFO(1, "信息"),
     SKIPPED(2, "跳过"),
-    ERROR(3, "错误"),
+    CLEAN(3, "清理"),
+    ERROR(8, "错误"),
     FINISHED(9, "完成");
 
     private final Integer code;
