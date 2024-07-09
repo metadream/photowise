@@ -48,7 +48,7 @@ window.scanLibrary = function() {
 }
 
 window.clearLogs = function(btn) {
-  Thyme.confirm('确定清空所有日志吗？', () => {
+  Thyme.confirm('系统重启后将自动清空所有日志，确定立即清空吗？', () => {
     btn.loading = true;
     Thyme.http.delete('/library/logs').then(() => {
       btn.loading = false;
