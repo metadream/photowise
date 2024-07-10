@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.opencv.core.Core;
 import org.springframework.util.StopWatch;
 
 /**
@@ -17,34 +16,33 @@ import org.springframework.util.StopWatch;
 public class JavaCvTest {
 
     public static void main(String[] args) throws IOException {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        boolean res = OpenCv.captureVideo("/home/xehu/Documents/test2/video.mp4",
+            "/home/xehu/Documents/test21/video.jpg", 480);
+        System.out.println("----------" + res);
+        if (1 == 1) return;
 
-        // OpenCv.captureVideo("C:\\Users\\Administrator\\Videos\\rc.mp4",
-        // "C:\\Users\\Administrator\\Videos\\rc.jpg", 0);
-        // if (1 == 1) return;
-
-        int count = 1;
+        int count = 50;
         StopWatch sw = new StopWatch();
         sw.start();
 
         // 约15秒
         for (int i = 0; i < count; i++) {
-            BufferedImage srcImage = ImageIO.read(new File("C:\\Users\\Administrator\\Pictures\\IMG_7505.JPEG"));
+            BufferedImage srcImage = ImageIO.read(new File("/home/xehu/Documents/test2/IMG_5986.JPG"));
             BufferedImage thumbImage = ImageUtil.resizeByNative(srcImage, 403);
             ImageIO.write(thumbImage, "jpg",
-                new File("C:\\Users\\Administrator\\Pictures\\3\\IMG_7505_" + i + ".JPEG"));
+                new File("/home/xehu/Documents/test2/1/IMG_5986_" + i + ".JPEG"));
         }
 
         sw.stop();
-        System.out.println("OpenCv Processed: " + sw.getLastTaskTimeMillis() + "ms");
+        System.out.println("Native Processed: " + sw.getLastTaskTimeMillis() + "ms");
         sw.start();
 
         // 约22秒
         for (int i = 0; i < count; i++) {
-            BufferedImage srcImage = ImageIO.read(new File("C:\\Users\\Administrator\\Pictures\\IMG_7505.JPEG"));
+            BufferedImage srcImage = ImageIO.read(new File("/home/xehu/Documents/test2/IMG_5986.JPG"));
             BufferedImage thumbImage = ImageUtil.resizeByThumbnailator(srcImage, 403);
             ImageIO.write(thumbImage, "jpg",
-                new File("C:\\Users\\Administrator\\Pictures\\2\\IMG_7505_" + i + ".JPEG"));
+                new File("/home/xehu/Documents/test2/2/IMG_5986_" + i + ".JPEG"));
         }
 
         sw.stop();
@@ -53,12 +51,12 @@ public class JavaCvTest {
 
         // 约7秒
         for (int i = 0; i < count; i++) {
-            OpenCv.resizeImage("C:\\Users\\Administrator\\Pictures\\IMG_7505.JPEG",
-                "C:\\Users\\Administrator\\Pictures\\1\\IMG_7505_" + i + ".JPEG", 403);
+            OpenCv.resizeImage("/home/xehu/Documents/test2/IMG_5986.JPG",
+                "/home/xehu/Documents/test2/3/IMG_5986_" + i + ".JPEG", 403);
         }
 
         sw.stop();
-        System.out.println("Native Processed: " + sw.getLastTaskTimeMillis() + "ms");
+        System.out.println("Opencv Processed: " + sw.getLastTaskTimeMillis() + "ms");
     }
 
 }
