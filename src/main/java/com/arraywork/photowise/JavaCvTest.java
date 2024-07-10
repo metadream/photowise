@@ -19,6 +19,10 @@ public class JavaCvTest {
     public static void main(String[] args) throws IOException {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
+        // OpenCv.capture("C:\\Users\\Administrator\\Videos\\rc.mp4",
+        // "C:\\Users\\Administrator\\Videos\\rc.jpg", 0);
+        // if (1 == 1) return;
+
         int count = 1;
         StopWatch sw = new StopWatch();
         sw.start();

@@ -5,6 +5,7 @@ import org.opencv.core.MatOfInt;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.videoio.VideoCapture;
 
 /**
  * Open Computer Vision Utils
@@ -15,6 +16,19 @@ import org.opencv.imgproc.Imgproc;
  * @since 2024/07/10
  */
 public class OpenCv {
+
+    // Capture video
+    public static boolean capture(String input, String output, int size) {
+        VideoCapture capture = new VideoCapture(input);
+        // capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 320);
+        // capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 240);
+
+        Mat mat = new Mat();
+        if (capture.read(mat)) {
+            return Imgcodecs.imwrite(output, mat);
+        }
+        return false;
+    }
 
     // Resize image (default quality 75%)
     public static boolean resize(String input, String output, int size) {
