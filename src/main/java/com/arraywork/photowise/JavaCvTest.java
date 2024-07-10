@@ -19,7 +19,7 @@ public class JavaCvTest {
     public static void main(String[] args) throws IOException {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-        // OpenCv.capture("C:\\Users\\Administrator\\Videos\\rc.mp4",
+        // OpenCv.captureVideo("C:\\Users\\Administrator\\Videos\\rc.mp4",
         // "C:\\Users\\Administrator\\Videos\\rc.jpg", 0);
         // if (1 == 1) return;
 
@@ -53,7 +53,7 @@ public class JavaCvTest {
 
         // 约7秒
         for (int i = 0; i < count; i++) {
-            OpenCv.resize("C:\\Users\\Administrator\\Pictures\\IMG_7505.JPEG",
+            OpenCv.resizeImage("C:\\Users\\Administrator\\Pictures\\IMG_7505.JPEG",
                 "C:\\Users\\Administrator\\Pictures\\1\\IMG_7505_" + i + ".JPEG", 403);
         }
 

@@ -18,7 +18,7 @@ import org.opencv.videoio.VideoCapture;
 public class OpenCv {
 
     // Capture video
-    public static boolean capture(String input, String output, int size) {
+    public static boolean captureVideo(String input, String output, int size) {
         VideoCapture capture = new VideoCapture(input);
         // capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 320);
         // capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 240);
@@ -31,12 +31,12 @@ public class OpenCv {
     }
 
     // Resize image (default quality 75%)
-    public static boolean resize(String input, String output, int size) {
-        return resize(input, output, size, 75);
+    public static boolean resizeImage(String input, String output, int size) {
+        return resizeImage(input, output, size, 75);
     }
 
     // Resize image
-    public static boolean resize(String input, String output, int size, int quality) {
+    public static boolean resizeImage(String input, String output, int size, int quality) {
         Mat src = Imgcodecs.imread(input);
 
         int width = src.width();
