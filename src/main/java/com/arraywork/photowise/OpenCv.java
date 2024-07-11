@@ -35,10 +35,10 @@ public class OpenCv {
      * 捕获视频并截取相同纵横比的缩略图
      * @param input
      * @param output
-     * @param size 长边值
+     * @param longSide 长边值
      * @return
      */
-    public static boolean captureVideo(String input, String output, int size) {
+    public static boolean captureVideo(String input, String output, int longSide) {
         checkPath(input, output);
         VideoCapture capture = new VideoCapture(input);
         Assert.isTrue(capture.isOpened(), "Cannot open the video: " + input);
@@ -50,8 +50,8 @@ public class OpenCv {
 
         Mat mat = new Mat();
         if (capture.read(mat)) {
-            int[] d = getDimension(mat.width(), mat.height(), size);
-            Imgproc.resize(mat, mat, new Size(d[0], d[1]), 0, 0, Imgproc.INTER_AREA);
+            Size size = calcSize(mat.width(), mat.height(), longSide);
+            Imgproc.resize(mat, mat, size, 0, 0, Imgproc.INTER_AREA);
             return Imgcodecs.imwrite(output, mat);
         }
         capture.release();
@@ -62,17 +62,17 @@ public class OpenCv {
      * 按相同纵横比缩放图片
      * @param input
      * @param output
-     * @param size 长边值
+     * @param longSide 长边值
      * @param quality 质量（0-100）
      * @return
      */
-    public static boolean resizeImage(String input, String output, int size, int quality) {
+    public static boolean resizeImage(String input, String output, int longSide, int quality) {
         checkPath(input, output);
         Mat src = Imgcodecs.imread(input);
-        int[] d = getDimension(src.width(), src.height(), size);
 
         Mat dist = new Mat();
-        Imgproc.resize(src, dist, new Size(d[0], d[1]), 0, 0, Imgproc.INTER_AREA);
+        Size size = calcSize(src.width(), src.height(), longSide);
+        Imgproc.resize(src, dist, size, 0, 0, Imgproc.INTER_AREA);
         MatOfInt params = new MatOfInt(Imgcodecs.IMWRITE_JPEG_QUALITY, quality);
         return Imgcodecs.imwrite(output, dist, params);
     }
@@ -81,11 +81,11 @@ public class OpenCv {
      * 按相同纵横比缩放图片（质量75%）
      * @param input
      * @param output
-     * @param size 长边值
+     * @param longSide 长边值
      * @return
      */
-    public static boolean resizeImage(String input, String output, int size) {
-        return resizeImage(input, output, size, 75);
+    public static boolean resizeImage(String input, String output, int longSide) {
+        return resizeImage(input, output, longSide, 75);
     }
 
     // 校验输入输出文件是否存在
@@ -97,7 +97,7 @@ public class OpenCv {
     }
 
     // 计算缩放后的尺寸
-    private static int[] getDimension(int width, int height, int longSide) {
+    private static Size calcSize(int width, int height, int longSide) {
         if (longSide > 0) {
             double ratio = (double) width / height;
 
@@ -110,8 +110,7 @@ public class OpenCv {
                 width = (int) (longSide * ratio);
             }
         }
-        int[] d = { width, height };
-        return d;
+        return new Size(width, height);
     }
 
 }
