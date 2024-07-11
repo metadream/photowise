@@ -27,19 +27,21 @@ public class TestController {
     // opencv seek keyframe
     // opencv CAP_PROP_POS_FRAMES very slow
     // CV_CAP_PROP_POS_AVI_RATIO
+    // 循环50次约5秒
     @GetMapping("/test/video/opencv")
     public String videoopencv() {
         StopWatch sw = new StopWatch();
         sw.start();
 
         for (int i = 0; i < count; i++) {
-            OpenCv.captureVideo("./video.mp4", "./video_opencv.jpg", 0);
+            OpenCv.captureVideo("./video.mp4", "./video_opencv.jpg", 400);
         }
 
         sw.stop();
         return "Opencv video processed: " + sw.getTotalTimeMillis() + "ms";
     }
 
+    // 循环50次约12秒
     @GetMapping("/test/video/ffmpeg")
     public String videoffmpeg() throws InputFormatException, EncoderException {
         StopWatch sw = new StopWatch();
