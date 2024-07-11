@@ -31,7 +31,11 @@ public class TestController {
     public String videoopencv() {
         StopWatch sw = new StopWatch();
         sw.start();
-        OpenCv.captureVideo("./video.mp4", "./video_opencv.jpg", 0);
+
+        for (int i = 0; i < count; i++) {
+            OpenCv.captureVideo("./video.mp4", "./video_opencv.jpg", 0);
+        }
+
         sw.stop();
         return "Opencv video processed: " + sw.getTotalTimeMillis() + "ms";
     }
@@ -40,7 +44,11 @@ public class TestController {
     public String videoffmpeg() throws InputFormatException, EncoderException {
         StopWatch sw = new StopWatch();
         sw.start();
-        screenshot("./video.mp4", "./video_ffmpeg.jpg");
+
+        for (int i = 0; i < count; i++) {
+            screenshot("./video.mp4", "./video_ffmpeg.jpg");
+        }
+
         sw.stop();
         return "Ffmpeg video processed: " + sw.getTotalTimeMillis() + "ms";
     }

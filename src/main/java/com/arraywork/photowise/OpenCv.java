@@ -45,7 +45,7 @@ public class OpenCv {
 
         // 为避免前几帧的空白或空黑画面、同时避免超过总帧数，此处自动截取整个视频的中间帧
         // 如果使用CAP_PROP_POS_FRAMES或CAP_PROP_POS_MSEC设置精确的中间帧，则会非常慢
-        // CAP_PROP_POS_AVI_RATIO采用相对位置（取值0.0-1.0），速度非常快
+        // CAP_PROP_POS_AVI_RATIO采用相对的、粗略的位置（取值0.0-1.0），速度非常快
         capture.set(Videoio.CAP_PROP_POS_AVI_RATIO, 0.5);
 
         Mat mat = new Mat();
