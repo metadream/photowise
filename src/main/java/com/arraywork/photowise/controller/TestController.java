@@ -9,11 +9,6 @@ import com.arraywork.photowise.OpenCv;
 @RestController
 public class TestController {
 
-    static {
-        System.out.println("==========================222=========");
-        System.load("/home/xehu/Codebase/photowise/src/main/resources/lib/libopencv_java4100.so");
-    }
-
     @GetMapping("/test/video/opencv")
     public String test() {
         StopWatch sw = new StopWatch();

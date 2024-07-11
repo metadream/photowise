@@ -18,16 +18,8 @@ import com.arraywork.springforce.BaseApplication;
 @EnableCaching
 public class PhotowiseApplication extends BaseApplication {
 
-    private static boolean isLoaded = false;
-    // Load opencv library
-
-    // @PostConstruct
-    // public void test() {
-    // System.out.println("===================================");
-    // System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-    // }
-
     public static void main(String[] args) {
+        OpenCv.loadLibrary();
         SpringApplication.run(PhotowiseApplication.class, args);
     }
 

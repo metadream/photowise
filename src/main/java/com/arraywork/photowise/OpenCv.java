@@ -1,6 +1,7 @@
 package com.arraywork.photowise;
 
 import java.io.File;
+import java.net.URL;
 
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
@@ -21,6 +22,14 @@ import com.arraywork.springforce.util.Assert;
  * @since 2024/07/10
  */
 public class OpenCv {
+
+    // Load libraray once
+    public static void loadLibrary() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        String libName = osName.contains("windows") ? "opencv_java4100.dll" : "libopencv_java4100.so";
+        URL url = ClassLoader.getSystemResource("opencv/" + libName);
+        System.load(url.getPath());
+    }
 
     // Capture video
     public static boolean captureVideo(String input, String output, int size) {
