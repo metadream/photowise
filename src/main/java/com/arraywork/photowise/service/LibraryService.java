@@ -23,7 +23,7 @@ import com.arraywork.photowise.entity.ScanningOption;
 import com.arraywork.photowise.enums.LogLevel;
 import com.arraywork.springforce.channel.ChannelService;
 import com.arraywork.springforce.util.Assert;
-import com.arraywork.springforce.util.Files;
+import com.arraywork.springforce.util.FileUtils;
 import com.arraywork.springforce.util.OpenCv;
 import com.drew.imaging.FileType;
 import com.drew.imaging.FileTypeDetector;
@@ -88,7 +88,7 @@ public class LibraryService {
         }
 
         List<File> files = new ArrayList<>();
-        Files.walk(lib, files);
+        FileUtils.walk(lib, files);
         int total = files.size();
         int count = 0;
         int success = 0;
@@ -191,7 +191,7 @@ public class LibraryService {
             photo.setMediaInfo(mediaInfo);
             photo.setPath(file.getPath().substring(library.length()));
             photo.setLength(file.length());
-            photo.setCreationTime(Files.getCreationTime(file));
+            photo.setCreationTime(FileUtils.getCreationTime(file));
             photo.setModifiedTime(file.lastModified());
 
             // Parse metadata to photo

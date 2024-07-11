@@ -9,6 +9,27 @@
 - 视频中文路径测试 Files.readAllBytes大文件测试
 - Files -> FileUtil, Photo -> PhotoIndex
 
+
+    @GetMapping("/test/video/stream")
+    public void streaming(HttpServletResponse response) throws IOException {
+        response.setHeader("Content-Type", "image/jpeg");
+        VideoCapture capture = new VideoCapture("./video.mp4");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+
+        Mat mat = new Mat();
+        if (capture.read(mat)) {
+            MatOfByte buff = new MatOfByte();
+            Imgcodecs.imencode(".jpg", mat, buff);
+            byte[] bytes = buff.toArray();
+
+            resourceHandler.copy(new ByteArrayInputStream(bytes), response.getOutputStream());
+
+        }
+    }
+
+
 ## Dependencies
 
 Build opencv and create opencv_java.jar and libopencv_java4100.so

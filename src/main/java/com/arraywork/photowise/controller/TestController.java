@@ -1,20 +1,16 @@
 package com.arraywork.photowise.controller;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import javax.imageio.ImageIO;
 
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.videoio.VideoCapture;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.arraywork.photowise.ImageUtil;
@@ -22,7 +18,6 @@ import com.arraywork.springforce.StaticResourceHandler;
 import com.arraywork.springforce.util.OpenCv;
 
 import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletResponse;
 import ws.schild.jave.EncoderException;
 import ws.schild.jave.InputFormatException;
 import ws.schild.jave.MultimediaObject;
@@ -32,7 +27,7 @@ import ws.schild.jave.info.MultimediaInfo;
 @RestController
 public class TestController {
 
-    private int count = 1;
+    private int count = 50;
 
     @Resource
     private StaticResourceHandler resourceHandler;
@@ -41,13 +36,14 @@ public class TestController {
     // opencv CAP_PROP_POS_FRAMES very slow
     // CV_CAP_PROP_POS_AVI_RATIO
     // 循环50次约5秒
-    @GetMapping("/test/video/opencv")
-    public String videoopencv() {
+    @GetMapping("/test/video/opencv/{filename}")
+    public String videoopencv(@PathVariable String filename) throws UnsupportedEncodingException {
         StopWatch sw = new StopWatch();
         sw.start();
 
+        filename = URLDecoder.decode(filename, "UTF-8");
         for (int i = 0; i < count; i++) {
-            OpenCv.captureVideo("./中文.mp4", "./video_中文opencv.jpg", 400);
+            OpenCv.captureVideo(filename, filename + "_中文opencv.jpg", 400);
         }
 
         sw.stop();
@@ -55,13 +51,15 @@ public class TestController {
     }
 
     // 循环50次约12秒
-    @GetMapping("/test/video/ffmpeg")
-    public String videoffmpeg() throws InputFormatException, EncoderException {
+    @GetMapping("/test/video/ffmpeg/{filename}")
+    public String videoffmpeg(@PathVariable String filename)
+        throws InputFormatException, EncoderException, UnsupportedEncodingException {
         StopWatch sw = new StopWatch();
         sw.start();
 
+        filename = URLDecoder.decode(filename, "UTF-8");
         for (int i = 0; i < count; i++) {
-            screenshot("./video.mp4", "./video_ffmpeg.jpg");
+            screenshot(filename, filename + "_中文ffmpeg.jpg");
         }
 
         sw.stop();
@@ -69,15 +67,16 @@ public class TestController {
     }
 
     // 循环50次约15秒
-    @GetMapping("/test/image/native")
-    public String imagenative() throws IOException {
+    @GetMapping("/test/image/native/{filename}")
+    public String imagenative(@PathVariable String filename) throws IOException {
         StopWatch sw = new StopWatch();
         sw.start();
 
+        filename = URLDecoder.decode(filename, "UTF-8");
         for (int i = 0; i < count; i++) {
-            BufferedImage srcImage = ImageIO.read(new File("./image.jpg"));
+            BufferedImage srcImage = ImageIO.read(new File(filename));
             BufferedImage thumbImage = ImageUtil.resizeByNative(srcImage, 400);
-            ImageIO.write(thumbImage, "jpg", new File("image_native.jpg"));
+            ImageIO.write(thumbImage, "jpg", new File(filename + "_中文native.jpg"));
         }
 
         sw.stop();
@@ -85,15 +84,16 @@ public class TestController {
     }
 
     // 循环50次约22秒
-    @GetMapping("/test/image/thumb")
-    public String imagethumb() throws IOException {
+    @GetMapping("/test/image/thumb/{filename}")
+    public String imagethumb(@PathVariable String filename) throws IOException {
         StopWatch sw = new StopWatch();
         sw.start();
 
+        filename = URLDecoder.decode(filename, "UTF-8");
         for (int i = 0; i < count; i++) {
-            BufferedImage srcImage = ImageIO.read(new File("./image.jpg"));
+            BufferedImage srcImage = ImageIO.read(new File(filename));
             BufferedImage thumbImage = ImageUtil.resizeByThumbnailator(srcImage, 400);
-            ImageIO.write(thumbImage, "jpg", new File("image_thumb.jpg"));
+            ImageIO.write(thumbImage, "jpg", new File(filename + "_中文thumb.jpg"));
         }
 
         sw.stop();
@@ -101,50 +101,18 @@ public class TestController {
     }
 
     // 循环50次约7秒
-    @GetMapping("/test/image/opencv")
-    public String imageopencv() throws IOException {
+    @GetMapping("/test/image/opencv/{filename}")
+    public String imageopencv(@PathVariable String filename) throws IOException {
         StopWatch sw = new StopWatch();
         sw.start();
 
+        filename = URLDecoder.decode(filename, "UTF-8");
         for (int i = 0; i < count; i++) {
-            OpenCv.resizeImage("./image.jpg", "./image_opencv.jpg", 400);
+            OpenCv.resizeImage(filename, filename + "_中文opencv.jpg", 400);
         }
 
         sw.stop();
         return "Opencv image processed: " + sw.getTotalTimeMillis() + "ms";
-    }
-
-    // 循环50次约7秒
-    @GetMapping("/test/image/opencv2")
-    public String imageopencv2() throws IOException {
-        StopWatch sw = new StopWatch();
-        sw.start();
-
-        for (int i = 0; i < count; i++) {
-            OpenCv.resizeImage2("./image.jpg", "./image_opencv2.jpg", 400, 75);
-        }
-
-        sw.stop();
-        return "Opencv image processed: " + sw.getTotalTimeMillis() + "ms";
-    }
-
-    @GetMapping("/test/video/stream")
-    public void streaming(HttpServletResponse response) throws IOException {
-        response.setHeader("Content-Type", "image/jpeg");
-        VideoCapture capture = new VideoCapture("./video.mp4");
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG);
-
-        Mat mat = new Mat();
-        if (capture.read(mat)) {
-            MatOfByte buff = new MatOfByte();
-            Imgcodecs.imencode(".jpg", mat, buff);
-            byte[] bytes = buff.toArray();
-
-            resourceHandler.copy(new ByteArrayInputStream(bytes), response.getOutputStream());
-
-        }
     }
 
     private void screenshot(String input, String output) throws InputFormatException, EncoderException {
