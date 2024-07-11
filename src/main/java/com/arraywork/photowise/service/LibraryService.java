@@ -57,6 +57,7 @@ public class LibraryService {
 
     private static final String SUPPORTED_MEDIA = "JPEG|PNG|HEIF|WebP|MP4|MOV";
     public static int scanningProgress = -1;
+    public static boolean scanningAborted = false;
     public static List<ScanningLog> scanningLogs = new ArrayList<>();
 
     @Resource
@@ -72,7 +73,7 @@ public class LibraryService {
 
     // Scan the photo library
     @Async
-    public void scan(ScanningOption option) {
+    public void startScan(ScanningOption option) {
         File lib = new File(library);
         Assert.isTrue(lib.exists() && lib.isDirectory(), "Library does not exist or is not a directory");
 
@@ -92,6 +93,8 @@ public class LibraryService {
         int success = 0;
 
         for (File file : files) {
+            if (scanningProgress == -1) return;
+
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -141,6 +144,16 @@ public class LibraryService {
         scanningProgress = -1;
     }
 
+    // Abort scan async thread
+    public void abortScan() {
+        scanningProgress = -1;
+    }
+
+    // Clear scanning logs
+    public void clearLogs() {
+        scanningLogs.clear();
+    }
+
     // Clean indexes with invalid file path
     private void cleanIndexes() {
         List<Photo> photos = photoService.getAllPhotos();
@@ -148,6 +161,8 @@ public class LibraryService {
         int count = 0;
 
         for (Photo photo : photos) {
+            if (scanningProgress == -1) return;
+
             Path path = Path.of(library, photo.getPath());
             if (!path.toFile().exists()) {
                 photoService.delete(photo);

@@ -5,8 +5,7 @@
 - 地图添加点：leaflet
 - 国际化
 - 时间线
-- 缩略图测试（ffmpeg、thumbnaitor）
-- 取消扫描（中止异步线程，利用全局静态变量）
+- 缩略图测试（ffmpeg、thumbnaitor、opencv）
 
 ## Dependencies
 

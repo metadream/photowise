@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -35,14 +36,20 @@ public class LibraryController {
 
     @PostMapping("/library")
     @ResponseBody
-    public void scan(@RequestBody ScanningOption option) {
-        libraryService.scan(option);
+    public void startScan(@RequestBody ScanningOption option) {
+        libraryService.startScan(option);
+    }
+
+    @PutMapping("/library")
+    @ResponseBody
+    public void abortScan() {
+        libraryService.abortScan();
     }
 
     @DeleteMapping("/library/logs")
     @ResponseBody
-    public void purgeLogs() {
-        LibraryService.scanningLogs.clear();
+    public void clearLogs() {
+        libraryService.clearLogs();
     }
 
 }

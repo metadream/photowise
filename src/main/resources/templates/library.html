@@ -7,12 +7,12 @@
     <th-checkbox name="fullScan" value="true">完全扫描</th-checkbox>
     <th-checkbox name="cleanIndexes" value="true">清理无效索引</th-checkbox>
   </p>
-  <p class="button-group">
-    <th-button onclick="scanLibrary()" id="scan-btn" th:disabled="${scanningProgress > -1}">
-        [[${scanningProgress > -1 ? '正在扫描' : '开始扫描'}]]
+  <p class="button-group" th:with="isScanning = ${scanningProgress > -1}">
+    <th-button onclick="startScan()" id="scan-btn" th:disabled="${isScanning}">
+        [[${isScanning ? '正在扫描' : '开始扫描'}]]
     </th-button>
-    <th-button variant="outlined">取消扫描</th-button>
-    <th-button variant="outlined minor" onclick="clearLogs(this)" th:if="${scanningLogs.size>0}">清空日志</th-button>
+    <th-button variant="outlined" id="abort-btn" onclick="abortScan()" th:disabled="${!isScanning}">取消扫描</th-button>
+    <th-button variant="outlined minor" onclick="clearLogs(this)" th:if="${scanningLogs.size > 0}">清空日志</th-button>
   </p>
 </section>
 
@@ -32,19 +32,34 @@ import spa from '/assets/spa.js';
 const $message = document.querySelector('.footnote');
 const $logs = document.querySelector('#logs');
 const $scanBtn = document.querySelector('#scan-btn');
+const $abortBtn = document.querySelector('#abort-btn');
 const $progress = document.querySelector('#scan-progress>div');
 
 const channel = new Thyme.Channel('/channel/library');
 channel.on('message', data => render(data));
 spa.onPageUnload = () => channel.close();
 
-window.scanLibrary = function() {
+window.startScan = function() {
   const options = Thyme.form.getJsonObject('.option-group');
   Thyme.confirm('扫描照片库可能会耗费很长时间，确定继续吗？', async (cfm) => {
     cfm.hide();
-    $scanBtn.disabled = true;
-    $scanBtn.innerHTML = '正在扫描';
     Thyme.http.post('/library', options);
+    $scanBtn.innerHTML = '正在扫描';
+    $scanBtn.disabled = true;
+    $abortBtn.disabled = false;
+  });
+}
+
+window.abortScan = function() {
+  Thyme.confirm('确定取消扫描吗？', async (cfm) => {
+    cfm.hide();
+    $abortBtn.loading = true;
+    Thyme.http.put('/library').then(() => {
+      $abortBtn.loading = false;
+      $abortBtn.disabled = true;
+      $scanBtn.disabled = false;
+      $scanBtn.innerHTML = '开始扫描';
+    });
   });
 }
 
