@@ -15,15 +15,15 @@ import com.arraywork.springforce.util.Assert;
 
 /**
  * Open Computer Vision Utils
- * System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
- *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/10
  */
 public class OpenCv {
 
-    // Load libraray once
+    /**
+     * 根据操作系统加载不同的外部库（仅在启动时调用一次）
+     */
     public static void loadLibrary() {
         String osName = System.getProperty("os.name").toLowerCase();
         String libName = osName.contains("windows") ? "opencv_java4100.dll" : "libopencv_java4100.so";
@@ -31,27 +31,25 @@ public class OpenCv {
         System.load(url.getPath());
     }
 
-    // Capture video
+    /**
+     * 捕获视频并截取相同纵横比的缩略图
+     * @param input
+     * @param output
+     * @param size 长边值
+     * @return
+     */
     public static boolean captureVideo(String input, String output, int size) {
         checkPath(input, output);
         VideoCapture capture = new VideoCapture(input);
         Assert.isTrue(capture.isOpened(), "Cannot open the video: " + input);
 
-        int frames = (int) capture.get(Videoio.CAP_PROP_FRAME_COUNT);
-        int fps = (int) capture.get(Videoio.CAP_PROP_FPS);
-        int pos = (int) capture.get(Videoio.CAP_PROP_POS_FRAMES);
-        int duration = frames / fps;
-        System.out.println("frames=" + frames);
-        System.out.println("fps=" + fps);
-        System.out.println("duration=" + duration);
-        System.out.println("pos=" + pos);
-
-        capture.set(Videoio.CAP_PROP_POS_FRAMES, frames / 2);
+        // 为避免前几帧的空白或空黑画面、同时避免超过总帧数，此处自动截取整个视频的中间帧
+        // 如果使用CAP_PROP_POS_FRAMES或CAP_PROP_POS_MSEC设置精确的中间帧，则会非常慢
+        // CAP_PROP_POS_AVI_RATIO采用相对位置（取值0.0-1.0），速度非常快
+        capture.set(Videoio.CAP_PROP_POS_AVI_RATIO, 0.5);
 
         Mat mat = new Mat();
         if (capture.read(mat)) {
-            System.out.println(mat.width());
-            System.out.println(mat.height());
             int[] d = getDimension(mat.width(), mat.height(), size);
             Imgproc.resize(mat, mat, new Size(d[0], d[1]), 0, 0, Imgproc.INTER_AREA);
             return Imgcodecs.imwrite(output, mat);
@@ -60,12 +58,14 @@ public class OpenCv {
         return false;
     }
 
-    // Resize image (default quality 75%)
-    public static boolean resizeImage(String input, String output, int size) {
-        return resizeImage(input, output, size, 75);
-    }
-
-    // Resize image
+    /**
+     * 按相同纵横比缩放图片
+     * @param input
+     * @param output
+     * @param size 长边值
+     * @param quality 质量（0-100）
+     * @return
+     */
     public static boolean resizeImage(String input, String output, int size, int quality) {
         checkPath(input, output);
         Mat src = Imgcodecs.imread(input);
@@ -77,7 +77,18 @@ public class OpenCv {
         return Imgcodecs.imwrite(output, dist, params);
     }
 
-    // Check the input and output path valid
+    /**
+     * 按相同纵横比缩放图片（质量75%）
+     * @param input
+     * @param output
+     * @param size 长边值
+     * @return
+     */
+    public static boolean resizeImage(String input, String output, int size) {
+        return resizeImage(input, output, size, 75);
+    }
+
+    // 校验输入输出文件是否存在
     private static void checkPath(String input, String output) {
         File file = new File(input);
         Assert.isTrue(file.exists(), "Input file not found: " + file);
@@ -85,7 +96,7 @@ public class OpenCv {
         Assert.isTrue(dir.exists(), "Output path not found: " + dir);
     }
 
-    // Calculate width and height based on long side and ratio
+    // 计算缩放后的尺寸
     private static int[] getDimension(int width, int height, int longSide) {
         if (longSide > 0) {
             double ratio = (double) width / height;
