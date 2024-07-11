@@ -24,6 +24,7 @@ import com.arraywork.photowise.enums.LogLevel;
 import com.arraywork.springforce.channel.ChannelService;
 import com.arraywork.springforce.util.Assert;
 import com.arraywork.springforce.util.Files;
+import com.arraywork.springforce.util.OpenCv;
 import com.drew.imaging.FileType;
 import com.drew.imaging.FileTypeDetector;
 import com.drew.imaging.ImageMetadataReader;
@@ -68,8 +69,8 @@ public class LibraryService {
     @Value("${photowise.library}")
     private String library;
 
-    @Value("${photowise.storage}")
-    private String storage;
+    @Value("${photowise.thumbnails}")
+    private String thumbnails;
 
     // Scan the photo library
     @Async
@@ -95,13 +96,6 @@ public class LibraryService {
         for (File file : files) {
             if (scanningProgress == -1) return;
 
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
             String filePath = file.getPath().substring(library.length());
             ScanningLog log = new ScanningLog(LogLevel.INFO, total, ++count);
             log.setPath(filePath);
@@ -122,6 +116,8 @@ public class LibraryService {
             // Extract and save metadata
             try {
                 Photo photo = extractMetadata(file);
+                OpenCv.resizeImage(file.getPath(), Path.of(thumbnails, photo.getPath()).toString(), 480);
+
                 if (_photo != null) {
                     photo.setId(_photo.getId());
                 }

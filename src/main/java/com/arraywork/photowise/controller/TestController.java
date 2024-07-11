@@ -32,7 +32,7 @@ import ws.schild.jave.info.MultimediaInfo;
 @RestController
 public class TestController {
 
-    private int count = 50;
+    private int count = 1;
 
     @Resource
     private StaticResourceHandler resourceHandler;
@@ -47,7 +47,7 @@ public class TestController {
         sw.start();
 
         for (int i = 0; i < count; i++) {
-            OpenCv.captureVideo("./video.mp4", "./video_opencv.jpg", 400);
+            OpenCv.captureVideo("./中文.mp4", "./video_中文opencv.jpg", 400);
         }
 
         sw.stop();
@@ -108,6 +108,20 @@ public class TestController {
 
         for (int i = 0; i < count; i++) {
             OpenCv.resizeImage("./image.jpg", "./image_opencv.jpg", 400);
+        }
+
+        sw.stop();
+        return "Opencv image processed: " + sw.getTotalTimeMillis() + "ms";
+    }
+
+    // 循环50次约7秒
+    @GetMapping("/test/image/opencv2")
+    public String imageopencv2() throws IOException {
+        StopWatch sw = new StopWatch();
+        sw.start();
+
+        for (int i = 0; i < count; i++) {
+            OpenCv.resizeImage2("./image.jpg", "./image_opencv2.jpg", 400, 75);
         }
 
         sw.stop();
