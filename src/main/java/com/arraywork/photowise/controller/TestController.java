@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.arraywork.photowise.ImageUtil;
-import com.arraywork.photowise.OpenCv;
 import com.arraywork.springforce.StaticResourceHandler;
+import com.arraywork.springforce.util.OpenCv;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;

@@ -6,6 +6,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 import com.arraywork.springforce.BaseApplication;
+import com.arraywork.springforce.util.OpenCv;
 
 /**
  * Application Bootstrap
