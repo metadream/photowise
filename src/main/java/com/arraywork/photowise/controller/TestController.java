@@ -1,18 +1,28 @@
 package com.arraywork.photowise.controller;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.videoio.VideoCapture;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.arraywork.photowise.ImageUtil;
 import com.arraywork.photowise.OpenCv;
+import com.arraywork.springforce.StaticResourceHandler;
 
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
 import ws.schild.jave.EncoderException;
 import ws.schild.jave.InputFormatException;
 import ws.schild.jave.MultimediaObject;
@@ -22,7 +32,10 @@ import ws.schild.jave.info.MultimediaInfo;
 @RestController
 public class TestController {
 
-    private int count = 50;
+    private int count = 1;
+
+    @Resource
+    private StaticResourceHandler resourceHandler;
 
     // opencv seek keyframe
     // opencv CAP_PROP_POS_FRAMES very slow
@@ -99,6 +112,25 @@ public class TestController {
 
         sw.stop();
         return "Opencv image processed: " + sw.getTotalTimeMillis() + "ms";
+    }
+
+    @GetMapping("/test/video/stream")
+    public void streaming(HttpServletResponse response) throws IOException {
+        response.setHeader("Content-Type", "image/jpeg");
+        VideoCapture capture = new VideoCapture("./video.mp4");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+
+        Mat mat = new Mat();
+        if (capture.read(mat)) {
+            MatOfByte buff = new MatOfByte();
+            Imgcodecs.imencode(".jpg", mat, buff);
+            byte[] bytes = buff.toArray();
+
+            resourceHandler.copy(new ByteArrayInputStream(bytes), response.getOutputStream());
+
+        }
     }
 
     private void screenshot(String input, String output) throws InputFormatException, EncoderException {

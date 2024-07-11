@@ -1,7 +1,6 @@
 package com.arraywork.photowise;
 
 import java.io.File;
-import java.nio.file.Path;
 
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -27,8 +26,8 @@ public class ContextInitializer implements ServletContextListener {
     // However, static blocks cannot get the configuration parameters
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        String storage = env.getProperty("photowise.storage");
-        File dir = Path.of(storage, "thumbnails").toFile();
+        String thumbnails = env.getProperty("photowise.thumbnails");
+        File dir = new File(thumbnails);
         if (!dir.exists()) dir.mkdirs();
     }
 

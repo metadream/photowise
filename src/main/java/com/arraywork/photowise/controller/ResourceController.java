@@ -30,11 +30,21 @@ public class ResourceController {
     @Value("${photowise.library}")
     private String library;
 
-    @GetMapping("/res/**")
-    public void cover(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String path = HttpUtils.getWildcard(request, "/res");
+    @Value("${photowise.thumbnails}")
+    private String thumbnails;
+
+    @GetMapping("/original/**")
+    public void original(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String path = HttpUtils.getWildcard(request);
         path = URLDecoder.decode(path, "UTF-8");
         resourceHandler.serve(Path.of(library, path), request, response);
+    }
+
+    @GetMapping("/thumbnail/**")
+    public void thumbnail(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String path = HttpUtils.getWildcard(request);
+        path = URLDecoder.decode(path, "UTF-8");
+        resourceHandler.serve(Path.of(thumbnails, path), request, response);
     }
 
 }
