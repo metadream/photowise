@@ -1,7 +1,7 @@
 # Photowise
 
 ## TODO
-- 用户管理/public/只读权限、菜单setting与权限
+- 用户管理：guest/public/只读权限、菜单setting与权限
 - 地图添加点：leaflet
 - 国际化
 - 时间线
