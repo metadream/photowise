@@ -3,6 +3,7 @@ package com.arraywork.photowise.service;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -27,9 +28,11 @@ import com.arraywork.springforce.util.OpenCv;
 import com.drew.imaging.FileType;
 import com.drew.imaging.FileTypeDetector;
 import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
 import com.drew.imaging.png.PngChunkType;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
+import com.drew.metadata.MetadataException;
 import com.drew.metadata.exif.ExifDirectoryBase;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
@@ -122,7 +125,6 @@ public class LibraryService {
                 if (_photo != null) {
                     photo.setId(_photo.getId());
                 }
-
                 // 2. 生成缩略图
                 String output = Path.of(thumbnails, photo.getPath()).toString();
                 OpenCv.resizeImage(file.getPath(), output, thumbsize);
@@ -186,7 +188,8 @@ public class LibraryService {
     }
 
     // 提取元数据
-    private PhotoIndex extractMetadata(File file) {
+    private PhotoIndex extractMetadata(File file)
+        throws IOException, ImageProcessingException, MetadataException {
         InputStream inputStream = null;
         BufferedInputStream bufferedStream = null;
 
@@ -306,13 +309,9 @@ public class LibraryService {
                 }
             }
 
-            if (photo.getOriginalTime() > 0) {
-                photo.setPhotoTime(photo.getOriginalTime());
-            }
-            else {
-                photo.setPhotoTime(FileUtils.getCreationTime(file));
-            }
-
+            long photoTime = photo.getOriginalTime() > 0
+                ? photo.getOriginalTime() : FileUtils.getCreationTime(file);
+            photo.setPhotoTime(photoTime);
             return photo;
         } finally {
             bufferedStream.close();
