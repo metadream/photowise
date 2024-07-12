@@ -5,9 +5,7 @@
 - 地图添加点：leaflet
 - 国际化
 - 时间线
-- 缩略图测试（ffmpeg、thumbnaitor、opencv）
-- 视频中文路径测试 Files.readAllBytes大文件测试
-- Files -> FileUtil, Photo -> PhotoIndex
+- 缩略图测试（native、ffmpeg、thumbnaitor、opencv）
 
 
     @GetMapping("/test/video/stream")
