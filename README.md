@@ -5,8 +5,6 @@
 - 地图添加点：leaflet
 - 国际化
 - 时间线
-- 缩略图测试（native、ffmpeg、thumbnaitor、opencv）
-
 
     @GetMapping("/test/video/stream")
     public void streaming(HttpServletResponse response) throws IOException {

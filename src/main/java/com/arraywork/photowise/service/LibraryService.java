@@ -56,7 +56,7 @@ import jakarta.annotation.Resource;
 @Service
 public class LibraryService {
 
-    private static final String SUPPORTED_MEDIA = "JPEG|PNG|HEIF|WebP|MP4|MOV";
+    private static final String SUPPORTED_MEDIA = "JPEG|PNG|WebP|HEIC|HEIF|MP4|MOV";
     public static int scanningProgress = -1;
     public static List<ScanningLog> scanningLogs = new ArrayList<>();
 
@@ -100,13 +100,14 @@ public class LibraryService {
         for (File file : files) {
             if (scanningProgress == -1) return;
 
-            String filePath = file.getPath().substring(library.length());
+            String filePath = file.getPath();
+            String relativePath = filePath.substring(library.length());
             ScanningLog log = new ScanningLog(LogLevel.INFO, total, ++count);
-            log.setPath(filePath);
+            log.setPath(relativePath);
             scanningProgress = log.getProgress();
 
             // 根据扫描参数、文件大小和更新时间判断是否跳过扫描
-            PhotoIndex _photo = photoService.getPhoto(filePath);
+            PhotoIndex _photo = photoService.getPhoto(relativePath);
             if (!option.isFullScan() && _photo != null
                 && _photo.getMediaInfo().getLength() == file.length()
                 && _photo.getModifiedTime() == file.lastModified()) {
@@ -126,8 +127,9 @@ public class LibraryService {
                     photo.setId(_photo.getId());
                 }
                 // 2. 生成缩略图
-                String output = Path.of(thumbnails, photo.getPath()).toString();
-                OpenCv.resizeImage(file.getPath(), output, thumbsize);
+                String output = Path.of(thumbnails, photo.getPath()).toString() + ".jpg";
+                if (photo.isVideo()) OpenCv.captureVideo(filePath, output, thumbsize);
+                else OpenCv.resizeImage(filePath, output, thumbsize);
 
                 // 3. 保存索引
                 photoService.save(photo);
@@ -143,7 +145,7 @@ public class LibraryService {
 
         // 完成扫描
         ScanningLog log = new ScanningLog(LogLevel.FINISHED, total, count);
-        log.setMessage("本次扫描发现" + total + " 个文件，成功创建 " + success + " 个索引，"
+        log.setMessage("本次扫描发现 " + total + " 个文件，成功创建 " + success + " 个索引，"
             + "共耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
         channelService.broadcast("library", log);
         scanningLogs.add(0, log);
@@ -175,9 +177,11 @@ public class LibraryService {
         for (PhotoIndex photo : photos) {
             if (scanningProgress == -1) return;
 
-            // 删除文件路径不存在的索引数据
+            // 删除文件路径不存在的索引和缩略图
             Path path = Path.of(library, photo.getPath());
             if (!path.toFile().exists()) {
+                File thumbnail = Path.of(thumbnails, photo.getPath() + ".jpg").toFile();
+                thumbnail.delete();
                 photoService.delete(photo);
 
                 ScanningLog log = new ScanningLog(LogLevel.CLEAN, total, ++count);

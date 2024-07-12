@@ -35,19 +35,16 @@ public class ResourceController {
 
     @GetMapping("/original/**")
     public void original(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        serveResource(request, response, library);
+        String path = HttpUtils.getWildcard(request);
+        path = URLDecoder.decode(path, "UTF-8");
+        resourceHandler.serve(Path.of(library, path), request, response);
     }
 
     @GetMapping("/thumbnail/**")
     public void thumbnail(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        serveResource(request, response, thumbnails);
-    }
-
-    private void serveResource(HttpServletRequest request, HttpServletResponse response, String root)
-        throws IOException {
-        String path = HttpUtils.getWildcard(request);
+        String path = HttpUtils.getWildcard(request) + ".jpg";
         path = URLDecoder.decode(path, "UTF-8");
-        resourceHandler.serve(Path.of(root, path), request, response);
+        resourceHandler.serve(Path.of(thumbnails, path), request, response);
     }
 
 }

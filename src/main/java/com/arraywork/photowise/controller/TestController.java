@@ -27,7 +27,7 @@ import ws.schild.jave.info.MultimediaInfo;
 @RestController
 public class TestController {
 
-    private int count = 50;
+    private int count = 1;
 
     @Resource
     private StaticResourceHandler resourceHandler;
