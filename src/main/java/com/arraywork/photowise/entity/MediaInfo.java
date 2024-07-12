@@ -14,6 +14,7 @@ public class MediaInfo {
     private String mimeType;
     private int width;
     private int height;
+    private long length;
     private long duration;
     private double aspectRatio;
 

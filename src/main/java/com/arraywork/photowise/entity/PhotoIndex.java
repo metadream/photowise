@@ -2,6 +2,7 @@ package com.arraywork.photowise.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -32,15 +33,12 @@ public class PhotoIndex {
     @Column(length = 24, insertable = false, updatable = false)
     private String id;
 
-    // file path relative to library
+    // 照片文件相对（照片库）路径
     @Column(unique = true)
-    @NotBlank(message = "Photo path cannot be blank")
+    @NotBlank(message = "照片路径不能为空")
     private String path;
 
-    // file size in bytes
-    private long length;
-
-    ////////////////////////////// Original metadata
+    ////////////////////////////// EXIF 元数据
 
     @Type(JsonStringType.class)
     private MediaInfo mediaInfo;
@@ -51,13 +49,16 @@ public class PhotoIndex {
     @Type(JsonStringType.class)
     private GeoLocation geoLocation;
 
-    ////////////////////////////// Additional metadata
+    ////////////////////////////// 附加属性
 
-    @Size(max = 80, message = "Title cannot exceed {max} characters")
+    @Size(max = 80, message = "照片标题不能超过 {max} 个字")
     private String title;
 
-    @Size(max = 80, message = "Place cannot exceed {max} characters")
+    @Size(max = 80, message = "照片地点不能超过 {max} 个字")
     private String place;
+
+    @Size(max = 20, message = "照片城市不能超过 {max} 个字")
+    private String city;
 
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
@@ -75,23 +76,39 @@ public class PhotoIndex {
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     private String[] albums;
 
-    // Date and time
+    private boolean favored;
 
-    private long shootingTime;
-    private long creationTime;
+    ////////////////////////////// 日期时间
+
+    // 照片创建时间（如果有拍摄时间则与之相等且不可修改，没有则取文件创建时间且可修改）
+    private long photoTime;
+
+    // 照片拍摄时间（取自EXIF元数据）
+    private long originalTime;
+
+    // 文件更新时间（用于跳过扫描）
     private long modifiedTime;
 
+    // 数据创建时间
+    @Column(updatable = false)
+    @CreationTimestamp
+    private LocalDateTime creationTime;
+
+    // 数据更新时间
     @UpdateTimestamp
     private LocalDateTime lastModified;
 
-    private boolean video;
-    private boolean favored;
+    ////////////////////////////// 公共方法
 
     public CameraInfo getCameraInfo() {
         if (cameraInfo == null) {
             cameraInfo = new CameraInfo();
         }
         return cameraInfo;
+    }
+
+    public boolean isVideo() {
+        return mediaInfo.getMimeType().startsWith("video/");
     }
 
 }

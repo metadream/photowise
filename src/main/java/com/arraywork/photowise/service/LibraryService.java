@@ -3,7 +3,6 @@ package com.arraywork.photowise.service;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -28,11 +27,9 @@ import com.arraywork.springforce.util.OpenCv;
 import com.drew.imaging.FileType;
 import com.drew.imaging.FileTypeDetector;
 import com.drew.imaging.ImageMetadataReader;
-import com.drew.imaging.ImageProcessingException;
 import com.drew.imaging.png.PngChunkType;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
-import com.drew.metadata.MetadataException;
 import com.drew.metadata.exif.ExifDirectoryBase;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
@@ -58,7 +55,6 @@ public class LibraryService {
 
     private static final String SUPPORTED_MEDIA = "JPEG|PNG|HEIF|WebP|MP4|MOV";
     public static int scanningProgress = -1;
-    public static boolean scanningAborted = false;
     public static List<ScanningLog> scanningLogs = new ArrayList<>();
 
     @Resource
@@ -72,27 +68,32 @@ public class LibraryService {
     @Value("${photowise.thumbnails}")
     private String thumbnails;
 
-    // Scan the photo library
+    @Value("${photowise.thumbsize}")
+    private int thumbsize;
+
+    // 异步扫描照片库
     @Async
     public void startScan(ScanningOption option) {
         File lib = new File(library);
-        Assert.isTrue(lib.exists() && lib.isDirectory(), "Library does not exist or is not a directory");
+        Assert.isTrue(lib.exists() && lib.isDirectory(), "照片库不存在或不是目录");
 
         if (scanningProgress > -1) return;
         scanningProgress = 0;
         long startTime = System.currentTimeMillis();
 
-        // Clean invalid indexes
+        // 清理无效索引
         if (option.isCleanIndexes()) {
             cleanIndexes();
         }
 
+        // 获取照片库下所有文件
         List<File> files = new ArrayList<>();
         FileUtils.walk(lib, files);
         int total = files.size();
         int count = 0;
         int success = 0;
 
+        // 遍历文件
         for (File file : files) {
             if (scanningProgress == -1) return;
 
@@ -101,28 +102,34 @@ public class LibraryService {
             log.setPath(filePath);
             scanningProgress = log.getProgress();
 
-            // Find photo data based on path relative to photo library
+            // 根据扫描参数、文件大小和更新时间判断是否跳过扫描
             PhotoIndex _photo = photoService.getPhoto(filePath);
-            // Compare the file size and time
-            if (!option.isFullScan() && _photo != null && _photo.getLength() == file.length()
+            if (!option.isFullScan() && _photo != null
+                && _photo.getMediaInfo().getLength() == file.length()
                 && _photo.getModifiedTime() == file.lastModified()) {
+
                 log.setLevel(LogLevel.SKIPPED);
-                log.setMessage("The same modified time and size.");
+                log.setMessage("相同的文件大小和更新时间");
                 channelService.broadcast("library", log);
                 scanningLogs.add(0, log);
                 continue;
             }
 
-            // Extract and save metadata
+            // 实质性处理
             try {
+                // 1. 提取元数据
                 PhotoIndex photo = extractMetadata(file);
-                OpenCv.resizeImage(file.getPath(), Path.of(thumbnails, photo.getPath()).toString(), 480);
-
                 if (_photo != null) {
                     photo.setId(_photo.getId());
                 }
-                log.setSuccess(++success);
+
+                // 2. 生成缩略图
+                String output = Path.of(thumbnails, photo.getPath()).toString();
+                OpenCv.resizeImage(file.getPath(), output, thumbsize);
+
+                // 3. 保存索引
                 photoService.save(photo);
+                log.setSuccess(++success);
             } catch (Exception e) {
                 log.setLevel(LogLevel.ERROR);
                 log.setMessage(e.getMessage());
@@ -132,9 +139,10 @@ public class LibraryService {
             }
         }
 
+        // 完成扫描
         ScanningLog log = new ScanningLog(LogLevel.FINISHED, total, count);
-        log.setMessage(total + " files were found and " + success + " indexes were created."
-            + " Elapsed " + (System.currentTimeMillis() - startTime) / 1000 + " s");
+        log.setMessage("本次扫描发现" + total + " 个文件，成功创建 " + success + " 个索引，"
+            + "共耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
         channelService.broadcast("library", log);
         scanningLogs.add(0, log);
         scanningProgress = -1;
@@ -148,17 +156,15 @@ public class LibraryService {
         return scanningLogs;
     }
 
-    // Abort scan async thread
     public void abortScan() {
         scanningProgress = -1;
     }
 
-    // Clear scanning logs
     public void clearLogs() {
         scanningLogs.clear();
     }
 
-    // Clean indexes with invalid file path
+    // 清理无效索引
     private void cleanIndexes() {
         List<PhotoIndex> photos = photoService.getAllPhotos();
         int total = photos.size();
@@ -167,6 +173,7 @@ public class LibraryService {
         for (PhotoIndex photo : photos) {
             if (scanningProgress == -1) return;
 
+            // 删除文件路径不存在的索引数据
             Path path = Path.of(library, photo.getPath());
             if (!path.toFile().exists()) {
                 photoService.delete(photo);
@@ -178,8 +185,8 @@ public class LibraryService {
         }
     }
 
-    // Extract metadata
-    private PhotoIndex extractMetadata(File file) throws ImageProcessingException, IOException, MetadataException {
+    // 提取元数据
+    private PhotoIndex extractMetadata(File file) {
         InputStream inputStream = null;
         BufferedInputStream bufferedStream = null;
 
@@ -187,10 +194,10 @@ public class LibraryService {
             inputStream = new FileInputStream(file);
             bufferedStream = new BufferedInputStream(inputStream);
 
-            // Detect file type and support "JPEG|PNG|HEIF|WebP|MP4|MOV" only
+            // 检测文件类型（仅支持"JPEG|PNG|HEIF|WebP|MP4|MOV"）
             FileType fileType = FileTypeDetector.detectFileType(bufferedStream);
             String typeName = fileType.getName();
-            Assert.isTrue(typeName.matches("(" + SUPPORTED_MEDIA + ")"), "Unsupported media format.");
+            Assert.isTrue(typeName.matches("(" + SUPPORTED_MEDIA + ")"), "不支持的媒体格式");
 
             MediaInfo mediaInfo = new MediaInfo();
             mediaInfo.setMimeType(fileType.getMimeType());
@@ -202,18 +209,18 @@ public class LibraryService {
             photo.setCreationTime(FileUtils.getCreationTime(file));
             photo.setModifiedTime(file.lastModified());
 
-            // Parse metadata to photo
+            // 将元数据解析为照片索引
             Metadata metadata = ImageMetadataReader.readMetadata(bufferedStream, photo.getLength(), fileType);
             for (Directory dir : metadata.getDirectories()) {
-                // Generic exif
+                // 通用EXIF
                 if (dir instanceof ExifIFD0Directory) {
-                    // Shooting time
+                    // 拍摄时间
                     Date date = dir.getDate(ExifDirectoryBase.TAG_DATETIME);
                     if (date != null) {
                         photo.setShootingTime(date.getTime());
                     }
 
-                    // Camera brand and model
+                    // 相机制造商和型号
                     String make = dir.getString(ExifDirectoryBase.TAG_MAKE);
                     if (make != null) {
                         CameraInfo cameraInfo = photo.getCameraInfo();
@@ -223,7 +230,7 @@ public class LibraryService {
                     }
                 }
                 else if (dir instanceof ExifSubIFDDirectory) {
-                    // Shooting parameters
+                    // 拍摄参数
                     String apertureValue = dir.getString(ExifSubIFDDirectory.TAG_FNUMBER);
                     if (apertureValue != null) {
                         photo.getCameraInfo().setApertureValue(apertureValue);
@@ -245,7 +252,7 @@ public class LibraryService {
                         photo.getCameraInfo().setFocalLength(focalLength);
                     }
 
-                    // Heif image dimension is here, not in HeifDirectory
+                    // HEIF图片尺寸（不在HeifDirectory里）
                     Integer width = dir.getInteger(ExifSubIFDDirectory.TAG_EXIF_IMAGE_WIDTH);
                     Integer height = dir.getInteger(ExifSubIFDDirectory.TAG_EXIF_IMAGE_HEIGHT);
                     if (width != null && height != null) {
@@ -299,8 +306,6 @@ public class LibraryService {
                     }
                 }
             }
-
-            // TODO 生成缩略图
             return photo;
         } finally {
             bufferedStream.close();
@@ -308,7 +313,7 @@ public class LibraryService {
         }
     }
 
-    // Extract GEO location
+    // 提取GPS元数据
     private GeoLocation extractGeoLocation(GpsDirectory gps) {
         GeoLocation geoLocation = null;
         com.drew.lang.GeoLocation geo = gps.getGeoLocation();
