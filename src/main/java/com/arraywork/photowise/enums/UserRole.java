@@ -16,11 +16,10 @@ import lombok.Getter;
 @Getter
 public enum UserRole implements SecurityRole, GenericEnum<Integer> {
 
-    GUEST(1, "访客"),
-    ADMIN(9, "管理员");
+    GUEST(1),
+    ADMIN(9);
 
     private final Integer code;
-    private final String label;
 
     public static class Converter extends GenericEnumConverter<UserRole, Integer> {}
 

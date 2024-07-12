@@ -1,6 +1,7 @@
 package com.arraywork.photowise.enums;
 
 import com.arraywork.springforce.databind.GenericEnum;
+import com.arraywork.springforce.databind.GenericEnumConverter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,10 +16,11 @@ import lombok.Getter;
 @Getter
 public enum ViewMode implements GenericEnum<Integer> {
 
-    BRICK(1, "brick"),
-    GRID(2, "grid");
+    BRICK(1),
+    GRID(2);
 
     private final Integer code;
-    private final String label;
+
+    public static class Converter extends GenericEnumConverter<ViewMode, Integer> {}
 
 }
