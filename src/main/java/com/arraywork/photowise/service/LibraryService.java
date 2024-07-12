@@ -201,23 +201,22 @@ public class LibraryService {
 
             MediaInfo mediaInfo = new MediaInfo();
             mediaInfo.setMimeType(fileType.getMimeType());
+            mediaInfo.setLength(file.length());
 
             PhotoIndex photo = new PhotoIndex();
             photo.setMediaInfo(mediaInfo);
             photo.setPath(file.getPath().substring(library.length()));
-            photo.setLength(file.length());
-            photo.setCreationTime(FileUtils.getCreationTime(file));
             photo.setModifiedTime(file.lastModified());
 
             // 将元数据解析为照片索引
-            Metadata metadata = ImageMetadataReader.readMetadata(bufferedStream, photo.getLength(), fileType);
+            Metadata metadata = ImageMetadataReader.readMetadata(bufferedStream, file.length(), fileType);
             for (Directory dir : metadata.getDirectories()) {
                 // 通用EXIF
                 if (dir instanceof ExifIFD0Directory) {
                     // 拍摄时间
                     Date date = dir.getDate(ExifDirectoryBase.TAG_DATETIME);
                     if (date != null) {
-                        photo.setShootingTime(date.getTime());
+                        photo.setOriginalTime(date.getTime());
                     }
 
                     // 相机制造商和型号
@@ -306,6 +305,14 @@ public class LibraryService {
                     }
                 }
             }
+
+            if (photo.getOriginalTime() > 0) {
+                photo.setPhotoTime(photo.getOriginalTime());
+            }
+            else {
+                photo.setPhotoTime(FileUtils.getCreationTime(file));
+            }
+
             return photo;
         } finally {
             bufferedStream.close();
