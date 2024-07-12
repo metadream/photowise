@@ -10,7 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.arraywork.photowise.entity.Photo;
+import com.arraywork.photowise.entity.PhotoIndex;
 import com.arraywork.photowise.repo.PhotoRepo;
 import com.arraywork.springforce.util.Pagination;
 
@@ -32,33 +32,33 @@ public class PhotoService {
     private int pagesize;
 
     // 查询分页元数据
-    public Pagination<Photo> getPhotos(String page, Photo condition) {
+    public Pagination<PhotoIndex> getPhotos(String page, PhotoIndex condition) {
         Sort sort = Sort.by("modifiedTime").descending();
         page = page != null && page.matches("\\d+") ? page : "1";
         Pageable pageable = PageRequest.of(Integer.parseInt(page) - 1, pagesize, sort);
-        Page<Photo> pageInfo = photoRepo.findAll(pageable);
-        return new Pagination<Photo>(pageInfo);
+        Page<PhotoIndex> pageInfo = photoRepo.findAll(pageable);
+        return new Pagination<PhotoIndex>(pageInfo);
     }
 
     // 查询所有照片索引
-    public List<Photo> getAllPhotos() {
+    public List<PhotoIndex> getAllPhotos() {
         return photoRepo.findAll();
     }
 
     // Get photo by file path
-    public Photo getPhoto(String path) {
+    public PhotoIndex getPhoto(String path) {
         return photoRepo.findByPath(path);
     }
 
     // Save photo
     @Transactional(rollbackFor = Exception.class)
-    public Photo save(Photo photo) {
+    public PhotoIndex save(PhotoIndex photo) {
         return photoRepo.save(photo);
     }
 
     // Delete photo
     @Transactional(rollbackFor = Exception.class)
-    public void delete(Photo photo) {
+    public void delete(PhotoIndex photo) {
         photoRepo.delete(photo);
     }
 

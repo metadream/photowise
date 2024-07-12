@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class ScanningOption {
 
-    private boolean fullScan;
-    private boolean cleanIndexes;
+    private boolean isFullScan;
+    private boolean isCleanIndexes;
 
 }

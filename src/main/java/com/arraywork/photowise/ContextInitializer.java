@@ -21,7 +21,7 @@ public class ContextInitializer implements ServletContextListener {
     @Resource
     private Environment env;
 
-    // Create the storage directory required (and it must before JPA startup)
+    // Create the required storage directory (must be before JPA starts)
     // Auto-started order: Static Block -> ServletContextListener -> @PostConstruct
     // However, static blocks cannot get the configuration parameters
     @Override

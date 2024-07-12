@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import com.arraywork.photowise.entity.CameraInfo;
 import com.arraywork.photowise.entity.GeoLocation;
 import com.arraywork.photowise.entity.MediaInfo;
-import com.arraywork.photowise.entity.Photo;
+import com.arraywork.photowise.entity.PhotoIndex;
 import com.arraywork.photowise.entity.ScanningLog;
 import com.arraywork.photowise.entity.ScanningOption;
 import com.arraywork.photowise.enums.LogLevel;
@@ -102,7 +102,7 @@ public class LibraryService {
             scanningProgress = log.getProgress();
 
             // Find photo data based on path relative to photo library
-            Photo _photo = photoService.getPhoto(filePath);
+            PhotoIndex _photo = photoService.getPhoto(filePath);
             // Compare the file size and time
             if (!option.isFullScan() && _photo != null && _photo.getLength() == file.length()
                 && _photo.getModifiedTime() == file.lastModified()) {
@@ -115,7 +115,7 @@ public class LibraryService {
 
             // Extract and save metadata
             try {
-                Photo photo = extractMetadata(file);
+                PhotoIndex photo = extractMetadata(file);
                 OpenCv.resizeImage(file.getPath(), Path.of(thumbnails, photo.getPath()).toString(), 480);
 
                 if (_photo != null) {
@@ -140,6 +140,14 @@ public class LibraryService {
         scanningProgress = -1;
     }
 
+    public int getProgress() {
+        return scanningProgress;
+    }
+
+    public List<ScanningLog> getLogs() {
+        return scanningLogs;
+    }
+
     // Abort scan async thread
     public void abortScan() {
         scanningProgress = -1;
@@ -152,11 +160,11 @@ public class LibraryService {
 
     // Clean indexes with invalid file path
     private void cleanIndexes() {
-        List<Photo> photos = photoService.getAllPhotos();
+        List<PhotoIndex> photos = photoService.getAllPhotos();
         int total = photos.size();
         int count = 0;
 
-        for (Photo photo : photos) {
+        for (PhotoIndex photo : photos) {
             if (scanningProgress == -1) return;
 
             Path path = Path.of(library, photo.getPath());
@@ -171,7 +179,7 @@ public class LibraryService {
     }
 
     // Extract metadata
-    private Photo extractMetadata(File file) throws ImageProcessingException, IOException, MetadataException {
+    private PhotoIndex extractMetadata(File file) throws ImageProcessingException, IOException, MetadataException {
         InputStream inputStream = null;
         BufferedInputStream bufferedStream = null;
 
@@ -187,7 +195,7 @@ public class LibraryService {
             MediaInfo mediaInfo = new MediaInfo();
             mediaInfo.setMimeType(fileType.getMimeType());
 
-            Photo photo = new Photo();
+            PhotoIndex photo = new PhotoIndex();
             photo.setMediaInfo(mediaInfo);
             photo.setPath(file.getPath().substring(library.length()));
             photo.setLength(file.length());

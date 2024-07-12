@@ -3,7 +3,7 @@ package com.arraywork.photowise.repo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import com.arraywork.photowise.entity.Photo;
+import com.arraywork.photowise.entity.PhotoIndex;
 
 /**
  * Photo Repository
@@ -11,8 +11,8 @@ import com.arraywork.photowise.entity.Photo;
  * @copyright ArrayWork Inc.
  * @since 2024/07/01
  */
-public interface PhotoRepo extends JpaRepository<Photo, String>, JpaSpecificationExecutor<Photo> {
+public interface PhotoRepo extends JpaRepository<PhotoIndex, String>, JpaSpecificationExecutor<PhotoIndex> {
 
-    Photo findByPath(String path);
+    PhotoIndex findByPath(String path);
 
 }
