@@ -20,14 +20,28 @@ export function initPhotoSwipe() {
     });
 
     lightbox.on('uiRegister', function() {
-        // 添加缩放百分比指示
+        // 添加图片数据指示
         lightbox.pswp.ui.registerElement({
-            name: 'zoom-level-indicator',
+            name: 'image-indicator',
             order: 5,
+            html: '<span id="resolution"></span><span id="length"></span><span id="zoom-level"></span>',
+            
             onInit: (el, pswp) => {
+                const $resolution = el.querySelector('#resolution');
+                const $length = el.querySelector('#length');
+                const $zoomLevel = el.querySelector('#zoom-level');
+                
+                // 分辨率和大小
+                pswp.on('change', () => {
+                    const { width, height, element } = pswp.currSlide.data;
+                    const { length } = element.dataset;
+                    $resolution.innerText = width + '×' + height;
+                    $length.innerText = Thyme.util.formatBytes(length);
+                });
+                // 缩放百分比
                 pswp.on('zoomPanUpdate', (e) => {
                     if (e.slide === pswp.currSlide) {
-                        el.innerText = Math.round(pswp.currSlide.currZoomLevel * 100) + '%';
+                        $zoomLevel.innerText = Math.round(pswp.currSlide.currZoomLevel * 100) + '%';
                     }
                 });
             }
@@ -46,12 +60,13 @@ export function initPhotoSwipe() {
                     alert('1111');
                 }
                 pswp.on('change', () => {
-                    console.log(pswp.currSlide.data.element.dataset.photoId);
+                    const { photoId } = pswp.currSlide.data.element.dataset;
+                    console.log("photoId=",photoId);
                 });
             }
         });
     });
-
+    
     // 添加视频插件
     new PhotoSwipeVideo(lightbox, {});
     lightbox.init();

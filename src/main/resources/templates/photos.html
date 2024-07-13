@@ -7,6 +7,7 @@
        th:style="|width:${brickSize*aspectRatio}px;flex-grow:${brickSize*aspectRatio}|"
        th:href="|/original${photo.path}|"
        th:data-photo-id="${photo.id}"
+       th:data-length="${photo.mediaInfo.length}"
        th:data-pswp-width="${width}"
        th:data-pswp-height="${height}"
        th:data-pswp-type="${photo.mediaInfo.type}"
