@@ -67,11 +67,6 @@ header .logos .icon {
   height: 32px;
 }
 
-header .logos .text {
-  height: 18px;
-  margin-left: 10px;
-}
-
 header .searchbar {
   flex: 1;
   display: flex;
@@ -136,7 +131,7 @@ nav > a {
 }
 
 nav > a .icon {
-  margin-right: 10px;
+  margin-right: 15px;
 }
 
 nav > a:hover {
@@ -217,21 +212,23 @@ img {
   display: block;
 }
 
-img.icon, svg.icon {
-  width: 24px;
-  height: 24px;
-}
-
-img.tinyicon {
-  width: 16px;
-  height: 16px;
+svg.logo {
+  width: 142px;
+  height: 18px;
 }
 
 svg.icon {
+  width: 24px;
+  height: 24px;
   fill: transparent;
   stroke: var(--fontColor);
   stroke-width: 1.5;
   transition: .3s;
+}
+
+svg.icon.tiny {
+  width: 18px;
+  height: 18px;
 }
 
 svg.icon.fill {
@@ -246,6 +243,16 @@ svg.icon.favored {
   width: 21px;
   height: 21px;
   margin: 7px;
+}
+
+svg.icon.cross {
+  fill: var(--fontColor);
+  stroke: unset;
+}
+
+svg.icon.info {
+  fill: #fff;
+  stroke: unset;
 }
 
 .lazyload, .lazyloading {

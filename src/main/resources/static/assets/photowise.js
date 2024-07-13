@@ -53,7 +53,7 @@ export function initPhotoSwipe() {
             order: 9,
             isButton: true,
             tagName: 'button',
-            html: '<img class="icon" src="/icons/info.svg"/>',
+            html: '<svg class="icon info"><use xlink:href="/icons/icons.svg#info"></use></svg>',
 
             onInit: (el, pswp) => {
                 el.onclick = () => {
