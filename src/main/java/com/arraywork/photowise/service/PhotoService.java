@@ -62,4 +62,16 @@ public class PhotoService {
         photoRepo.delete(photo);
     }
 
+    // 批量切换收藏
+    @Transactional(rollbackFor = Exception.class)
+    public int favorite(String[] photoIds, boolean favored) {
+        int result = 0;
+        for (String id : photoIds) {
+            PhotoIndex photo = photoRepo.getReferenceById(id);
+            photo.setFavored(favored);
+            result++;
+        }
+        return result;
+    }
+
 }

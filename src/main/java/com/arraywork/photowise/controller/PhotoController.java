@@ -1,9 +1,14 @@
 package com.arraywork.photowise.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.arraywork.photowise.service.PhotoService;
 import com.arraywork.photowise.service.SettingService;
@@ -89,6 +94,14 @@ public class PhotoController {
     @GetMapping("/trash")
     public String trash(Model model) {
         return "/trash";
+    }
+
+    @PutMapping("/favorite")
+    @ResponseBody
+    public int favorite(@RequestBody Map<String, Object> map) {
+        String[] photoIds = ((String) map.get("photoIds")).split(",");
+        boolean favored = (Boolean) map.get("favored");
+        return photoService.favorite(photoIds, favored);
     }
 
 }

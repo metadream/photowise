@@ -5,7 +5,6 @@
 :root {
   --primaryColor: #79b458;
   --undertoneColor: #e7f2c3;
-  --contrastColor: #c44840;
   --infoColor: #007bff;
   --warningColor: #ff8500;
   --errorColor: #fa5151;
@@ -13,8 +12,8 @@
   --lineColor: #ddd;
   --bgColor: #f6f6f6;
   --fontFamily: Monda;
-  --mainTop: 60px;
-  --mainLeft: 240px;
+  --headerHeight: 60px;
+  --asideWidth: 240px;
 }
 
 @font-face {
@@ -44,10 +43,13 @@ body {
 
 header {
   position: fixed;
-  width: 100%;
-  height: var(--mainTop);
+  left: 0;
+  right: 0;
+  top: 0;
+  height: var(--headerHeight);
   background: var(--bgColor);
   display: flex;
+  justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--primaryColor);
 }
@@ -55,7 +57,7 @@ header {
 header .logos {
   display: flex;
   align-items: center;
-  width: var(--mainLeft);
+  width: var(--asideWidth);
   height: 100%;
   padding: 0 25px;
 }
@@ -109,8 +111,8 @@ header .toolbar > a:hover {
 
 aside {
   position: fixed;
-  width: var(--mainLeft);
-  top: var(--mainTop);
+  width: var(--asideWidth);
+  top: var(--headerHeight);
   bottom: 0;
   display: flex;
   flex-direction: column;
@@ -175,8 +177,8 @@ footer .copyright {
 
 main {
   position: fixed;
-  left: var(--mainLeft);
-  top: var(--mainTop);
+  left: var(--asideWidth);
+  top: var(--headerHeight);
   bottom: 0;
   right: 0;
   padding: 30px;
@@ -215,7 +217,7 @@ img {
   display: block;
 }
 
-img.icon {
+img.icon, svg.icon {
   width: 24px;
   height: 24px;
 }
@@ -223,6 +225,27 @@ img.icon {
 img.tinyicon {
   width: 16px;
   height: 16px;
+}
+
+svg.icon {
+  fill: transparent;
+  stroke: var(--fontColor);
+  stroke-width: 1.5;
+  transition: .3s;
+}
+
+svg.icon.fill {
+  fill: var(--fontColor);
+}
+
+svg.icon.favored {
+  position: absolute;
+  fill: #fff;
+  stroke: #fff;
+  bottom: 1px;
+  width: 21px;
+  height: 21px;
+  margin: 7px;
 }
 
 .lazyload, .lazyloading {
@@ -247,7 +270,7 @@ img.tinyicon {
 }
 
 .progress > div {
-  background: var(--contrastColor);
+  background: var(--errorColor);
   width: 0;
   height: 100%;
   transition: .3s;
@@ -367,6 +390,18 @@ img.tinyicon {
 
 .pswp__top-bar {
   background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), transparent);
+}
+
+.control-bar {
+  border-bottom: 1px solid var(--infoColor);
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: .3s;
+}
+
+.control-bar.active {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .pswp__image-indicator {

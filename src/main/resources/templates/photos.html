@@ -1,5 +1,21 @@
 <h3>2024-03</h3>
 
+<header class="control-bar">
+  <div class="toolbar">
+    <a onclick="uncheckPhotos()"><img class="icon" src="/icons/cross.svg"/></a>
+    <span>选择了 <b id="totalChecked"></b> 张照片</span>
+  </div>
+
+  <div class="toolbar">
+    <a title="收藏" onclick="favorite()">
+      <svg id="favor-icon" class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M13.7309 3.51014L15.4909 7.03014C15.7309 7.52014 16.3709 7.99014 16.9109 8.08014L20.1009 8.61014C22.1409 8.95014 22.6209 10.4301 21.1509 11.8901L18.6709 14.3701C18.2509 14.7901 18.0209 15.6001 18.1509 16.1801L18.8609 19.2501C19.4209 21.6801 18.1309 22.6201 15.9809 21.3501L12.9909 19.5801C12.4509 19.2601 11.5609 19.2601 11.0109 19.5801L8.02089 21.3501C5.88089 22.6201 4.58089 21.6701 5.14089 19.2501L5.85089 16.1801C5.98089 15.6001 5.75089 14.7901 5.33089 14.3701L2.85089 11.8901C1.39089 10.4301 1.86089 8.95014 3.90089 8.61014L7.09089 8.08014C7.62089 7.99014 8.26089 7.52014 8.50089 7.03014L10.2609 3.51014C11.2209 1.60014 12.7809 1.60014 13.7309 3.51014Z"/>
+      </svg>
+    </a>
+    <a title="删除"><img class="icon" src="/icons/trash.svg"/></a>
+  </div>
+</header>
+
 <section>
   <div class="photo-wall">
     <a th:each="photo: ${photos}"
@@ -12,9 +28,12 @@
        th:data-pswp-height="${height}"
        th:data-pswp-type="${photo.mediaInfo.type}"
        data-cropped="true">
-       <input type="checkbox"/>
+       <input type="checkbox" name="photoIds" th:value="${photo.id}" onchange="checkPhotos()"/>
        <img th:data-src="|/thumbnail${photo.path}|" class="lazyload"/>
        <i th:style="|padding-bottom:${100*1/aspectRatio}%|"></i>
+       <svg th:if="${photo.favored}" class="icon favored" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M13.7309 3.51014L15.4909 7.03014C15.7309 7.52014 16.3709 7.99014 16.9109 8.08014L20.1009 8.61014C22.1409 8.95014 22.6209 10.4301 21.1509 11.8901L18.6709 14.3701C18.2509 14.7901 18.0209 15.6001 18.1509 16.1801L18.8609 19.2501C19.4209 21.6801 18.1309 22.6201 15.9809 21.3501L12.9909 19.5801C12.4509 19.2601 11.5609 19.2601 11.0109 19.5801L8.02089 21.3501C5.88089 22.6201 4.58089 21.6701 5.14089 19.2501L5.85089 16.1801C5.98089 15.6001 5.75089 14.7901 5.33089 14.3701L2.85089 11.8901C1.39089 10.4301 1.86089 8.95014 3.90089 8.61014L7.09089 8.08014C7.62089 7.99014 8.26089 7.52014 8.50089 7.03014L10.2609 3.51014C11.2209 1.60014 12.7809 1.60014 13.7309 3.51014Z"/>
+      </svg>
     </a>
   </div>
 </section>
@@ -22,4 +41,54 @@
 <script type="module">
 import { initPhotoSwipe } from '/assets/photowise.js';
 initPhotoSwipe();
+
+const $controlBar = document.querySelector('.control-bar');
+const $favorIcon = $controlBar.querySelector('#favor-icon');
+const $totalChecked = document.querySelector('#totalChecked');
+const $photoWall = document.querySelector('.photo-wall');
+
+window.checkPhotos = function() {
+  const $checkedBoxes = $photoWall.querySelectorAll('[type="checkbox"]:checked');
+  $checkedBoxes.length ? $controlBar.addClass('active') : $controlBar.removeClass('active');
+  $totalChecked.innerText = $checkedBoxes.length;
+
+  for (const $cb of $checkedBoxes) {
+    if ($cb.parentNode.querySelector('.favored')) {
+      $favorIcon.addClass('fill');
+    } else {
+      $favorIcon.removeClass('fill');
+      break;
+    }
+  }
+}
+
+window.uncheckPhotos = function() {
+  const $checkedBox = $photoWall.querySelectorAll('[type="checkbox"]:checked');
+  $checkedBox.forEach(v => v.checked = false);
+  $controlBar.removeClass('active');
+}
+
+window.favorite = function() {
+  const data = Thyme.form.getJsonObject($photoWall);
+  data.favored = !$favorIcon.classList.contains('fill');
+  
+  Thyme.http.put('/favorite', data).then(() => {
+    $favorIcon.classList.toggle('fill');
+
+    const $checkedBox = $photoWall.querySelectorAll('[type="checkbox"]:checked');
+    for (const $cb of $checkedBox) {
+      const $photoItem = $cb.parentNode;
+      const $icon = $photoItem.querySelector('.favored');
+        
+      if (data.favored && !$icon) {
+        $photoItem.append(Thyme.util.createElement(`
+          <svg class="icon favored" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13.7309 3.51014L15.4909 7.03014C15.7309 7.52014 16.3709 7.99014 16.9109 8.08014L20.1009 8.61014C22.1409 8.95014 22.6209 10.4301 21.1509 11.8901L18.6709 14.3701C18.2509 14.7901 18.0209 15.6001 18.1509 16.1801L18.8609 19.2501C19.4209 21.6801 18.1309 22.6201 15.9809 21.3501L12.9909 19.5801C12.4509 19.2601 11.5609 19.2601 11.0109 19.5801L8.02089 21.3501C5.88089 22.6201 4.58089 21.6701 5.14089 19.2501L5.85089 16.1801C5.98089 15.6001 5.75089 14.7901 5.33089 14.3701L2.85089 11.8901C1.39089 10.4301 1.86089 8.95014 3.90089 8.61014L7.09089 8.08014C7.62089 7.99014 8.26089 7.52014 8.50089 7.03014L10.2609 3.51014C11.2209 1.60014 12.7809 1.60014 13.7309 3.51014Z"/>
+          </svg>`));
+      } else if (!data.favored && $icon) {
+        $icon.remove();
+      }
+    }
+  });
+}
 </script>
