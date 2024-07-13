@@ -22,7 +22,7 @@
     <span>([[${log.count}]]/[[${log.total}]])&#160;</span>
     <span th:class="${log.level}">[[${log.level}]]&#160;</span>
     <span>[[${log.path}]]&#160;</span>
-    <span class="footnote">[[${log.message}]]</span>;
+    <span class="footnote">[[${log.message}]]</span>
   </div>
 </section>
 
@@ -81,7 +81,7 @@ function render(log) {
 
   const html = `
     <span>(${count}/${total})&#160;</span>
-    <span class="${level}">${level}&#160;</span>
+    <span class="${level}">${log.level.label}&#160;</span>
     <span>${log.path || ''}&#160;</span>
     <span class="footnote">${log.message || ''}</span>`;
   $progress.style.width = log.progress + '%';
@@ -93,6 +93,7 @@ function render(log) {
     $logs.insertBefore($log, $logs.firstChild);
 
     if (level == 'FINISHED') {
+      $abortBtn.disabled = true;
       $scanBtn.disabled = false;
       $scanBtn.innerHTML = '开始扫描';
     }

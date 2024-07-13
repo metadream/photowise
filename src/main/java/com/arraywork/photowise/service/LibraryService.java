@@ -21,6 +21,7 @@ import com.arraywork.photowise.entity.PhotoIndex;
 import com.arraywork.photowise.entity.ScanningLog;
 import com.arraywork.photowise.entity.ScanningOption;
 import com.arraywork.photowise.enums.LogLevel;
+import com.arraywork.photowise.enums.MediaType;
 import com.arraywork.springforce.channel.ChannelService;
 import com.arraywork.springforce.util.Assert;
 import com.arraywork.springforce.util.FileUtils;
@@ -111,11 +112,6 @@ public class LibraryService {
             if (!option.isFullScan() && _photo != null
                 && _photo.getMediaInfo().getLength() == file.length()
                 && _photo.getModifiedTime() == file.lastModified()) {
-
-                log.setLevel(LogLevel.SKIPPED);
-                log.setMessage("相同的文件大小和更新时间");
-                channelService.broadcast("library", log);
-                scanningLogs.add(0, log);
                 continue;
             }
 
@@ -145,7 +141,7 @@ public class LibraryService {
 
         // 完成扫描
         ScanningLog log = new ScanningLog(LogLevel.FINISHED, total, count);
-        log.setMessage("本次扫描发现 " + total + " 个文件，成功创建 " + success + " 个索引，"
+        log.setMessage("发现 " + total + " 个文件，成功创建 " + success + " 个索引，"
             + "共耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
         channelService.broadcast("library", log);
         scanningLogs.add(0, log);
@@ -170,9 +166,10 @@ public class LibraryService {
 
     // 清理无效索引
     private void cleanIndexes() {
+        long startTime = System.currentTimeMillis();
         List<PhotoIndex> photos = photoService.getAllPhotos();
         int total = photos.size();
-        int count = 0;
+        int success = 0;
 
         for (PhotoIndex photo : photos) {
             if (scanningProgress == -1) return;
@@ -184,11 +181,18 @@ public class LibraryService {
                 thumbnail.delete();
                 photoService.delete(photo);
 
-                ScanningLog log = new ScanningLog(LogLevel.CLEAN, total, ++count);
+                ScanningLog log = new ScanningLog(LogLevel.CLEAN, total, ++success);
                 log.setPath(photo.getPath());
                 channelService.broadcast("library", log);
             }
         }
+
+        // 完成清理
+        ScanningLog log = new ScanningLog(LogLevel.FINISHED, total, success);
+        log.setMessage("发现 " + total + " 个索引，清理 " + success + " 个，"
+            + "共耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
+        channelService.broadcast("library", log);
+        scanningLogs.add(0, log);
     }
 
     // 提取元数据
@@ -207,7 +211,9 @@ public class LibraryService {
             Assert.isTrue(typeName.matches("(" + SUPPORTED_MEDIA + ")"), "不支持的媒体格式");
 
             MediaInfo mediaInfo = new MediaInfo();
-            mediaInfo.setMimeType(fileType.getMimeType());
+            String mimeType = fileType.getMimeType();
+            String type = mimeType.substring(0, mimeType.indexOf("/"));
+            mediaInfo.setType(MediaType.nameOf(type));
             mediaInfo.setLength(file.length());
 
             PhotoIndex photo = new PhotoIndex();

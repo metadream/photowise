@@ -9,7 +9,7 @@
        th:data-id="${photo.id}"
        th:data-pswp-width="${width}"
        th:data-pswp-height="${height}"
-       th:data-pswp-type="${photo.mediaInfo.mimeType.startsWith('video/')?'video':'image'}"
+       th:data-pswp-type="${photo.mediaInfo.type}"
        data-cropped="true">
        <input type="checkbox"/>
        <img th:data-src="|/thumbnail${photo.path}|" class="lazyload"/>

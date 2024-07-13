@@ -7,6 +7,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.arraywork.photowise.enums.MediaType;
 import com.arraywork.springforce.id.NanoIdGeneration;
 
 import io.hypersistence.utils.hibernate.type.json.JsonStringType;
@@ -108,7 +109,7 @@ public class PhotoIndex {
     }
 
     public boolean isVideo() {
-        return mediaInfo.getMimeType().startsWith("video/");
+        return mediaInfo.getType() == MediaType.video;
     }
 
 }
