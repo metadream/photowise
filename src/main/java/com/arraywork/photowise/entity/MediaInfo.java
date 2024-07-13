@@ -16,11 +16,5 @@ public class MediaInfo {
     private int height;
     private long length;
     private long duration;
-    private double aspectRatio;
-
-    public double getAspectRatio() {
-        aspectRatio = 1.0 * width / height;
-        return aspectRatio;
-    }
 
 }

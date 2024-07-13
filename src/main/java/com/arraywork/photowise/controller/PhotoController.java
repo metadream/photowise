@@ -1,5 +1,6 @@
 package com.arraywork.photowise.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,11 +24,15 @@ public class PhotoController {
     @Resource
     private PhotoService photoService;
 
+    @Value("${photowise.brick-size}")
+    private int brickSize;
+
     @SpaRoute
     @GetMapping("/timeline")
     public String timeline(Model model) {
         model.addAttribute("setting", settingService.getSetting());
         model.addAttribute("pagination", photoService.getPhotos(null, null));
+        model.addAttribute("brickSize", brickSize);
         return "timeline";
     }
 

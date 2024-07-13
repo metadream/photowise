@@ -3,14 +3,16 @@
 <section>
   <div th:class="|photo-wall ${viewMode}|">
     <a th:each="photo: ${pagination.content}"
+       th:with="width=${photo.mediaInfo.width},height=${photo.mediaInfo.height},aspectRatio=${1.0*width/height}"
+       th:style="|width:${brickSize*aspectRatio}px;flex-grow:${brickSize*aspectRatio}|"
        th:href="|/original${photo.path}|"
-       th:style="|aspect-ratio:${photo.mediaInfo.aspectRatio}|"
-       th:data-pswp-width="${photo.mediaInfo.width}"
-       th:data-pswp-height="${photo.mediaInfo.height}"
+       th:data-pswp-width="${width}"
+       th:data-pswp-height="${height}"
        th:data-pswp-type="${photo.mediaInfo.mimeType.startsWith('video/')?'video':'image'}"
        data-cropped="true">
        <input type="checkbox"/>
        <img th:data-src="|/thumbnail${photo.path}|" class="lazyload"/>
+       <i th:style="|padding-bottom:${100*1/aspectRatio}%|"></i>
     </a>
   </div>
 </section>

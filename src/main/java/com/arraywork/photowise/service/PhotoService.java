@@ -28,14 +28,14 @@ public class PhotoService {
     @Resource
     private PhotoRepo photoRepo;
 
-    @Value("${photowise.pagesize}")
-    private int pagesize;
+    @Value("${photowise.page-size}")
+    private int pageSize;
 
     // 查询分页元数据
     public Pagination<PhotoIndex> getPhotos(String page, PhotoIndex condition) {
         Sort sort = Sort.by("modifiedTime").descending();
         page = page != null && page.matches("\\d+") ? page : "1";
-        Pageable pageable = PageRequest.of(Integer.parseInt(page) - 1, pagesize, sort);
+        Pageable pageable = PageRequest.of(Integer.parseInt(page) - 1, pageSize, sort);
         Page<PhotoIndex> pageInfo = photoRepo.findAll(pageable);
         return new Pagination<PhotoIndex>(pageInfo);
     }

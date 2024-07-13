@@ -293,16 +293,25 @@ img.tinyicon {
   margin: -5px;
 }
 
+.photo-wall::after {
+  content: '';
+  flex-grow: 999999999;
+}
+
 .photo-wall>a {
   position: relative;
   background: var(--bgColor);
-  height: 150px;
   margin: 5px;
 }
 
+.photo-wall i {
+  display: block;
+}
+
 .photo-wall img {
-  height: 100%;
-  object-fit: cover;
+  position: absolute;
+  top: 0;
+  width: 100%;
   transition: .3s;
 }
 

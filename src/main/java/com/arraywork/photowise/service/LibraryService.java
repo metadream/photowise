@@ -71,8 +71,8 @@ public class LibraryService {
     @Value("${photowise.thumbnails}")
     private String thumbnails;
 
-    @Value("${photowise.thumbsize}")
-    private int thumbsize;
+    @Value("${photowise.thumb-size}")
+    private int thumbSize;
 
     // 异步扫描照片库
     @Async
@@ -128,8 +128,8 @@ public class LibraryService {
                 }
                 // 2. 生成缩略图
                 String output = Path.of(thumbnails, photo.getPath()).toString() + ".jpg";
-                if (photo.isVideo()) OpenCv.captureVideo(filePath, output, thumbsize);
-                else OpenCv.resizeImage(filePath, output, thumbsize);
+                if (photo.isVideo()) OpenCv.captureVideo(filePath, output, thumbSize);
+                else OpenCv.resizeImage(filePath, output, thumbSize);
 
                 // 3. 保存索引
                 photoService.save(photo);
