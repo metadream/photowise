@@ -5,6 +5,7 @@
 - 地图添加点：leaflet
 - 国际化
 - 时间轴
+- 预览图显示尺寸和大小
 
 ```
 @GetMapping("/test/video/stream")

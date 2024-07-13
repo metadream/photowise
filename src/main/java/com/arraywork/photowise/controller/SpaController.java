@@ -22,7 +22,7 @@ public class SpaController {
 
     @GetMapping("/")
     public String index(Model model) {
-        return "redirect:/timeline";
+        return "redirect:/photos";
     }
 
     // This method is controlled by SpaAspector

@@ -21,7 +21,6 @@ public class ScanningLog {
     private int total;
     private int count;
     private int progress;
-    private int success;
     private long time = System.currentTimeMillis();
 
     public ScanningLog(LogLevel level, int total, int count) {

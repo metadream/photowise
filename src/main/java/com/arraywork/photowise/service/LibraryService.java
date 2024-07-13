@@ -94,8 +94,7 @@ public class LibraryService {
         List<File> files = new ArrayList<>();
         FileUtils.walk(lib, files);
         int total = files.size();
-        int count = 0;
-        int success = 0;
+        int count = 0, success = 0;
 
         // 遍历文件
         for (File file : files) {
@@ -129,7 +128,7 @@ public class LibraryService {
 
                 // 3. 保存索引
                 photoService.save(photo);
-                log.setSuccess(++success);
+                success++;
             } catch (Exception e) {
                 log.setLevel(LogLevel.ERROR);
                 log.setMessage(e.getMessage());
@@ -140,7 +139,7 @@ public class LibraryService {
         }
 
         // 完成扫描
-        ScanningLog log = new ScanningLog(LogLevel.FINISHED, total, count);
+        ScanningLog log = new ScanningLog(LogLevel.FINISHED, total, success);
         log.setMessage("发现 " + total + " 个文件，成功创建 " + success + " 个索引，"
             + "共耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
         channelService.broadcast("library", log);
@@ -169,10 +168,11 @@ public class LibraryService {
         long startTime = System.currentTimeMillis();
         List<PhotoIndex> photos = photoService.getAllPhotos();
         int total = photos.size();
-        int success = 0;
+        int count = 0, success = 0;
 
         for (PhotoIndex photo : photos) {
             if (scanningProgress == -1) return;
+            count++;
 
             // 删除文件路径不存在的索引和缩略图
             Path path = Path.of(library, photo.getPath());
@@ -181,9 +181,11 @@ public class LibraryService {
                 thumbnail.delete();
                 photoService.delete(photo);
 
-                ScanningLog log = new ScanningLog(LogLevel.CLEAN, total, ++success);
+                ScanningLog log = new ScanningLog(LogLevel.CLEAN, total, count);
                 log.setPath(photo.getPath());
                 channelService.broadcast("library", log);
+                scanningLogs.add(0, log);
+                success++;
             }
         }
 

@@ -2,7 +2,7 @@
 
 <section>
   <div class="photo-wall">
-    <a th:each="photo: ${pagination.content}"
+    <a th:each="photo: ${photos}"
        th:with="width=${photo.mediaInfo.width},height=${photo.mediaInfo.height},aspectRatio=${1.0*width/height}"
        th:style="|width:${brickSize*aspectRatio}px;flex-grow:${brickSize*aspectRatio}|"
        th:href="|/original${photo.path}|"

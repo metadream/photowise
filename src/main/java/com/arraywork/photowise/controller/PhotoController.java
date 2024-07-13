@@ -28,11 +28,17 @@ public class PhotoController {
     private int brickSize;
 
     @SpaRoute
-    @GetMapping("/timeline")
-    public String timeline(Model model) {
-        model.addAttribute("pagination", photoService.getPhotos(null, null));
+    @GetMapping("/photos")
+    public String photos(Model model) {
+        model.addAttribute("photos", photoService.getPhotos(null, null));
         model.addAttribute("brickSize", brickSize);
-        return "timeline";
+        return "photos";
+    }
+
+    @SpaRoute
+    @GetMapping("/videos")
+    public String videos(Model model) {
+        return "videos";
     }
 
     @SpaRoute
@@ -65,12 +71,6 @@ public class PhotoController {
     @GetMapping("/albums")
     public String albums(Model model) {
         return "albums";
-    }
-
-    @SpaRoute
-    @GetMapping("/videos")
-    public String videos(Model model) {
-        return "videos";
     }
 
     @SpaRoute

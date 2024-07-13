@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.arraywork.photowise.entity.PhotoIndex;
 import com.arraywork.photowise.repo.PhotoRepo;
-import com.arraywork.springforce.util.Pagination;
 
 import jakarta.annotation.Resource;
 
@@ -32,12 +31,13 @@ public class PhotoService {
     private int pageSize;
 
     // 查询分页元数据
-    public Pagination<PhotoIndex> getPhotos(String page, PhotoIndex condition) {
+    public List<PhotoIndex> getPhotos(String page, PhotoIndex condition) {
         Sort sort = Sort.by("modifiedTime").descending();
         page = page != null && page.matches("\\d+") ? page : "1";
         Pageable pageable = PageRequest.of(Integer.parseInt(page) - 1, pageSize, sort);
         Page<PhotoIndex> pageInfo = photoRepo.findAll(pageable);
-        return new Pagination<PhotoIndex>(pageInfo);
+        // return new Pagination<PhotoIndex>(pageInfo);
+        return photoRepo.findAll();
     }
 
     // 查询所有照片索引
