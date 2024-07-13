@@ -10,7 +10,7 @@ export function initPhotoSwipe() {
 
     // 初始化 PhotoSwipe 组件
     const lightbox = new PhotoSwipeLightbox({
-        pswpModule: () => import('/assets/photoswipe@5.4.4.js'),
+        pswpModule: () => import ('/assets/photoswipe@5.4.4.js'),
         gallery: '.photo-wall',
         children: 'a',
         mainClass: 'pswp-with-perma-preloader',
@@ -25,12 +25,12 @@ export function initPhotoSwipe() {
             name: 'image-indicator',
             order: 5,
             html: '<span id="resolution"></span><span id="length"></span><span id="zoom-level"></span>',
-            
+
             onInit: (el, pswp) => {
                 const $resolution = el.querySelector('#resolution');
                 const $length = el.querySelector('#length');
                 const $zoomLevel = el.querySelector('#zoom-level');
-                
+
                 // 分辨率和大小
                 pswp.on('change', () => {
                     const { width, height, element } = pswp.currSlide.data;
@@ -61,12 +61,12 @@ export function initPhotoSwipe() {
                 }
                 pswp.on('change', () => {
                     const { photoId } = pswp.currSlide.data.element.dataset;
-                    console.log("photoId=",photoId);
+                    console.log("photoId=", photoId);
                 });
             }
         });
     });
-    
+
     // 添加视频插件
     new PhotoSwipeVideo(lightbox, {});
     lightbox.init();
