@@ -361,3 +361,9 @@ img.tinyicon {
 .photo-wall.grid img {
   width: 100%;
 }
+
+.pswp__zoom-level-indicator {
+  display: flex;
+  align-items: center;
+  color: #fff;    
+}

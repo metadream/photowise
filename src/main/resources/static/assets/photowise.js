@@ -13,9 +13,25 @@ export function initPhotoSwipe() {
         pswpModule: () => import('/assets/photoswipe@5.4.4.js'),
         gallery: '.photo-wall',
         children: 'a',
+        mainClass: 'pswp-with-perma-preloader',
         loop: false,
         zoom: false,
         wheelToZoom: true,
+    });
+
+    // 添加缩放百分比指示
+    lightbox.on('uiRegister', function() {
+        lightbox.pswp.ui.registerElement({
+            name: 'zoom-level-indicator',
+            order: 9,
+            onInit: (el, pswp) => {
+                pswp.on('zoomPanUpdate', (e) => {
+                    if (e.slide === pswp.currSlide) {
+                        el.innerText = Math.round(pswp.currSlide.currZoomLevel * 100) + '%';
+                    }
+                });
+            }
+        });
     });
 
     // 添加视频插件
