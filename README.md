@@ -4,27 +4,28 @@
 - 用户管理：guest/public/只读权限、菜单setting与权限
 - 地图添加点：leaflet
 - 国际化
-- 时间线
+- 时间轴
 
-    @GetMapping("/test/video/stream")
-    public void streaming(HttpServletResponse response) throws IOException {
-        response.setHeader("Content-Type", "image/jpeg");
-        VideoCapture capture = new VideoCapture("./video.mp4");
+```
+@GetMapping("/test/video/stream")
+public void streaming(HttpServletResponse response) throws IOException {
+    response.setHeader("Content-Type", "image/jpeg");
+    VideoCapture capture = new VideoCapture("./video.mp4");
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG);
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.IMAGE_JPEG);
 
-        Mat mat = new Mat();
-        if (capture.read(mat)) {
-            MatOfByte buff = new MatOfByte();
-            Imgcodecs.imencode(".jpg", mat, buff);
-            byte[] bytes = buff.toArray();
+    Mat mat = new Mat();
+    if (capture.read(mat)) {
+        MatOfByte buff = new MatOfByte();
+        Imgcodecs.imencode(".jpg", mat, buff);
+        byte[] bytes = buff.toArray();
 
-            resourceHandler.copy(new ByteArrayInputStream(bytes), response.getOutputStream());
+        resourceHandler.copy(new ByteArrayInputStream(bytes), response.getOutputStream());
 
-        }
     }
-
+}
+```
 
 ## Dependencies
 
