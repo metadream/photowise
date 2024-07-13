@@ -20,7 +20,7 @@
   <div th:each="log: ${scanningLogs}">
     <span>[[${'['+#dates.format(log.time, 'yyyy-MM-dd HH:mm:ss')+']'}]]&#160;</span>
     <span>([[${log.count}]]/[[${log.total}]])&#160;</span>
-    <span th:class="${log.level}">[[${log.level}]]&#160;</span>
+    <span th:class="${log.level}">[[${log.level.label}]]&#160;</span>
     <span>[[${log.path}]]&#160;</span>
     <span class="footnote">[[${log.message}]]</span>
   </div>
