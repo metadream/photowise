@@ -30,7 +30,6 @@ public class PhotoController {
     @SpaRoute
     @GetMapping("/timeline")
     public String timeline(Model model) {
-        model.addAttribute("setting", settingService.getSetting());
         model.addAttribute("pagination", photoService.getPhotos(null, null));
         model.addAttribute("brickSize", brickSize);
         return "timeline";

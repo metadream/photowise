@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.arraywork.photowise.entity.AppSetting;
 import com.arraywork.photowise.entity.AppUser;
 import com.arraywork.photowise.enums.UserRole;
-import com.arraywork.photowise.enums.ViewMode;
 import com.arraywork.photowise.repo.SettingRepo;
 import com.arraywork.springforce.external.BCryptEncoder;
 
@@ -39,7 +38,6 @@ public class SettingService {
         if (setting == null) {
             setting = new AppSetting();
             setting.setId(SETTING_ID);
-            setting.setViewMode(ViewMode.BRICK);
 
             // 创建管理员用户
             AppUser user = new AppUser();

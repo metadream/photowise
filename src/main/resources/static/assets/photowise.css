@@ -88,11 +88,23 @@ header .searchbar input {
 
 header .toolbar {
   display: flex;
+  align-items: center;
   margin: 0 15px;
 }
 
 header .toolbar > a {
-  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 45px;
+  height: 45px;
+  margin: 5px;
+  border-radius: 50%;
+  transition: .3s;
+}
+
+header .toolbar > a:hover {
+  background: #e6e6e6;
 }
 
 aside {
@@ -351,15 +363,6 @@ img.tinyicon {
 
 .photo-wall > a input:checked + img {
   opacity: .5;
-}
-
-.photo-wall.grid > a {
-  width: 100px;
-  height: 100px;
-}
-
-.photo-wall.grid img {
-  width: 100%;
 }
 
 .pswp__top-bar {
