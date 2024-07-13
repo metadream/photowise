@@ -46,7 +46,7 @@ export function initPhotoSwipe() {
                     alert('1111');
                 }
                 pswp.on('change', () => {
-                    console.log(pswp.currSlide.data.element.dataset.id);
+                    console.log(pswp.currSlide.data.element.dataset.photoId);
                 });
             }
         });
