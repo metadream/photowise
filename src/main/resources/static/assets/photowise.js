@@ -19,16 +19,34 @@ export function initPhotoSwipe() {
         wheelToZoom: true,
     });
 
-    // 添加缩放百分比指示
     lightbox.on('uiRegister', function() {
+        // 添加缩放百分比指示
         lightbox.pswp.ui.registerElement({
             name: 'zoom-level-indicator',
-            order: 9,
+            order: 5,
             onInit: (el, pswp) => {
                 pswp.on('zoomPanUpdate', (e) => {
                     if (e.slide === pswp.currSlide) {
                         el.innerText = Math.round(pswp.currSlide.currZoomLevel * 100) + '%';
                     }
+                });
+            }
+        });
+
+        // 添加信息图标
+        lightbox.pswp.ui.registerElement({
+            name: 'info-button',
+            order: 9,
+            isButton: true,
+            tagName: 'button',
+            html: '<img class="icon" src="/icons/info.svg"/>',
+
+            onInit: (el, pswp) => {
+                el.onclick = () => {
+                    alert('1111');
+                }
+                pswp.on('change', () => {
+                    console.log(pswp.currSlide.data.element.dataset.id);
                 });
             }
         });
