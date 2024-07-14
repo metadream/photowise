@@ -78,7 +78,8 @@ public class PhotoController {
     @SpaRoute
     @GetMapping("/favorites")
     public String favorites(Model model) {
-        return "favorites";
+        model.addAttribute("photos", photoService.getFavored());
+        return "photos";
     }
 
     @SpaRoute

@@ -37,6 +37,11 @@ public class PhotoFilter implements Specification<PhotoIndex> {
             predicates.add(cb.equal(root.get("mediaType"), mediaType));
         }
 
+        boolean isFavored = condition.isFavored();
+        if (isFavored) {
+            predicates.add(cb.equal(root.get("isFavored"), isFavored));
+        }
+
         if (predicates.size() > 0) {
             Predicate[] p = new Predicate[predicates.size()];
             query.where(cb.and(predicates.toArray(p)));

@@ -55,7 +55,14 @@ public class PhotoService {
         return photoRepo.findAll(new PhotoFilter(condition));
     }
 
-    // 获取视频列表
+    // 获取收藏夹列表
+    public List<PhotoIndex> getFavored() {
+        PhotoIndex condition = new PhotoIndex();
+        condition.setFavored(true);
+        return photoRepo.findAll(new PhotoFilter(condition));
+    }
+
+    // 获取回收站列表
     public List<PhotoIndex> getTrashed() {
         PhotoIndex condition = new PhotoIndex();
         condition.setTrashed(true);
