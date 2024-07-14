@@ -5,16 +5,22 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.arraywork.photowise.entity.PhotoIndex;
-import com.arraywork.photowise.enums.MediaType;
 import com.arraywork.photowise.repo.PhotoFilter;
 import com.arraywork.photowise.repo.PhotoRepo;
+import com.arraywork.springforce.util.Times;
 
 import jakarta.annotation.Resource;
 
@@ -41,32 +47,23 @@ public class PhotoService {
         return photoRepo.findAll();
     }
 
-    // 获取照片列表
-    public List<PhotoIndex> getPhotos() {
-        PhotoIndex condition = new PhotoIndex();
-        condition.setMediaType(MediaType.IMAGE);
-        return photoRepo.findAll(new PhotoFilter(condition));
-    }
+    // 根据条件获取索引并按年月分组
+    public Map<String, List<PhotoIndex>> getIndexes(PhotoIndex condition) {
+        Map<String, List<PhotoIndex>> photoGroup = new TreeMap<>(Comparator.reverseOrder());
+        List<PhotoIndex> indexes = photoRepo.findAll(new PhotoFilter(condition));
 
-    // 获取视频列表
-    public List<PhotoIndex> getVideos() {
-        PhotoIndex condition = new PhotoIndex();
-        condition.setMediaType(MediaType.VIDEO);
-        return photoRepo.findAll(new PhotoFilter(condition));
-    }
+        for (PhotoIndex photo : indexes) {
+            LocalDateTime photoTime = Times.toLocal(photo.getPhotoTime());
+            String yearMonth = photoTime.format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
-    // 获取收藏夹列表
-    public List<PhotoIndex> getFavored() {
-        PhotoIndex condition = new PhotoIndex();
-        condition.setFavored(true);
-        return photoRepo.findAll(new PhotoFilter(condition));
-    }
-
-    // 获取回收站列表
-    public List<PhotoIndex> getTrashed() {
-        PhotoIndex condition = new PhotoIndex();
-        condition.setTrashed(true);
-        return photoRepo.findAll(new PhotoFilter(condition));
+            List<PhotoIndex> photos = photoGroup.get(yearMonth);
+            if (photos == null) {
+                photos = new ArrayList<>();
+                photoGroup.put(yearMonth, photos);
+            }
+            photos.add(photo);
+        }
+        return photoGroup;
     }
 
     // Get photo by file path

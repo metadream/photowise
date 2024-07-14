@@ -1,5 +1,3 @@
-<h3>2024-03</h3>
-
 <header class="control-bar">
   <div class="toolbar">
     <a onclick="uncheckPhotos()"><svg class="icon cross"><use xlink:href="/icons/icons.svg#cross"></use></svg></a>
@@ -16,25 +14,30 @@
   </div>
 </header>
 
-<section>
-  <div class="photo-wall">
-    <a th:each="photo: ${photos}"
-       th:with="width=${photo.mediaInfo.width},height=${photo.mediaInfo.height},aspectRatio=${1.0*width/height}"
-       th:style="|width:${140*aspectRatio}px;flex-grow:${140*aspectRatio}|"
-       th:href="|/original${photo.path}|"
-       th:data-photo-id="${photo.id}"
-       th:data-length="${photo.mediaInfo.length}"
-       th:data-pswp-width="${width}"
-       th:data-pswp-height="${height}"
-       th:data-pswp-type="${photo.mediaType.name.toLowerCase()}"
-       data-cropped="true">
-       <input type="checkbox" name="photoIds" th:value="${photo.id}" onchange="checkPhotos()"/>
-       <img th:data-src="|/thumbnail${photo.path}|" class="lazyload"/>
-       <i th:style="|padding-bottom:${100*1/aspectRatio}%|"></i>
-       <svg th:if="${photo.favored}" class="icon favored"><use xlink:href="/icons/icons.svg#favor"></use></svg>
-    </a>
+<div class="photo-groups">
+  <div class="photo-group" th:each="group: ${photoGroup}">
+    <h3>[[${group.key}]]</h3>
+    <section>
+      <div class="photo-wall">
+        <a th:each="photo: ${group.value}"
+           th:with="width=${photo.mediaInfo.width},height=${photo.mediaInfo.height},aspectRatio=${1.0*width/height}"
+           th:style="|width:${140*aspectRatio}px;flex-grow:${140*aspectRatio}|"
+           th:href="|/original${photo.path}|"
+           th:data-photo-id="${photo.id}"
+           th:data-length="${photo.mediaInfo.length}"
+           th:data-pswp-width="${width}"
+           th:data-pswp-height="${height}"
+           th:data-pswp-type="${photo.mediaType.name.toLowerCase()}"
+           data-cropped="true">
+           <input type="checkbox" name="photoIds" th:value="${photo.id}" onchange="checkPhotos()"/>
+           <img th:data-src="|/thumbnail${photo.path}|" class="lazyload"/>
+           <i th:style="|padding-bottom:${100*1/aspectRatio}%|"></i>
+           <svg th:if="${photo.favored}" class="icon favored"><use xlink:href="/icons/icons.svg#favor"></use></svg>
+        </a>
+      </div>
+    </section>
   </div>
-</section>
+</div>
 
 <script type="module">
 import { initPhotoSwipe } from '/assets/photowise.js';
@@ -43,10 +46,10 @@ initPhotoSwipe();
 const $controlBar = document.querySelector('.control-bar');
 const $favorIcon = $controlBar.querySelector('#favor-icon');
 const $totalChecked = document.querySelector('#totalChecked');
-const $photoWall = document.querySelector('.photo-wall');
+const $photoGroups = document.querySelector('.photo-groups');
 
 window.checkPhotos = function() {
-  const $checkedBoxes = $photoWall.querySelectorAll('[type="checkbox"]:checked');
+  const $checkedBoxes = $photoGroups.querySelectorAll('[type="checkbox"]:checked');
   $checkedBoxes.length ? $controlBar.addClass('active') : $controlBar.removeClass('active');
   $totalChecked.innerText = $checkedBoxes.length;
 
@@ -61,19 +64,19 @@ window.checkPhotos = function() {
 }
 
 window.uncheckPhotos = function() {
-  const $checkedBox = $photoWall.querySelectorAll('[type="checkbox"]:checked');
+  const $checkedBox = $photoGroups.querySelectorAll('[type="checkbox"]:checked');
   $checkedBox.forEach(v => v.checked = false);
   $controlBar.removeClass('active');
 }
 
 window.favorite = function() {
-  const data = Thyme.form.getJsonObject($photoWall);
+  const data = Thyme.form.getJsonObject($photoGroups);
   data.favored = !$favorIcon.classList.contains('fill');
   
   Thyme.http.put('/favorite', data).then(() => {
     $favorIcon.classList.toggle('fill');
 
-    const $checkedBox = $photoWall.querySelectorAll('[type="checkbox"]:checked');
+    const $checkedBox = $photoGroups.querySelectorAll('[type="checkbox"]:checked');
     for (const $cb of $checkedBox) {
       const $photoItem = $cb.parentNode;
       const $icon = $photoItem.querySelector('.favored');
@@ -88,9 +91,9 @@ window.favorite = function() {
 }
 
 window.trash = function() {
-  const data = Thyme.form.getJsonObject($photoWall);
+  const data = Thyme.form.getJsonObject($photoGroups);
   Thyme.http.put('/trash', data).then(() => {
-    const $checkedBox = $photoWall.querySelectorAll('[type="checkbox"]:checked');
+    const $checkedBox = $photoGroups.querySelectorAll('[type="checkbox"]:checked');
     for (const $cb of $checkedBox) {
       $cb.parentNode.remove();
     }

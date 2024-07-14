@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.arraywork.photowise.entity.PhotoIndex;
+import com.arraywork.photowise.enums.MediaType;
 import com.arraywork.photowise.service.PhotoService;
 import com.arraywork.photowise.service.SettingService;
 
@@ -32,14 +34,18 @@ public class PhotoController {
     @SpaRoute
     @GetMapping("/photos")
     public String photos(Model model) {
-        model.addAttribute("photos", photoService.getPhotos());
+        PhotoIndex condition = new PhotoIndex();
+        condition.setMediaType(MediaType.IMAGE);
+        model.addAttribute("photoGroup", photoService.getIndexes(condition));
         return "photos";
     }
 
     @SpaRoute
     @GetMapping("/videos")
     public String videos(Model model) {
-        model.addAttribute("photos", photoService.getVideos());
+        PhotoIndex condition = new PhotoIndex();
+        condition.setMediaType(MediaType.VIDEO);
+        model.addAttribute("photoGroup", photoService.getIndexes(condition));
         return "photos";
     }
 
@@ -78,7 +84,9 @@ public class PhotoController {
     @SpaRoute
     @GetMapping("/favorites")
     public String favorites(Model model) {
-        model.addAttribute("photos", photoService.getFavored());
+        PhotoIndex condition = new PhotoIndex();
+        condition.setFavored(true);
+        model.addAttribute("photoGroup", photoService.getIndexes(condition));
         return "photos";
     }
 
@@ -91,7 +99,9 @@ public class PhotoController {
     @SpaRoute
     @GetMapping("/trash")
     public String trash(Model model) {
-        model.addAttribute("photos", photoService.getTrashed());
+        PhotoIndex condition = new PhotoIndex();
+        condition.setTrashed(true);
+        model.addAttribute("photoGroup", photoService.getIndexes(condition));
         return "/photos";
     }
 

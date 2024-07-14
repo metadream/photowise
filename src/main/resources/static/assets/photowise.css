@@ -329,6 +329,14 @@ svg.icon.info {
   height: 150px;
 }
 
+.photo-group:not(:first-child) {
+  margin-top: 20px;
+}
+
+.photo-group > section {
+  margin: 0;
+}
+
 .photo-wall {
   display: flex;
   flex-wrap: wrap;
