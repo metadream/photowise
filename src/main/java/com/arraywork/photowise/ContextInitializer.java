@@ -26,8 +26,13 @@ public class ContextInitializer implements ServletContextListener {
     // However, static blocks cannot get the configuration parameters
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        String thumbnails = env.getProperty("photowise.thumbnails");
-        File dir = new File(thumbnails);
+        File dir = new File(env.getProperty("photowise.covers"));
+        if (!dir.exists()) dir.mkdirs();
+
+        dir = new File(env.getProperty("photowise.thumbnails"));
+        if (!dir.exists()) dir.mkdirs();
+
+        dir = new File(env.getProperty("photowise.trash"));
         if (!dir.exists()) dir.mkdirs();
     }
 

@@ -166,7 +166,7 @@ public class LibraryService {
     // 清理无效索引
     private void cleanIndexes() {
         long startTime = System.currentTimeMillis();
-        List<PhotoIndex> photos = photoService.getAllPhotos();
+        List<PhotoIndex> photos = photoService.getIndexes();
         int total = photos.size();
         int count = 0, success = 0;
 
@@ -213,12 +213,12 @@ public class LibraryService {
             Assert.isTrue(typeName.matches("(" + SUPPORTED_MEDIA + ")"), "不支持的媒体格式");
 
             MediaInfo mediaInfo = new MediaInfo();
-            String mimeType = fileType.getMimeType();
-            String type = mimeType.substring(0, mimeType.indexOf("/"));
-            mediaInfo.setType(MediaType.nameOf(type));
             mediaInfo.setLength(file.length());
 
             PhotoIndex photo = new PhotoIndex();
+            String mimeType = fileType.getMimeType();
+            String type = mimeType.substring(0, mimeType.indexOf("/"));
+            photo.setMediaType(MediaType.nameOf(type));
             photo.setMediaInfo(mediaInfo);
             photo.setPath(file.getPath().substring(library.length()));
             photo.setModifiedTime(file.lastModified());

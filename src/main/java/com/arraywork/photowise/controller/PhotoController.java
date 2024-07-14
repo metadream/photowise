@@ -2,7 +2,6 @@ package com.arraywork.photowise.controller;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,21 +28,18 @@ public class PhotoController {
     @Resource
     private PhotoService photoService;
 
-    @Value("${photowise.brick-size}")
-    private int brickSize;
-
     @SpaRoute
     @GetMapping("/photos")
     public String photos(Model model) {
-        model.addAttribute("photos", photoService.getPhotos(null, null));
-        model.addAttribute("brickSize", brickSize);
+        model.addAttribute("photos", photoService.getPhotos());
         return "photos";
     }
 
     @SpaRoute
     @GetMapping("/videos")
     public String videos(Model model) {
-        return "videos";
+        model.addAttribute("photos", photoService.getVideos());
+        return "photos";
     }
 
     @SpaRoute

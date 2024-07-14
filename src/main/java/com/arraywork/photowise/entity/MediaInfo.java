@@ -1,7 +1,5 @@
 package com.arraywork.photowise.entity;
 
-import com.arraywork.photowise.enums.MediaType;
-
 import lombok.Data;
 
 /**
@@ -13,7 +11,6 @@ import lombok.Data;
 @Data
 public class MediaInfo {
 
-    private MediaType type;
     private int width;
     private int height;
     private long length;

@@ -3,14 +3,13 @@ package com.arraywork.photowise.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.arraywork.photowise.entity.PhotoCondition;
 import com.arraywork.photowise.entity.PhotoIndex;
+import com.arraywork.photowise.enums.MediaType;
+import com.arraywork.photowise.repo.PhotoFilter;
 import com.arraywork.photowise.repo.PhotoRepo;
 
 import jakarta.annotation.Resource;
@@ -30,19 +29,23 @@ public class PhotoService {
     @Value("${photowise.page-size}")
     private int pageSize;
 
-    // 查询分页元数据
-    public List<PhotoIndex> getPhotos(String page, PhotoIndex condition) {
-        Sort sort = Sort.by("modifiedTime").descending();
-        page = page != null && page.matches("\\d+") ? page : "1";
-        Pageable pageable = PageRequest.of(Integer.parseInt(page) - 1, pageSize, sort);
-        Page<PhotoIndex> pageInfo = photoRepo.findAll(pageable);
-        // return new Pagination<PhotoIndex>(pageInfo);
+    // 获取所有索引
+    public List<PhotoIndex> getIndexes() {
         return photoRepo.findAll();
     }
 
-    // 查询所有照片索引
-    public List<PhotoIndex> getAllPhotos() {
-        return photoRepo.findAll();
+    // 获取照片列表
+    public List<PhotoIndex> getPhotos() {
+        PhotoCondition condition = new PhotoCondition();
+        condition.setMediaType(MediaType.image);
+        return photoRepo.findAll(new PhotoFilter(condition));
+    }
+
+    // 获取视频列表
+    public List<PhotoIndex> getVideos() {
+        PhotoCondition condition = new PhotoCondition();
+        condition.setMediaType(MediaType.video);
+        return photoRepo.findAll(new PhotoFilter(condition));
     }
 
     // Get photo by file path

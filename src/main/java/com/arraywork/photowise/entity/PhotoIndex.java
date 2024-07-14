@@ -77,7 +77,8 @@ public class PhotoIndex {
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     private String[] albums;
 
-    private boolean favored;
+    private MediaType mediaType;
+    private boolean isFavored;
 
     ////////////////////////////// 日期时间
 
@@ -109,7 +110,7 @@ public class PhotoIndex {
     }
 
     public boolean isVideo() {
-        return mediaInfo.getType() == MediaType.video;
+        return mediaType == MediaType.video;
     }
 
 }
