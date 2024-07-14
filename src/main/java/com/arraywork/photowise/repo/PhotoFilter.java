@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.arraywork.photowise.entity.PhotoCondition;
 import com.arraywork.photowise.entity.PhotoIndex;
 import com.arraywork.photowise.enums.MediaType;
 
@@ -22,9 +21,9 @@ import jakarta.persistence.criteria.Root;
 public class PhotoFilter implements Specification<PhotoIndex> {
 
     private static final long serialVersionUID = -6339982001648186258L;
-    private PhotoCondition condition;
+    private PhotoIndex condition;
 
-    public PhotoFilter(PhotoCondition condition) {
+    public PhotoFilter(PhotoIndex condition) {
         this.condition = condition;
     }
 

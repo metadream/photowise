@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.arraywork.photowise.entity.PhotoCondition;
 import com.arraywork.photowise.entity.PhotoIndex;
 import com.arraywork.photowise.enums.MediaType;
 import com.arraywork.photowise.repo.PhotoFilter;
@@ -36,15 +35,15 @@ public class PhotoService {
 
     // 获取照片列表
     public List<PhotoIndex> getPhotos() {
-        PhotoCondition condition = new PhotoCondition();
-        condition.setMediaType(MediaType.image);
+        PhotoIndex condition = new PhotoIndex();
+        condition.setMediaType(MediaType.IMAGE);
         return photoRepo.findAll(new PhotoFilter(condition));
     }
 
     // 获取视频列表
     public List<PhotoIndex> getVideos() {
-        PhotoCondition condition = new PhotoCondition();
-        condition.setMediaType(MediaType.video);
+        PhotoIndex condition = new PhotoIndex();
+        condition.setMediaType(MediaType.VIDEO);
         return photoRepo.findAll(new PhotoFilter(condition));
     }
 

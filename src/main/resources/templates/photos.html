@@ -26,7 +26,7 @@
        th:data-length="${photo.mediaInfo.length}"
        th:data-pswp-width="${width}"
        th:data-pswp-height="${height}"
-       th:data-pswp-type="${photo.mediaType}"
+       th:data-pswp-type="${photo.mediaType.name.toLowerCase()}"
        data-cropped="true">
        <input type="checkbox" name="photoIds" th:value="${photo.id}" onchange="checkPhotos()"/>
        <img th:data-src="|/thumbnail${photo.path}|" class="lazyload"/>

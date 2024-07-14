@@ -110,7 +110,7 @@ public class PhotoIndex {
     }
 
     public boolean isVideo() {
-        return mediaType == MediaType.video;
+        return mediaType == MediaType.VIDEO;
     }
 
 }

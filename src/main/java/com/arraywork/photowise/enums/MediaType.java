@@ -13,12 +13,12 @@ import lombok.Getter;
 @Getter
 public enum MediaType {
 
-    image,
-    video;
+    IMAGE,
+    VIDEO;
 
     public static MediaType nameOf(String type) {
         for (MediaType e : values()) {
-            if (e.name().equals(type.toLowerCase())) return e;
+            if (e.name().equals(type.toUpperCase())) return e;
         }
         return null;
     }
