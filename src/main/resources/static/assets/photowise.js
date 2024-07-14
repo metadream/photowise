@@ -57,7 +57,7 @@ export function initPhotoSwipe() {
 
             onInit: (el, pswp) => {
                 el.onclick = () => {
-                    alert('1111');
+                    console.log(pswp)
                 }
                 pswp.on('change', () => {
                     const { photoId } = pswp.currSlide.data.element.dataset;
