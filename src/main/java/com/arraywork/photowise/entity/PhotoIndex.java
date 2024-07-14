@@ -39,6 +39,9 @@ public class PhotoIndex {
     @NotBlank(message = "照片路径不能为空")
     private String path;
 
+    // 媒体类型
+    private MediaType mediaType;
+
     ////////////////////////////// EXIF 元数据
 
     @Type(JsonStringType.class)
@@ -58,9 +61,6 @@ public class PhotoIndex {
     @Size(max = 80, message = "照片地点不能超过 {max} 个字")
     private String place;
 
-    @Size(max = 20, message = "照片城市不能超过 {max} 个字")
-    private String city;
-
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     private String[] people;
@@ -77,8 +77,8 @@ public class PhotoIndex {
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     private String[] albums;
 
-    private MediaType mediaType;
     private boolean isFavored;
+    private boolean isTrashed;
 
     ////////////////////////////// 日期时间
 

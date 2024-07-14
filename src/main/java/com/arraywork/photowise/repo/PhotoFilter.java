@@ -30,6 +30,7 @@ public class PhotoFilter implements Specification<PhotoIndex> {
     @Override
     public Predicate toPredicate(Root<PhotoIndex> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         List<Predicate> predicates = new ArrayList<Predicate>();
+        predicates.add(cb.equal(root.get("isTrashed"), condition.isTrashed()));
 
         MediaType mediaType = condition.getMediaType();
         if (mediaType != null) {

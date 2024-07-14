@@ -10,7 +10,7 @@
     <a title="收藏" onclick="favorite()">
       <svg id="favor-icon" class="icon"><use xlink:href="/icons/icons.svg#favor"></use></svg>
     </a>
-    <a title="删除">
+    <a title="删除" onclick="trash()">
       <svg class="icon"><use xlink:href="/icons/icons.svg#trash"></use></svg>
     </a>
   </div>
@@ -83,6 +83,16 @@ window.favorite = function() {
       } else if (!data.favored && $icon) {
         $icon.remove();
       }
+    }
+  });
+}
+
+window.trash = function() {
+  const data = Thyme.form.getJsonObject($photoWall);
+  Thyme.http.put('/trash', data).then(() => {
+    const $checkedBox = $photoWall.querySelectorAll('[type="checkbox"]:checked');
+    for (const $cb of $checkedBox) {
+      $cb.parentNode.remove();
     }
   });
 }

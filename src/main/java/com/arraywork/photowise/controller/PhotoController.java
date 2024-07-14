@@ -1,5 +1,6 @@
 package com.arraywork.photowise.controller;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
@@ -89,7 +90,8 @@ public class PhotoController {
     @SpaRoute
     @GetMapping("/trash")
     public String trash(Model model) {
-        return "/trash";
+        model.addAttribute("photos", photoService.getTrashed());
+        return "/photos";
     }
 
     @PutMapping("/favorite")
@@ -98,6 +100,13 @@ public class PhotoController {
         String[] photoIds = ((String) map.get("photoIds")).split(",");
         boolean favored = (Boolean) map.get("favored");
         return photoService.favorite(photoIds, favored);
+    }
+
+    @PutMapping("/trash")
+    @ResponseBody
+    public int trash(@RequestBody Map<String, Object> map) throws IOException {
+        String[] photoIds = ((String) map.get("photoIds")).split(",");
+        return photoService.trash(photoIds);
     }
 
 }

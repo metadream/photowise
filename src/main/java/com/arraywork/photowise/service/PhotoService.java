@@ -1,5 +1,10 @@
 package com.arraywork.photowise.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -25,8 +30,11 @@ public class PhotoService {
     @Resource
     private PhotoRepo photoRepo;
 
-    @Value("${photowise.page-size}")
-    private int pageSize;
+    @Value("${photowise.library}")
+    private String library;
+
+    @Value("${photowise.trash}")
+    private String trash;
 
     // 获取所有索引
     public List<PhotoIndex> getIndexes() {
@@ -44,6 +52,13 @@ public class PhotoService {
     public List<PhotoIndex> getVideos() {
         PhotoIndex condition = new PhotoIndex();
         condition.setMediaType(MediaType.VIDEO);
+        return photoRepo.findAll(new PhotoFilter(condition));
+    }
+
+    // 获取视频列表
+    public List<PhotoIndex> getTrashed() {
+        PhotoIndex condition = new PhotoIndex();
+        condition.setTrashed(true);
         return photoRepo.findAll(new PhotoFilter(condition));
     }
 
@@ -71,6 +86,24 @@ public class PhotoService {
         for (String id : photoIds) {
             PhotoIndex photo = photoRepo.getReferenceById(id);
             photo.setFavored(favored);
+            result++;
+        }
+        return result;
+    }
+
+    // 批量移入回收站
+    @Transactional(rollbackFor = Exception.class)
+    public int trash(String[] photoIds) throws IOException {
+        int result = 0;
+        for (String id : photoIds) {
+            PhotoIndex photo = photoRepo.getReferenceById(id);
+            photo.setTrashed(true);
+
+            Path original = Path.of(library, photo.getPath());
+            Path dest = Path.of(trash, photo.getPath());
+            File parent = dest.getParent().toFile();
+            if (!parent.exists()) parent.mkdirs();
+            Files.move(original, dest, StandardCopyOption.REPLACE_EXISTING);
             result++;
         }
         return result;
