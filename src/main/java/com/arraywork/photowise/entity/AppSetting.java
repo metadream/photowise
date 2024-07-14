@@ -32,6 +32,9 @@ public class AppSetting {
 
     private boolean isPublic;
 
+    // 照片库使用空间
+    private long usedSpace;
+
     @UpdateTimestamp
     private LocalDateTime lastModified;
 
