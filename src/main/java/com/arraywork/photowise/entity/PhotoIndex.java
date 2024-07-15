@@ -15,6 +15,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -40,6 +41,7 @@ public class PhotoIndex {
     private String path;
 
     // 媒体类型
+    @NotNull(message = "媒体类型不能为空")
     private MediaType mediaType;
 
     ////////////////////////////// EXIF 元数据
