@@ -16,13 +16,12 @@ import lombok.Getter;
 @Getter
 public enum AccessMode implements GenericEnum<Integer> {
 
-    PUBLIC(1, "公开", "任何人无需登录即可访问"),
-    PROTECTED(2, "保护", "以访客身份登录可访问"),
-    PRIVATE(3, "私有", "仅管理员可访问");
+    PUBLIC(1, "任何人均可访问"),
+    PROTECTED(2, "以访客身份访问"),
+    PRIVATE(3, "仅管理员可访问");
 
     private final Integer code;
     private final String label;
-    private final String desc;
 
     public static class Converter extends GenericEnumConverter<AccessMode, Integer> {}
 

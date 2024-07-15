@@ -329,6 +329,17 @@ svg.icon.info {
   height: 150px;
 }
 
+.central-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.central-panel th-button {
+  width: 100%;
+}
+
 .photo-group:not(:first-child) {
   margin-top: 20px;
 }

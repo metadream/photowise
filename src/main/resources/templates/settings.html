@@ -1,5 +1,29 @@
 <h3>系统设置</h3>
 
 <section>
-  <th-field label="照片库路径"></th-field>
+  <p><th-field label="照片库路径" name="library" required></th-field></p>
+  <p><th-checkgroup label="访问模式" class="option-group" name="accessMode" required>
+    <th-checkbox th:each="accessMode: ${accessModes}" th:value="${accessMode.code}">[[${accessMode.label}]]</th-checkbox>
+  </th-checkgroup></p>
+  
+  <p><th-field label="管理员账号" name="adminUser" required></th-field></p>
+  <p><th-field label="管理员密码" name="adminPass" required></th-field></p>
+  <p><th-field label="访客账号" name="guestUser"></th-field></p>
+  <p><th-field label="访客密码" name="guestPass"></th-field></p>
+  
+  <br><th-button onclick="saveSettings()">保存设置</th-button>
 </section>
+
+<script type="module">
+import spa from '/assets/spa.js';
+
+window.saveSettings = function() {
+  const data = Thyme.form.getJsonObject('section');
+  if (!data) return;
+  
+  Thyme.http.put('/settings', data).then(res => {
+    console.log(res);
+    spa.navigate('/library');
+  });
+}
+</script>

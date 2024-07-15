@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 
 import com.arraywork.photowise.entity.AppSetting;
 import com.arraywork.photowise.entity.AppUser;
+import com.arraywork.photowise.enums.AccessMode;
 import com.arraywork.photowise.enums.UserRole;
 import com.arraywork.photowise.repo.SettingRepo;
 import com.arraywork.springforce.external.BCryptEncoder;
@@ -15,6 +16,7 @@ import com.arraywork.springforce.security.Principal;
 import com.arraywork.springforce.security.SecurityService;
 import com.arraywork.springforce.util.Assert;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 
 /**
@@ -26,6 +28,7 @@ import jakarta.annotation.Resource;
 @Service
 public class SettingService implements SecurityService {
 
+    private static final String ADMIN_USER = "photowise";
     private static final String SETTING_ID = "PHOTOWISE_SETTING";
 
     @Resource
@@ -33,7 +36,22 @@ public class SettingService implements SecurityService {
     @Resource
     private SettingRepo settingRepo;
 
-    // Cache
+    // 初始化设置
+    @PostConstruct
+    @Transactional(rollbackFor = Exception.class)
+    public void initSetting() {
+        AppSetting setting = getSetting();
+        if (setting != null) return;
+
+        setting = new AppSetting();
+        setting.setId(SETTING_ID);
+        setting.setAccessMode(AccessMode.PRIVATE);
+        setting.setAdminUser(ADMIN_USER);
+        setting.setAdminPass(bCryptEncoder.encode(ADMIN_USER));
+        settingRepo.save(setting);
+    }
+
+    // 获取设置
     public AppSetting getSetting() {
         return settingRepo.findById(SETTING_ID).orElse(null);
     }
@@ -64,20 +82,16 @@ public class SettingService implements SecurityService {
         Assert.isTrue(library.exists() && library.isDirectory(), "照片库不存在或不是目录");
 
         AppSetting setting = getSetting();
-        if (setting == null) {
-            setting = _setting;
-            setting.setId(SETTING_ID);
-        }
+        setting.setLibrary(_setting.getLibrary());
+        setting.setAccessMode(_setting.getAccessMode());
+
         if (StringUtils.hasText(_setting.getAdminPass())) {
             setting.setAdminPass(bCryptEncoder.encode(_setting.getAdminPass()));
         }
         if (StringUtils.hasText(_setting.getGuestPass())) {
             setting.setGuestPass(bCryptEncoder.encode(_setting.getGuestPass()));
         }
-
-        setting.setLibrary(_setting.getLibrary());
-        setting.setAccessMode(_setting.getAccessMode());
-        return settingRepo.save(setting);
+        return setting;
     }
 
     // 保存使用空间

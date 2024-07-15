@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.arraywork.photowise.enums.AccessMode;
+import com.arraywork.springforce.util.Validator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -29,7 +30,7 @@ public class AppSetting {
     @Column(length = 24, updatable = false)
     private String id;
 
-    @NotBlank(message = "照片库路径不能为空")
+    @NotBlank(message = "照片库路径不能为空", groups = Validator.Update.class)
     @Size(max = 255, message = "照片库路径不能超过 {max} 个字符")
     private String library;
 

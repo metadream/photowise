@@ -8,9 +8,9 @@ class Spa {
         this.$mount = document.querySelector(target);
         this.#initRoutes();
 
-        this.#navigate(location.pathname);
+        this.navigate(location.pathname);
         window.addEventListener('popstate', () => {
-            this.#navigate(location.pathname);
+            this.navigate(location.pathname);
         });
     }
 
@@ -30,13 +30,13 @@ class Spa {
 
             $route.onclick = () => {
                 history.pushState(null, null, path);
-                this.#navigate(path);
+                this.navigate(path);
             };
         }
     }
 
     // Navigate specified path
-    #navigate(path) {
+    navigate(path) {
         this.route && this.route.unload();
         this.route = this.router.find(path);
         if (!this.route) throw new Error('Route not found.');
