@@ -1,7 +1,7 @@
 <section class="central-panel">
   <div>
     <p><th-field label="账号" name="username" required></th-field></p>
-    <p><th-field label="密码" name="password" required></th-field></p>
+    <p><th-field label="密码" type="password" name="password" required></th-field></p>
   
     <br><th-button onclick="login(this)">登录</th-button>
   </div>
@@ -16,8 +16,7 @@ window.login = function(btn) {
   
   btn.loading = true;
   Thyme.http.post('/login', data).then(res => {
-    const url = res.settled ? '/' : '/settings';
-    spa.navigate(url); 
+    spa.navigate(res.settled ? '/photos' : '/settings'); 
   }).finally(() => {
     btn.loading = false;
   });

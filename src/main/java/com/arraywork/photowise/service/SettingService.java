@@ -82,6 +82,8 @@ public class SettingService implements SecurityService {
         AppSetting setting = getSetting();
         setting.setLibrary(_setting.getLibrary());
         setting.setAccessMode(_setting.getAccessMode());
+        setting.setAdminUser(_setting.getAdminUser());
+        setting.setGuestUser(_setting.getGuestUser());
 
         if (StringUtils.hasText(_setting.getAdminPass())) {
             setting.setAdminPass(bCryptEncoder.encode(_setting.getAdminPass()));

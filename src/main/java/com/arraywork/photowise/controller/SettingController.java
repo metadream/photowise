@@ -38,6 +38,7 @@ public class SettingController extends SecurityController {
     @GetMapping("/settings")
     @Authority("ADMIN")
     public String settings(Model model) {
+        model.addAttribute("setting", settingService.getSetting());
         model.addAttribute("accessModes", AccessMode.values());
         return "settings";
     }
