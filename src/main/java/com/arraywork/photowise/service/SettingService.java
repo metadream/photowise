@@ -49,9 +49,10 @@ public class SettingService implements SecurityService {
 
         AppUser appUser = null;
         if (isAdmin || isGuest) {
+            UserRole role = isAdmin ? UserRole.ADMIN : UserRole.GUEST;
             appUser = new AppUser();
             appUser.setUsername(username);
-            appUser.setRole(isAdmin ? UserRole.ADMIN : UserRole.GUEST);
+            appUser.setRole(role);
         }
         return appUser;
     }
