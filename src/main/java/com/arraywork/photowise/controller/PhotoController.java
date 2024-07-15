@@ -14,6 +14,7 @@ import com.arraywork.photowise.entity.PhotoIndex;
 import com.arraywork.photowise.enums.MediaType;
 import com.arraywork.photowise.service.PhotoService;
 import com.arraywork.photowise.service.SettingService;
+import com.arraywork.photowise.spa.SpaRoute;
 
 import jakarta.annotation.Resource;
 

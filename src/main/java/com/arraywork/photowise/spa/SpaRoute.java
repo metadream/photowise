@@ -1,4 +1,4 @@
-package com.arraywork.photowise.controller;
+package com.arraywork.photowise.spa;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

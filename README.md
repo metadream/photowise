@@ -10,6 +10,7 @@
 - 设置：语言、回收站清理周期（1天、1周、1月）;public,protected,private
 - 清空回收站：同时删除索引、trash文件、缩略图
 - 存储空间：usedSpace/(usedSpace+file.getUsableSpace())
+- error页面测试
 
 ```
 @GetMapping("/test/video/stream")

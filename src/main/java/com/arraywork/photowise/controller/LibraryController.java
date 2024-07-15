@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.arraywork.photowise.entity.ScanningOption;
 import com.arraywork.photowise.service.LibraryService;
+import com.arraywork.photowise.spa.SpaRoute;
 
 import jakarta.annotation.Resource;
 
