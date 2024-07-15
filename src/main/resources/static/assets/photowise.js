@@ -17,6 +17,21 @@ export function initPhotoSwipe() {
         loop: false,
         zoom: false,
         wheelToZoom: true,
+        getViewportSizeFn: function(options, pswp) {
+            if (pswp.element) {
+                const rect = pswp.element.getBoundingClientRect();
+                return {
+                    x: rect.width,
+                    y: window.innerHeight
+                };
+            }
+        }
+    });
+    
+    lightbox.on('close', () => {
+        const { element } = lightbox.pswp;
+        element.style.width = 'unset';
+        element.style.right = '0';
     });
 
     lightbox.on('uiRegister', function() {
@@ -57,7 +72,9 @@ export function initPhotoSwipe() {
 
             onInit: (el, pswp) => {
                 el.onclick = () => {
-                    console.log(pswp)
+                    pswp.element.style.width = 'auto';
+                    pswp.element.style.right = '200px';
+                    pswp.updateSize();
                 }
                 pswp.on('change', () => {
                     const { photoId } = pswp.currSlide.data.element.dataset;

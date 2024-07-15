@@ -15,6 +15,7 @@
 - library 显示：当前照片库路径：
 - 所有从配置文件读取的library改为从数据库读取
 - setting缓存
+- photowall独立成组件，可自由关联controlbar，type module和window.分开写
 
 ```
 @GetMapping("/test/video/stream")
