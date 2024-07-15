@@ -1,5 +1,6 @@
 package com.arraywork.photowise.entity;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.arraywork.photowise.enums.UserRole;
@@ -23,7 +24,7 @@ public class AppUser extends Principal {
 
     @Override
     public List<SecurityRole> getSecurityRoles() {
-        return null;
+        return Arrays.asList(role);
     }
 
 }
