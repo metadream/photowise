@@ -7,8 +7,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.arraywork.photowise.entity.AppSetting;
+import com.arraywork.photowise.entity.AppUser;
+import com.arraywork.photowise.enums.UserRole;
 import com.arraywork.photowise.repo.SettingRepo;
 import com.arraywork.springforce.external.BCryptEncoder;
+import com.arraywork.springforce.security.Principal;
+import com.arraywork.springforce.security.SecurityService;
 import com.arraywork.springforce.util.Assert;
 
 import jakarta.annotation.Resource;
@@ -20,7 +24,7 @@ import jakarta.annotation.Resource;
  * @since 2024/07/12
  */
 @Service
-public class SettingService {
+public class SettingService implements SecurityService {
 
     private static final String SETTING_ID = "PHOTOWISE_SETTING";
 
@@ -32,6 +36,24 @@ public class SettingService {
     // Cache
     public AppSetting getSetting() {
         return settingRepo.findById(SETTING_ID).orElse(null);
+    }
+
+    // 登录
+    @Override
+    public Principal login(String username, String rawPassword) {
+        AppSetting setting = getSetting();
+        boolean isAdmin = username.equals(setting.getAdminUser())
+            && bCryptEncoder.matches(rawPassword, setting.getAdminPass());
+        boolean isGuest = username.equals(setting.getGuestUser())
+            && bCryptEncoder.matches(rawPassword, setting.getGuestPass());
+
+        AppUser appUser = null;
+        if (isAdmin || isGuest) {
+            appUser = new AppUser();
+            appUser.setUsername(username);
+            appUser.setRole(isAdmin ? UserRole.ADMIN : UserRole.GUEST);
+        }
+        return appUser;
     }
 
     // 保存设置
