@@ -64,14 +64,12 @@ public class SettingService implements SecurityService {
             && bCryptEncoder.matches(rawPassword, setting.getAdminPass());
         boolean isGuest = username.equals(setting.getGuestUser())
             && bCryptEncoder.matches(rawPassword, setting.getGuestPass());
+        Assert.isTrue(isAdmin || isGuest, "账号或密码错误");
 
-        AppUser appUser = null;
-        if (isAdmin || isGuest) {
-            UserRole role = isAdmin ? UserRole.ADMIN : UserRole.GUEST;
-            appUser = new AppUser();
-            appUser.setUsername(username);
-            appUser.setRole(role);
-        }
+        AppUser appUser = new AppUser();
+        appUser.setUsername(username);
+        appUser.setRole(isAdmin ? UserRole.ADMIN : UserRole.GUEST);
+        appUser.setSettled(StringUtils.hasText(setting.getLibrary()));
         return appUser;
     }
 

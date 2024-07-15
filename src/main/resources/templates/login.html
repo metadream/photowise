@@ -3,6 +3,23 @@
     <p><th-field label="账号" name="username" required></th-field></p>
     <p><th-field label="密码" name="password" required></th-field></p>
   
-    <br><th-button onclick="login()">登录</th-button>
+    <br><th-button onclick="login(this)">登录</th-button>
   </div>
 </section>
+
+<script type="module">
+import spa from '/assets/spa.js';
+
+window.login = function(btn) {
+  const data = Thyme.form.getJsonObject('section');
+  if (!data) return;
+  
+  btn.loading = true;
+  Thyme.http.post('/login', data).then(res => {
+    const url = res.settled ? '/' : '/settings';
+    spa.navigate(url); 
+  }).finally(() => {
+    btn.loading = false;
+  });
+}
+</script>

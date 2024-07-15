@@ -283,8 +283,8 @@ svg.icon.info {
   transition: .3s;
 }
 
-.button-group > *:not(:first-child), .option-group > *:not(:first-child) {
-  margin-left: 10px;
+.button-group > *:not(:last-child), .option-group > *:not(:last-child) {
+  margin-right: 10px;
 }
 
 .covers {

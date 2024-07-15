@@ -8,7 +8,12 @@ class Spa {
         this.$mount = document.querySelector(target);
         this.#initRoutes();
 
-        this.navigate(location.pathname);
+        const path = location.pathname;
+        if (!this.router.find(path)) {
+            this.router.add(path, () => this.#loadPage(path));
+        }
+
+        this.navigate(path);
         window.addEventListener('popstate', () => {
             this.navigate(location.pathname);
         });
