@@ -37,12 +37,18 @@ public class SpaInterceptor implements HandlerInterceptor, WebMvcConfigurer {
         throws IOException {
 
         if (handler instanceof HandlerMethod) {
-            Principal principal = context.getPrincipal();
+            // 首次访问跳转至初始化页面
             AppSetting setting = settingService.getSetting();
+            if (setting == null) {
+                response.sendRedirect("/init");
+                return false;
+            }
 
             // 未登录且非公开跳转至登录页
+            Principal principal = context.getPrincipal();
             if (principal == null && setting.getAccessMode() != AccessMode.PUBLIC) {
                 response.sendRedirect("/login");
+                return false;
             }
         }
         return true;
@@ -50,7 +56,7 @@ public class SpaInterceptor implements HandlerInterceptor, WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(this).addPathPatterns("/**").excludePathPatterns("/error", "/login");
+        registry.addInterceptor(this).addPathPatterns("/**").excludePathPatterns("/error", "/init", "/login");
     }
 
 }
