@@ -1,7 +1,7 @@
 <h3>系统设置</h3>
 
 <section>
-  <p><th-field label="照片库路径" name="library" th:value="${setting.library}" required></th-field></p>
+  <p><th-field label="照片库路径" name="library" th:value="${setting.library}" required1></th-field></p>
   <p><th-checkgroup label="访问模式" class="option-group" name="accessMode" required>
     <th-checkbox th:each="accessMode: ${accessModes}"
      th:value="${accessMode.code}" th:checked="${accessMode==setting.accessMode}">[[${accessMode.label}]]</th-checkbox>
@@ -24,7 +24,12 @@ window.saveSettings = function(btn) {
   
   btn.loading = true;
   Thyme.http.put('/settings', data).then(res => {
-    Thyme.success('保存成功');
+    if (res.libChanged) {
+      spa.navigate('/library');
+      Thyme.warn('照片库路径发生变更，请重新扫描');
+    } else {
+      Thyme.success('保存成功');
+    }
   }).finally(() => {
     btn.loading = false;
   });

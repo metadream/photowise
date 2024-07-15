@@ -11,6 +11,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -55,5 +56,8 @@ public class AppSetting {
 
     @UpdateTimestamp
     private LocalDateTime lastModified;
+
+    @Transient
+    private boolean libChanged;
 
 }

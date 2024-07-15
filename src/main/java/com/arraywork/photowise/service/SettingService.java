@@ -1,6 +1,7 @@
 package com.arraywork.photowise.service;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,11 +77,13 @@ public class SettingService implements SecurityService {
     // 保存设置
     @Transactional(rollbackFor = Exception.class)
     public AppSetting save(AppSetting _setting) {
-        File library = new File(_setting.getLibrary());
+        String _library = Path.of(_setting.getLibrary()).toString();
+        File library = new File(_library);
         Assert.isTrue(library.exists() && library.isDirectory(), "照片库不存在或不是目录");
 
         AppSetting setting = getSetting();
-        setting.setLibrary(_setting.getLibrary());
+        setting.setLibChanged(!_library.equals(setting.getLibrary()));
+        setting.setLibrary(_library);
         setting.setAccessMode(_setting.getAccessMode());
         setting.setAdminUser(_setting.getAdminUser());
         setting.setGuestUser(_setting.getGuestUser());
