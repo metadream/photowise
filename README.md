@@ -11,7 +11,7 @@
 - 清空回收站：同时删除索引、trash文件、缩略图
 - 存储空间：usedSpace/(usedSpace+file.getUsableSpace())
 - error页面测试
-- http finally写法
+- thyme.http finally写法
 - library 显示：当前照片库路径：
 - 所有从配置文件读取的library改为从数据库读取
 - setting缓存
