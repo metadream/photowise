@@ -4,6 +4,7 @@ import PhotoSwipeVideo from '/assets/photoswipe-video@1.0.2.js';
 // 照片信息侧边栏
 class ExifSidebar {
     static width = '300px';
+    static isHidden = true;
     
     static {
         this.sidebar = Thyme.util.createElement('<div class="exif-sidebar"></div>');
@@ -11,22 +12,19 @@ class ExifSidebar {
         this.sidebar.style.width = this.width;
         this.sidebar.append(document.querySelector('#exif-sidebar').content);
         document.body.append(this.sidebar);
-        
-        const closeBtn = this.sidebar.query('a.round');
-        closeBtn.onclick = () => {
-            this.hide();
-        }
     }
 
     static show() {
          this.sidebar = document.querySelector('.exif-sidebar');
          this.sidebar.style.transition = 'none';
          this.sidebar.style.transform = `translateX(0)`;
+         this.isHidden = false;
     }
 
     static hide() {
         this.sidebar.style.transition = '333ms';
         this.sidebar.style.transform = `translateX(${this.width})`;
+        this.isHidden = true;
     }
     
     static bind(data) {
@@ -104,10 +102,15 @@ export function initPhotoSwipe() {
             onInit: (el, pswp) => {
                 // 根据侧边栏调整容器大小
                 el.onclick = () => {
-                    pswp.element.style.width = 'auto';
-                    pswp.element.style.right = ExifSidebar.width;
+                    if (ExifSidebar.isHidden) {
+                        pswp.element.style.width = 'auto';
+                        pswp.element.style.right = ExifSidebar.width;
+                        ExifSidebar.show();
+                    } else {
+                        pswp.element.style.right = 0;
+                        ExifSidebar.hide();
+                    }
                     pswp.updateSize();
-                    ExifSidebar.show();
                 }
                 // 设置侧边栏字段数据
                 pswp.on('change', () => {

@@ -39,43 +39,35 @@
 </div>
 
 <template id="exif-sidebar">
-  <div class="headline">
-    <a class="round"><svg class="icon cross"><use xlink:href="/icons/icons.svg#cross"></use></svg></a>
-    <div>信息</div>
+  <h4>信息</h4>
+  <div><input type="text" name="title" placeholder="添加标题"/></div>
+
+  <div class="field">
+    <svg class="icon"><use xlink:href="/icons/icons.svg#calendar"></use></svg>
+    <div>
+      <div name="photoTime"></div>
+    </div>
   </div>
-  
-  <div class="fields">
-    <div><input type="text" name="title" placeholder="添加标题"/></div>
-    
-    <div class="details">
-      <div class="field">
-        <svg class="icon"><use xlink:href="/icons/icons.svg#calendar"></use></svg>
-        <div>
-          <div name="photoTime"></div>
-        </div>
-      </div>
-      <div class="field">
-        <svg class="icon"><use xlink:href="/icons/icons.svg#aperture"></use></svg>
-        <div>
-          <div name="makeModel">Apple iPhone 12</div>
-          <div>ƒ/1.6 1/785 4.2 mm ISO32</div>
-          <div><span name="apertureValue"></span></div>
-        </div>
-      </div>
-      <div class="field">
-        <svg class="icon"><use xlink:href="/icons/icons.svg#photo"></use></svg>
-        <div>
-          <div name="path"></div>
-          <div class="footnote gapped"><span name="size"></span><span name="length"></span></div>
-        </div>
-      </div>
-      <div class="field">
-        <svg class="icon"><use xlink:href="/icons/icons.svg#place"></use></svg>
-        <div>
-          <div>中国新余市</div>
-          <div class="footnote gapped"><span name="latilong"></span><span name="altitude"></span></div>
-        </div>
-      </div>
+  <div class="field">
+    <svg class="icon"><use xlink:href="/icons/icons.svg#aperture"></use></svg>
+    <div>
+      <div name="makeModel">Apple iPhone 12</div>
+      <div class="footnote gapped">ƒ/1.6 1/785 4.2 mm ISO32</div>
+      <div class="footnote gapped"><span name="apertureValue"></span></div>
+    </div>
+  </div>
+  <div class="field">
+    <svg class="icon"><use xlink:href="/icons/icons.svg#photo"></use></svg>
+    <div>
+      <div name="path"></div>
+      <div class="footnote gapped"><span name="size"></span><span name="length"></span></div>
+    </div>
+  </div>
+  <div class="field">
+    <svg class="icon"><use xlink:href="/icons/icons.svg#place"></use></svg>
+    <div>
+      <div>中国新余市</div>
+      <div class="footnote gapped"><span name="latilong"></span><span name="altitude"></span></div>
     </div>
   </div>
 </template>

@@ -433,17 +433,7 @@ svg.icon.info {
   bottom: 0;
   right: 0;
   background: #fff;
-}
-
-.exif-sidebar .headline {
-  display: flex;
-  align-items: center;
-  font-size: 20px;
-  margin: 3px;
-}
-
-.exif-sidebar .fields {
-  padding: 10px 25px;
+  padding: 16px 25px;
 }
 
 .exif-sidebar input[type="text"] {
@@ -452,14 +442,11 @@ svg.icon.info {
   border-bottom: 1px solid var(--minorColor);
   width: 100%;
   padding: 10px 0;
+  margin: 20px 0;
 }
 
 .exif-sidebar input[type="text"]:focus {
   border-color: var(--infoColor);
-}
-
-.exif-sidebar .details {
-  margin-top: 40px;
 }
 
 .exif-sidebar .field {
