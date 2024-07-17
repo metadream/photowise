@@ -29,6 +29,9 @@ class ExifSidebar {
         const $ = (s) => this.sidebar.querySelector(s);
         $('[name="photoTime"]').innerHTML = data.photoTime;
         $('[name="makeModel"]').innerHTML = data.cameraInfo.makeModel;
+        $('[name="path"]').innerHTML = data.path.split('/').pop();
+        $('[name="size"]').innerHTML = data.mediaInfo.width + ' × ' + data.mediaInfo.height;
+        $('[name="length"]').innerHTML = Thyme.util.formatBytes(data.mediaInfo.length);
     }
 }
 
