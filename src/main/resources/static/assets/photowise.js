@@ -11,6 +11,11 @@ class ExifSidebar {
         this.sidebar.style.width = this.width;
         this.sidebar.append(document.querySelector('#exif-sidebar').content);
         document.body.append(this.sidebar);
+        
+        const closeBtn = this.sidebar.query('a.round');
+        closeBtn.onclick = () => {
+            this.hide();
+        }
     }
 
     static show() {
