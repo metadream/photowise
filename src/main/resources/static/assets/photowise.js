@@ -4,24 +4,31 @@ import PhotoSwipeVideo from '/assets/photoswipe-video@1.0.2.js';
 // 照片信息侧边栏
 class ExifSidebar {
     static width = '300px';
+    
+    static {
+        this.sidebar = Thyme.util.createElement('<div class="exif-sidebar"></div>');
+        this.sidebar.style.transform = `translateX(${this.width})`;
+        this.sidebar.style.width = this.width;
+        this.sidebar.append(document.querySelector('#exif-sidebar').content);
+        document.body.append(this.sidebar);
+    }
 
     static show() {
-         let sidebar = document.querySelector('.exif-sidebar');
-         if (!sidebar) {
-             sidebar = Thyme.util.createElement('<div class="exif-sidebar"></div>');
-             sidebar.style.width = this.width;
-             sidebar.append(document.querySelector('#exif-sidebar').content);
-             document.body.append(sidebar);
-         }
-         sidebar.style.transition = 'none';
-         sidebar.style.transform = `translateX(0)`;
-         sidebar.addClass('visible');
+         this.sidebar = document.querySelector('.exif-sidebar');
+         this.sidebar.style.transition = 'none';
+         this.sidebar.style.transform = `translateX(0)`;
     }
 
     static hide() {
-        const sidebar = document.querySelector('.exif-sidebar');
-        sidebar.style.transition = '333ms';
-        sidebar.style.transform = `translateX(${this.width})`;
+        this.sidebar.style.transition = '333ms';
+        this.sidebar.style.transform = `translateX(${this.width})`;
+    }
+    
+    static bind(data) {
+        console.log(data);
+        const $ = (s) => this.sidebar.querySelector(s);
+        $('[name="photoTime"]').innerHTML = data.photoTime;
+        $('[name="makeModel"]').innerHTML = data.cameraInfo.makeModel;
     }
 }
 
@@ -108,7 +115,7 @@ export function initPhotoSwipe() {
                 // 设置侧边栏字段数据
                 pswp.on('change', () => {
                     const { photoId } = pswp.currSlide.data.element.dataset;
-                    console.log("photoId=", photoId);
+                    Thyme.http.get('/photo/'+photoId).then(res => ExifSidebar.bind(res));
                 });
             }
         });

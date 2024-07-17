@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -104,6 +105,12 @@ public class PhotoController {
         condition.setTrashed(true);
         model.addAttribute("photoGroup", photoService.getIndexes(condition));
         return "/photos";
+    }
+
+    @GetMapping("/photo/{id}")
+    @ResponseBody
+    public PhotoIndex detail(@PathVariable String id) {
+        return photoService.getPhoto(id);
     }
 
     @PutMapping("/favorite")

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.arraywork.photowise.entity.PhotoIndex;
 import com.arraywork.photowise.repo.PhotoFilter;
 import com.arraywork.photowise.repo.PhotoRepo;
+import com.arraywork.springforce.util.Assert;
 import com.arraywork.springforce.util.Times;
 
 import jakarta.annotation.Resource;
@@ -66,8 +68,15 @@ public class PhotoService {
         return photoGroup;
     }
 
-    // Get photo by file path
-    public PhotoIndex getPhoto(String path) {
+    // 根据ID获取照片索引
+    public PhotoIndex getPhoto(String id) {
+        Optional<PhotoIndex> optional = photoRepo.findById(id);
+        Assert.isTrue(optional.isPresent(), "照片索引不存在");
+        return optional.get();
+    }
+
+    // 根据路径获取照片索引
+    public PhotoIndex getPhotoByPath(String path) {
         return photoRepo.findByPath(path);
     }
 

@@ -107,7 +107,7 @@ public class LibraryService {
             scanningProgress = log.getProgress();
 
             // 根据扫描参数、文件大小和更新时间判断是否跳过扫描
-            PhotoIndex _photo = photoService.getPhoto(relativePath);
+            PhotoIndex _photo = photoService.getPhotoByPath(relativePath);
             if (!option.isFullScan() && _photo != null
                 && _photo.getMediaInfo().getLength() == file.length()
                 && _photo.getModifiedTime() == file.lastModified()) {

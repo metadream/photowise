@@ -1,14 +1,14 @@
 <header class="control-bar">
   <div class="toolbar">
-    <a onclick="uncheckPhotos()"><svg class="icon cross"><use xlink:href="/icons/icons.svg#cross"></use></svg></a>
+    <a class="round" onclick="uncheckPhotos()"><svg class="icon cross"><use xlink:href="/icons/icons.svg#cross"></use></svg></a>
     <span>选择了 <b id="totalChecked"></b> 张照片</span>
   </div>
 
   <div class="toolbar">
-    <a title="收藏" onclick="favorite()">
+    <a class="round" title="收藏" onclick="favorite()">
       <svg id="favor-icon" class="icon"><use xlink:href="/icons/icons.svg#favor"></use></svg>
     </a>
-    <a title="删除" onclick="trash()">
+    <a class="round" title="删除" onclick="trash()">
       <svg class="icon"><use xlink:href="/icons/icons.svg#trash"></use></svg>
     </a>
   </div>
@@ -40,7 +40,45 @@
 </div>
 
 <template id="exif-sidebar">
-  <h3>信息</h3>
+  <div class="headline">
+    <a class="round"><svg class="icon cross"><use xlink:href="/icons/icons.svg#cross"></use></svg></a>
+    <div>信息</div>
+  </div>
+  
+  <div class="fields">
+    <div><input type="text" name="title" placeholder="添加标题"/></div>
+    
+    <div class="details">
+      <div class="field">
+        <svg class="icon"><use xlink:href="/icons/icons.svg#calendar"></use></svg>
+        <div>
+          <div name="photoTime"></div>
+        </div>
+      </div>
+      <div class="field">
+        <svg class="icon"><use xlink:href="/icons/icons.svg#aperture"></use></svg>
+        <div>
+          <div name="makeModel">Apple iPhone 12</div>
+          <div>ƒ/1.6 1/785 4.2 mm ISO32</div>
+          <div><span name="apertureValue"></span></div>
+        </div>
+      </div>
+      <div class="field">
+        <svg class="icon"><use xlink:href="/icons/icons.svg#photo"></use></svg>
+        <div>
+          <div name="path"></div>
+          <div><span name="width"></span>×<span name="height"></span></div>
+        </div>
+      </div>
+      <div class="field">
+        <svg class="icon"><use xlink:href="/icons/icons.svg#place"></use></svg>
+        <div>
+          <div>中国新余市</div>
+          <div>13.12 1312312.131231</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script type="module">
