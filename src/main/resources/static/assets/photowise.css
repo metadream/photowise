@@ -430,6 +430,15 @@ svg.icon.info {
   transform: translateY(0);
 }
 
+.exif-sidebar {
+  position: fixed;
+  z-index: 999999;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background: #fff;
+}
+
 .pswp__image-indicator {
   height: 30px;
   margin-top: 15px;

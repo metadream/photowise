@@ -43,13 +43,13 @@ public class AppSetting {
     @Size(max = 20, message = "管理员账号不能超过 {max} 个字符")
     private String adminUser;
 
-    @Size(max = 60, message = "管理员密码不能超过 {max} 个字符之间")
+    @Size(min = 6, max = 60, message = "管理员密码必须在 {min}-{max} 个字符之间")
     private String adminPass;
 
     @Size(max = 20, message = "访客账号不能超过 {max} 个字符")
     private String guestUser;
 
-    @Size(max = 60, message = "访客密码不能超过 {max} 个字符之间")
+    @Size(min = 6, max = 60, message = "访客密码必须在 {min}-{max} 个字符之间")
     private String guestPass;
 
     private long usedSpace;
