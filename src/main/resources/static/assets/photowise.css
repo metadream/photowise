@@ -474,7 +474,8 @@ svg.icon.info {
 
 .gapped {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 0 10px;
 }
 
 .pswp__top-bar {

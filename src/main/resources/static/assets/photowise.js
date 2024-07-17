@@ -26,12 +26,15 @@ class ExifSidebar {
     
     static bind(data) {
         console.log(data);
+        const { mediaInfo, cameraInfo, geoLocation } = data;
         const $ = (s) => this.sidebar.querySelector(s);
-        $('[name="photoTime"]').innerHTML = data.photoTime;
-        $('[name="makeModel"]').innerHTML = data.cameraInfo.makeModel;
+        $('[name="photoTime"]').innerHTML = Thyme.util.formatDate(new Date(data.photoTime), 'yyyy-MM-dd hh:mm');
+        $('[name="makeModel"]').innerHTML = cameraInfo.makeModel;
         $('[name="path"]').innerHTML = data.path.split('/').pop();
-        $('[name="size"]').innerHTML = data.mediaInfo.width + ' × ' + data.mediaInfo.height;
-        $('[name="length"]').innerHTML = Thyme.util.formatBytes(data.mediaInfo.length);
+        $('[name="size"]').innerHTML = mediaInfo.width + ' × ' + mediaInfo.height;
+        $('[name="length"]').innerHTML = Thyme.util.formatBytes(mediaInfo.length);
+        $('[name="latilong"]').innerHTML = geoLocation?.latitude?.toFixed(4) + ', ' + geoLocation?.longitude?.toFixed(4);
+        $('[name="altitude"]').innerHTML = geoLocation?.altitude?.toFixed(1) + 'm';
     }
 }
 
