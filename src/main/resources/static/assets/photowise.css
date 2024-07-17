@@ -481,7 +481,7 @@ svg.icon.info {
   background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), transparent);
 }
 
-.pswp__image-indicator {
+.pswp__zoom-level {
   height: 30px;
   margin-top: 15px;
   margin-inline-start: 15px;
@@ -490,10 +490,6 @@ svg.icon.info {
   color: var(--pswp-icon-color);
   text-shadow: 1px 1px 3px var(--pswp-icon-color-secondary);
   opacity: 0.85;
-}
-
-.pswp__image-indicator > * {
-  margin-right: 10px;
 }
 
 .pswp__button--info-button {

@@ -72,28 +72,14 @@ export function initPhotoSwipe() {
 
     // 自定义UI组件
     lightbox.on('uiRegister', function() {
-        // 添加图片数据指示
+        // 添加缩放百分比指示
         lightbox.pswp.ui.registerElement({
-            name: 'image-indicator',
+            name: 'zoom-level',
             order: 5,
-            html: '<span id="resolution"></span><span id="length"></span><span id="zoom-level"></span>',
-
             onInit: (el, pswp) => {
-                const $resolution = el.querySelector('#resolution');
-                const $length = el.querySelector('#length');
-                const $zoomLevel = el.querySelector('#zoom-level');
-
-                // 分辨率和大小
-                pswp.on('change', () => {
-                    const { width, height, element } = pswp.currSlide.data;
-                    const { length } = element.dataset;
-                    $resolution.innerText = width + '×' + height;
-                    $length.innerText = Thyme.util.formatBytes(length);
-                });
-                // 缩放百分比
                 pswp.on('zoomPanUpdate', (e) => {
                     if (e.slide === pswp.currSlide) {
-                        $zoomLevel.innerText = Math.round(pswp.currSlide.currZoomLevel * 100) + '%';
+                        el.innerText = Math.round(pswp.currSlide.currZoomLevel * 100) + '%';
                     }
                 });
             }
