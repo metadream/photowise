@@ -4,6 +4,7 @@ import lombok.Data;
 
 /**
  * Media Information
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/01

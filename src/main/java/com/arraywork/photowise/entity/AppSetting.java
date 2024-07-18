@@ -1,12 +1,6 @@
 package com.arraywork.photowise.entity;
 
 import java.time.LocalDateTime;
-
-import org.hibernate.annotations.UpdateTimestamp;
-
-import com.arraywork.photowise.enums.AccessMode;
-import com.arraywork.springforce.util.Validator;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -15,10 +9,17 @@ import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.arraywork.photowise.enums.AccessMode;
+import com.arraywork.springforce.util.Validator;
+
 import lombok.Data;
 
 /**
  * App Setting
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/12

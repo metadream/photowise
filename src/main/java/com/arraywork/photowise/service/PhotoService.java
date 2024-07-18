@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import jakarta.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,9 @@ import com.arraywork.photowise.repo.PhotoRepo;
 import com.arraywork.springforce.util.Assert;
 import com.arraywork.springforce.util.Times;
 
-import jakarta.annotation.Resource;
-
 /**
  * Photo Service
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/01
@@ -58,11 +58,7 @@ public class PhotoService {
             LocalDateTime photoTime = Times.toLocal(photo.getPhotoTime());
             String yearMonth = photoTime.format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
-            List<PhotoIndex> photos = photoGroup.get(yearMonth);
-            if (photos == null) {
-                photos = new ArrayList<>();
-                photoGroup.put(yearMonth, photos);
-            }
+            List<PhotoIndex> photos = photoGroup.computeIfAbsent(yearMonth, k -> new ArrayList<>());
             photos.add(photo);
         }
         return photoGroup;

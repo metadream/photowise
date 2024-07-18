@@ -1,6 +1,7 @@
 logs/
 target/
 data/
+.idea/
 .settings/
 .classpath
 .project

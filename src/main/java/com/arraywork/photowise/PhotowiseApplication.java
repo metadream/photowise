@@ -1,5 +1,7 @@
 package com.arraywork.photowise;
 
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,10 +11,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import com.arraywork.springforce.BaseApplication;
 import com.arraywork.springforce.util.OpenCv;
 
-import jakarta.annotation.PostConstruct;
-
 /**
  * Application Bootstrap
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/01

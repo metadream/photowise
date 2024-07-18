@@ -1,5 +1,7 @@
 package com.arraywork.photowise.controller;
 
+import jakarta.annotation.Resource;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,10 +15,9 @@ import com.arraywork.photowise.entity.ScanningOption;
 import com.arraywork.photowise.service.LibraryService;
 import com.arraywork.photowise.spa.SpaRoute;
 
-import jakarta.annotation.Resource;
-
 /**
  * Library Controller
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/04

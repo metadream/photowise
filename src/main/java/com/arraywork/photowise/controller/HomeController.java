@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * Home Controller
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/01

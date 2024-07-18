@@ -8,6 +8,7 @@ import lombok.Getter;
 
 /**
  * Access Mode
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/15
@@ -23,6 +24,7 @@ public enum AccessMode implements GenericEnum<Integer> {
     private final Integer code;
     private final String label;
 
-    public static class Converter extends GenericEnumConverter<AccessMode, Integer> {}
+    public static class Converter extends GenericEnumConverter<AccessMode, Integer> {
+    }
 
 }

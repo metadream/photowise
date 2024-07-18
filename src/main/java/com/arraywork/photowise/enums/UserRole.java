@@ -7,6 +7,7 @@ import lombok.Getter;
 
 /**
  * User Role
+ *
  * @author AiChen
  * @created 2024/07/12
  */

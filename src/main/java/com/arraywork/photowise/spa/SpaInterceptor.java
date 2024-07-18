@@ -1,6 +1,9 @@
 package com.arraywork.photowise.spa;
 
 import java.io.IOException;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -14,15 +17,12 @@ import com.arraywork.photowise.service.SettingService;
 import com.arraywork.springforce.security.Principal;
 import com.arraywork.springforce.security.SecurityContext;
 
-import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 /**
  * Spa Interceptor
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
- * @created 2024/07/15
+ * @since 2024/07/15
  */
 @Component
 public class SpaInterceptor implements HandlerInterceptor, WebMvcConfigurer {
@@ -34,7 +34,7 @@ public class SpaInterceptor implements HandlerInterceptor, WebMvcConfigurer {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-        throws IOException {
+            throws IOException {
 
         if (handler instanceof HandlerMethod) {
             Principal principal = context.getPrincipal();

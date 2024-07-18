@@ -1,6 +1,6 @@
 package com.arraywork.photowise.entity;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.arraywork.photowise.enums.UserRole;
@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 
 /**
  * App User
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/12
@@ -25,7 +26,7 @@ public class AppUser extends Principal {
 
     @Override
     public List<SecurityRole> getSecurityRoles() {
-        return Arrays.asList(role);
+        return Collections.singletonList(role);
     }
 
 }

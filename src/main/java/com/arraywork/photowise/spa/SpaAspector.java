@@ -1,5 +1,8 @@
 package com.arraywork.photowise.spa;
 
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -8,11 +11,9 @@ import org.springframework.ui.Model;
 
 import com.arraywork.photowise.controller.HomeController;
 
-import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletRequest;
-
 /**
  * SPA Aspector
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/02

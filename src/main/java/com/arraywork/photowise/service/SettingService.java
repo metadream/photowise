@@ -2,6 +2,8 @@ package com.arraywork.photowise.service;
 
 import java.io.File;
 import java.nio.file.Path;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,11 +19,9 @@ import com.arraywork.springforce.security.Principal;
 import com.arraywork.springforce.security.SecurityService;
 import com.arraywork.springforce.util.Assert;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.Resource;
-
 /**
  * Setting Service
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/12
@@ -62,9 +62,9 @@ public class SettingService implements SecurityService {
     public Principal login(String username, String rawPassword) {
         AppSetting setting = getSetting();
         boolean isAdmin = username.equals(setting.getAdminUser())
-            && bCryptEncoder.matches(rawPassword, setting.getAdminPass());
+                && bCryptEncoder.matches(rawPassword, setting.getAdminPass());
         boolean isGuest = username.equals(setting.getGuestUser())
-            && bCryptEncoder.matches(rawPassword, setting.getGuestPass());
+                && bCryptEncoder.matches(rawPassword, setting.getGuestPass());
         Assert.isTrue(isAdmin || isGuest, "账号或密码错误");
 
         AppUser appUser = new AppUser();

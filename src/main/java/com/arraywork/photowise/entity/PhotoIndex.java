@@ -1,6 +1,12 @@
 package com.arraywork.photowise.entity;
 
 import java.time.LocalDateTime;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -11,16 +17,11 @@ import com.arraywork.photowise.enums.MediaType;
 import com.arraywork.springforce.id.NanoIdGeneration;
 
 import io.hypersistence.utils.hibernate.type.json.JsonStringType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /**
  * Photo Index
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/01

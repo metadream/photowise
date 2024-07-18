@@ -7,6 +7,7 @@ import com.arraywork.photowise.entity.PhotoIndex;
 
 /**
  * Photo Repository
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/01

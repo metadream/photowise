@@ -1,5 +1,7 @@
 package com.arraywork.photowise.controller;
 
+import jakarta.annotation.Resource;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -15,10 +17,9 @@ import com.arraywork.photowise.spa.SpaRoute;
 import com.arraywork.springforce.security.Authority;
 import com.arraywork.springforce.security.SecurityController;
 
-import jakarta.annotation.Resource;
-
 /**
  * Setting Controller
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/15

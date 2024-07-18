@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import jakarta.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -46,10 +47,9 @@ import com.drew.metadata.mp4.media.Mp4VideoDirectory;
 import com.drew.metadata.png.PngDirectory;
 import com.drew.metadata.webp.WebpDirectory;
 
-import jakarta.annotation.Resource;
-
 /**
  * Library Service
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/01
@@ -109,8 +109,8 @@ public class LibraryService {
             // 根据扫描参数、文件大小和更新时间判断是否跳过扫描
             PhotoIndex _photo = photoService.getPhotoByPath(relativePath);
             if (!option.isFullScan() && _photo != null
-                && _photo.getMediaInfo().getLength() == file.length()
-                && _photo.getModifiedTime() == file.lastModified()) {
+                    && _photo.getMediaInfo().getLength() == file.length()
+                    && _photo.getModifiedTime() == file.lastModified()) {
                 continue;
             }
 
@@ -122,7 +122,7 @@ public class LibraryService {
                     photo.setId(_photo.getId());
                 }
                 // 2. 生成缩略图
-                String output = Path.of(thumbnails, photo.getPath()).toString() + ".jpg";
+                String output = Path.of(thumbnails, photo.getPath()) + ".jpg";
                 if (photo.isVideo()) OpenCv.captureVideo(filePath, output, thumbSize);
                 else OpenCv.resizeImage(filePath, output, thumbSize);
 
@@ -141,7 +141,7 @@ public class LibraryService {
         // 完成扫描
         ScanningLog log = new ScanningLog(LogLevel.FINISHED, total, success);
         log.setMessage("发现 " + total + " 个文件，成功创建 " + success + " 个索引，"
-            + "共耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
+                + "共耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
         channelService.broadcast("library", log);
         scanningLogs.add(0, log);
         scanningProgress = -1;
@@ -192,20 +192,17 @@ public class LibraryService {
         // 完成清理
         ScanningLog log = new ScanningLog(LogLevel.FINISHED, total, success);
         log.setMessage("发现 " + total + " 个索引，清理 " + success + " 个，"
-            + "共耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
+                + "共耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
         channelService.broadcast("library", log);
         scanningLogs.add(0, log);
     }
 
     // 提取元数据
     private PhotoIndex extractMetadata(File file)
-        throws IOException, ImageProcessingException, MetadataException {
-        InputStream inputStream = null;
-        BufferedInputStream bufferedStream = null;
+            throws IOException, ImageProcessingException, MetadataException {
 
-        try {
-            inputStream = new FileInputStream(file);
-            bufferedStream = new BufferedInputStream(inputStream);
+        try (InputStream inputStream = new FileInputStream(file);
+             BufferedInputStream bufferedStream = new BufferedInputStream(inputStream)) {
 
             // 检测文件类型（仅支持"JPEG|PNG|HEIF|WebP|MP4|MOV"）
             FileType fileType = FileTypeDetector.detectFileType(bufferedStream);
@@ -242,8 +239,7 @@ public class LibraryService {
                         if (model != null) make += " " + model;
                         cameraInfo.setMakeModel(make);
                     }
-                }
-                else if (dir instanceof ExifSubIFDDirectory) {
+                } else if (dir instanceof ExifSubIFDDirectory) {
                     // 拍摄参数
                     String apertureValue = dir.getString(ExifSubIFDDirectory.TAG_FNUMBER);
                     if (apertureValue != null) {
@@ -273,8 +269,7 @@ public class LibraryService {
                         mediaInfo.setWidth(width);
                         mediaInfo.setHeight(height);
                     }
-                }
-                else if (dir instanceof GpsDirectory) {
+                } else if (dir instanceof GpsDirectory) {
                     GeoLocation geoLocation = extractGeoLocation((GpsDirectory) dir);
                     photo.setGeoLocation(geoLocation);
                 }
@@ -290,8 +285,7 @@ public class LibraryService {
                     mediaInfo.setHeight(dir.getInteger(WebpDirectory.TAG_IMAGE_HEIGHT));
                 }
                 // image/png
-                else if (dir instanceof PngDirectory) {
-                    PngDirectory pngDir = (PngDirectory) dir;
+                else if (dir instanceof PngDirectory pngDir) {
                     PngChunkType pngType = pngDir.getPngChunkType();
                     if (pngType.equals(PngChunkType.IHDR)) {
                         mediaInfo.setWidth(dir.getInteger(PngDirectory.TAG_IMAGE_WIDTH));
@@ -322,12 +316,9 @@ public class LibraryService {
             }
 
             long photoTime = photo.getOriginalTime() > 0
-                ? photo.getOriginalTime() : FileUtils.getCreationTime(file);
+                    ? photo.getOriginalTime() : FileUtils.getCreationTime(file);
             photo.setPhotoTime(photoTime);
             return photo;
-        } finally {
-            bufferedStream.close();
-            inputStream.close();
         }
     }
 

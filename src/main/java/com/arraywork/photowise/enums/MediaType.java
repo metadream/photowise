@@ -5,6 +5,7 @@ import lombok.Getter;
 
 /**
  * Media Type
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/13

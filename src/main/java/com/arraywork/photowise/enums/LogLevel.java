@@ -7,6 +7,7 @@ import lombok.Getter;
 
 /**
  * Log Level
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/06

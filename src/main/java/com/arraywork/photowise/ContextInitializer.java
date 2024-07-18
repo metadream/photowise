@@ -1,16 +1,16 @@
 package com.arraywork.photowise;
 
 import java.io.File;
-
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
-
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
 /**
  * Application Context Initializer
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/01

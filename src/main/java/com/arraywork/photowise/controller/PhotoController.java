@@ -2,6 +2,7 @@ package com.arraywork.photowise.controller;
 
 import java.io.IOException;
 import java.util.Map;
+import jakarta.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,10 +18,9 @@ import com.arraywork.photowise.service.PhotoService;
 import com.arraywork.photowise.service.SettingService;
 import com.arraywork.photowise.spa.SpaRoute;
 
-import jakarta.annotation.Resource;
-
 /**
  * Photo Controller
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/06

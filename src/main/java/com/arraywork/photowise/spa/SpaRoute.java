@@ -7,10 +7,12 @@ import java.lang.annotation.Target;
 
 /**
  * SPA Route Annotation
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/06
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SpaRoute {}
+public @interface SpaRoute {
+}

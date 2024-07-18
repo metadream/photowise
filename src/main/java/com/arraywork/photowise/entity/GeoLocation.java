@@ -4,6 +4,7 @@ import lombok.Data;
 
 /**
  * GEO Location
+ *
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/07/01
