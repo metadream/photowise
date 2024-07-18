@@ -1,14 +1,16 @@
 <header class="control-bar">
   <div class="toolbar">
-    <a class="round" onclick="uncheckPhotos()"><svg class="icon cross"><use xlink:href="/icons/icons.svg#cross"></use></svg></a>
+    <a class="round" onclick="uncheckPhotos()">
+      <svg class="icon cross"><use xlink:href="/icons/icons.svg#cross"></use></svg>
+    </a>
     <span>选择了 <b id="totalChecked"></b> 张照片</span>
   </div>
 
   <div class="toolbar">
-    <a class="round" title="收藏" onclick="favorite()">
-      <svg id="favor-icon" class="icon"><use xlink:href="/icons/icons.svg#favor"></use></svg>
+    <a class="round" onclick="favorite()" title="收藏">
+      <svg class="icon" id="favor-icon"><use xlink:href="/icons/icons.svg#favor"></use></svg>
     </a>
-    <a class="round" title="删除" onclick="trash()">
+    <a class="round" onclick="trash()" title="删除">
       <svg class="icon"><use xlink:href="/icons/icons.svg#trash"></use></svg>
     </a>
   </div>
@@ -22,16 +24,17 @@
         <a th:each="photo: ${group.value}"
            th:with="width=${photo.mediaInfo.width},height=${photo.mediaInfo.height},aspectRatio=${1.0*width/height}"
            th:style="|width:${140*aspectRatio}px;flex-grow:${140*aspectRatio}|"
-           th:href="|/original${photo.path}|"
            th:data-photo-id="${photo.id}"
+           th:data-pswp-type="${photo.mediaType.name.toLowerCase()}"
            th:data-pswp-width="${width}"
            th:data-pswp-height="${height}"
-           th:data-pswp-type="${photo.mediaType.name.toLowerCase()}"
+           th:href="|/original${photo.path}|"
            data-cropped="true">
-           <input type="checkbox" name="photoIds" th:value="${photo.id}" onchange="checkPhotos()"/>
-           <img th:data-src="|/thumbnail${photo.path}|" class="lazyload"/>
-           <i th:style="|padding-bottom:${100*1/aspectRatio}%|"></i>
-           <svg th:if="${photo.favored}" class="icon favored"><use xlink:href="/icons/icons.svg#favor"></use></svg>
+
+          <input name="photoIds" onchange="checkPhotos()" th:value="${photo.id}" type="checkbox"/>
+          <img class="lazyload" th:data-src="|/thumbnail${photo.path}|"/>
+          <i th:style="|padding-bottom:${100*1/aspectRatio}%|"></i>
+          <svg class="icon favored" th:if="${photo.favored}"><use xlink:href="/icons/icons.svg#favor"></use></svg>
         </a>
       </div>
     </section>
@@ -105,7 +108,7 @@ window.uncheckPhotos = function() {
 window.favorite = function() {
   const data = Thyme.form.getJsonObject($photoGroups);
   data.favored = !$favorIcon.classList.contains('fill');
-  
+
   Thyme.http.put('/favorite', data).then(() => {
     $favorIcon.classList.toggle('fill');
 
@@ -113,7 +116,7 @@ window.favorite = function() {
     for (const $cb of $checkedBox) {
       const $photoItem = $cb.parentNode;
       const $icon = $photoItem.querySelector('.favored');
-        
+
       if (data.favored && !$icon) {
         $photoItem.append(Thyme.util.createElement(`<svg class="icon favored"><use xlink:href="/icons/icons.svg#favor"></use></svg>`));
       } else if (!data.favored && $icon) {

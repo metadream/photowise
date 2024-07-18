@@ -5,7 +5,7 @@ import PhotoSwipeVideo from '/assets/photoswipe-video@1.0.2.js';
 class ExifSidebar {
     static width = '300px';
     static isHidden = true;
-    
+
     static {
         this.sidebar = Thyme.util.createElement('<div class="exif-sidebar"></div>');
         this.sidebar.style.transform = `translateX(${this.width})`;
@@ -22,11 +22,11 @@ class ExifSidebar {
     }
 
     static hide() {
-        this.sidebar.style.transition = '333ms';
+        this.sidebar.style.transition = '.5s';
         this.sidebar.style.transform = `translateX(${this.width})`;
         this.isHidden = true;
     }
-    
+
     static bind(data) {
         console.log(data);
         const { mediaInfo, cameraInfo, geoLocation } = data;
@@ -69,7 +69,7 @@ export function initPhotoSwipe() {
             };
         }
     });
-    
+
     // 关闭时恢复容器大小并隐藏侧边栏
     lightbox.on('close', () => {
         lightbox.pswp.element.style.right = '0';
