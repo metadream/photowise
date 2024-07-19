@@ -37,7 +37,7 @@ public class SettingService implements SecurityService {
     @Resource
     private SettingRepo settingRepo;
 
-    // 初始化设置
+    /** 初始化设置 */
     @PostConstruct
     @Transactional(rollbackFor = Exception.class)
     public void initSetting() {
@@ -52,19 +52,19 @@ public class SettingService implements SecurityService {
         settingRepo.save(setting);
     }
 
-    // 获取设置
+    /** 获取设置 */
     public AppSetting getSetting() {
         return settingRepo.findById(SETTING_ID).orElse(null);
     }
 
-    // 登录
+    /** 登录 */
     @Override
     public Principal login(String username, String rawPassword) {
         AppSetting setting = getSetting();
         boolean isAdmin = username.equals(setting.getAdminUser())
-                && bCryptEncoder.matches(rawPassword, setting.getAdminPass());
+            && bCryptEncoder.matches(rawPassword, setting.getAdminPass());
         boolean isGuest = username.equals(setting.getGuestUser())
-                && bCryptEncoder.matches(rawPassword, setting.getGuestPass());
+            && bCryptEncoder.matches(rawPassword, setting.getGuestPass());
         Assert.isTrue(isAdmin || isGuest, "账号或密码错误");
 
         AppUser appUser = new AppUser();
@@ -74,7 +74,7 @@ public class SettingService implements SecurityService {
         return appUser;
     }
 
-    // 保存设置
+    /** 保存设置 */
     @Transactional(rollbackFor = Exception.class)
     public AppSetting save(AppSetting _setting) {
         String _library = Path.of(_setting.getLibrary()).toString();
@@ -97,7 +97,7 @@ public class SettingService implements SecurityService {
         return setting;
     }
 
-    // 保存使用空间
+    /** 保存使用空间 */
     @Transactional(rollbackFor = Exception.class)
     public AppSetting saveUsedSpace(long usedSpace) {
         AppSetting setting = getSetting();

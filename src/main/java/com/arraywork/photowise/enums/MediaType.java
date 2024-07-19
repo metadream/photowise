@@ -14,8 +14,7 @@ import lombok.Getter;
 @Getter
 public enum MediaType {
 
-    IMAGE,
-    VIDEO;
+    IMAGE, VIDEO;
 
     public static MediaType nameOf(String type) {
         for (MediaType e : values()) {

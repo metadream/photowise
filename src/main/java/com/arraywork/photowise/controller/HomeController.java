@@ -26,7 +26,7 @@ public class HomeController {
         return "redirect:/photos";
     }
 
-    // This method is controlled by SpaAspector
+    /** This method is controlled by SpaAspector */
     public String layout(Model model) {
         model.addAttribute("version", version);
         model.addAttribute("title", title);

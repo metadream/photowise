@@ -34,7 +34,7 @@ public class SpaInterceptor implements HandlerInterceptor, WebMvcConfigurer {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws IOException {
+        throws IOException {
 
         if (handler instanceof HandlerMethod) {
             Principal principal = context.getPrincipal();

@@ -75,7 +75,7 @@ public class LibraryService {
     @Value("${photowise.thumb-size}")
     private int thumbSize;
 
-    // 异步扫描照片库
+    /** 异步扫描照片库 */
     @Async
     public void startScan(ScanningOption option) {
         File lib = new File(library);
@@ -109,8 +109,8 @@ public class LibraryService {
             // 根据扫描参数、文件大小和更新时间判断是否跳过扫描
             PhotoIndex _photo = photoService.getPhotoByPath(relativePath);
             if (!option.isFullScan() && _photo != null
-                    && _photo.getMediaInfo().getLength() == file.length()
-                    && _photo.getModifiedTime() == file.lastModified()) {
+                && _photo.getMediaInfo().getLength() == file.length()
+                && _photo.getModifiedTime() == file.lastModified()) {
                 continue;
             }
 
@@ -141,29 +141,33 @@ public class LibraryService {
         // 完成扫描
         ScanningLog log = new ScanningLog(LogLevel.FINISHED, total, success);
         log.setMessage("发现 " + total + " 个文件，成功创建 " + success + " 个索引，"
-                + "共耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
+            + "共耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
         channelService.broadcast("library", log);
         scanningLogs.add(0, log);
         scanningProgress = -1;
     }
 
+    /** 获取扫描进度 */
     public int getProgress() {
         return scanningProgress;
     }
 
+    /** 获取扫描日志 */
     public List<ScanningLog> getLogs() {
         return scanningLogs;
     }
 
+    /** 中止扫描 */
     public void abortScan() {
         scanningProgress = -1;
     }
 
+    /** 清空日志 */
     public void clearLogs() {
         scanningLogs.clear();
     }
 
-    // 清理无效索引
+    /** 清理无效索引 */
     private void cleanIndexes() {
         long startTime = System.currentTimeMillis();
         List<PhotoIndex> photos = photoService.getIndexes();
@@ -192,14 +196,14 @@ public class LibraryService {
         // 完成清理
         ScanningLog log = new ScanningLog(LogLevel.FINISHED, total, success);
         log.setMessage("发现 " + total + " 个索引，清理 " + success + " 个，"
-                + "共耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
+            + "共耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
         channelService.broadcast("library", log);
         scanningLogs.add(0, log);
     }
 
-    // 提取元数据
+    /** 提取元数据 */
     private PhotoIndex extractMetadata(File file)
-            throws IOException, ImageProcessingException, MetadataException {
+        throws IOException, ImageProcessingException, MetadataException {
 
         try (InputStream inputStream = new FileInputStream(file);
              BufferedInputStream bufferedStream = new BufferedInputStream(inputStream)) {
@@ -316,13 +320,13 @@ public class LibraryService {
             }
 
             long photoTime = photo.getOriginalTime() > 0
-                    ? photo.getOriginalTime() : FileUtils.getCreationTime(file);
+                ? photo.getOriginalTime() : FileUtils.getCreationTime(file);
             photo.setPhotoTime(photoTime);
             return photo;
         }
     }
 
-    // 提取GPS元数据
+    /** 提取GPS元数据 */
     private GeoLocation extractGeoLocation(GpsDirectory gps) {
         GeoLocation geoLocation = null;
         com.drew.lang.GeoLocation geo = gps.getGeoLocation();

@@ -26,7 +26,7 @@ public enum LogLevel {
     private final Integer code;
     private final String label;
 
-    // 序列化字面量属性
+    /** 序列化字面量属性 */
     public String getName() {
         return this.name();
     }

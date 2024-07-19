@@ -14,8 +14,5 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum UserRole implements SecurityRole {
-
-    GUEST,
-    ADMIN;
-
+    GUEST, ADMIN;
 }

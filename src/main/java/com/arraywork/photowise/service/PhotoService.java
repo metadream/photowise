@@ -44,12 +44,12 @@ public class PhotoService {
     @Value("${photowise.trash}")
     private String trash;
 
-    // 获取所有索引
+    /** 获取所有索引 */
     public List<PhotoIndex> getIndexes() {
         return photoRepo.findAll();
     }
 
-    // 根据条件获取索引并按年月分组
+    /** 根据条件获取索引并按年月分组 */
     public Map<String, List<PhotoIndex>> getIndexes(PhotoIndex condition) {
         Map<String, List<PhotoIndex>> photoGroup = new TreeMap<>(Comparator.reverseOrder());
         List<PhotoIndex> indexes = photoRepo.findAll(new PhotoFilter(condition));
@@ -64,31 +64,31 @@ public class PhotoService {
         return photoGroup;
     }
 
-    // 根据ID获取照片索引
+    /** 根据ID获取照片索引 */
     public PhotoIndex getPhoto(String id) {
         Optional<PhotoIndex> optional = photoRepo.findById(id);
         Assert.isTrue(optional.isPresent(), "照片索引不存在");
         return optional.get();
     }
 
-    // 根据路径获取照片索引
+    /** 根据路径获取照片索引 */
     public PhotoIndex getPhotoByPath(String path) {
         return photoRepo.findByPath(path);
     }
 
-    // Save photo
+    /** Save photo */
     @Transactional(rollbackFor = Exception.class)
     public PhotoIndex save(PhotoIndex photo) {
         return photoRepo.save(photo);
     }
 
-    // Delete photo
+    /** Delete photo */
     @Transactional(rollbackFor = Exception.class)
     public void delete(PhotoIndex photo) {
         photoRepo.delete(photo);
     }
 
-    // 批量切换收藏
+    /** 批量切换收藏 */
     @Transactional(rollbackFor = Exception.class)
     public int favorite(String[] photoIds, boolean favored) {
         int result = 0;
@@ -100,7 +100,7 @@ public class PhotoService {
         return result;
     }
 
-    // 批量移入回收站
+    /** 批量移入回收站 */
     @Transactional(rollbackFor = Exception.class)
     public int trash(String[] photoIds) throws IOException {
         int result = 0;
