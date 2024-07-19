@@ -15,10 +15,10 @@ class ExifSidebar {
     }
 
     static show() {
-         this.sidebar = document.querySelector('.exif-sidebar');
-         this.sidebar.style.transition = 'none';
-         this.sidebar.style.transform = `translateX(0)`;
-         this.isHidden = false;
+        this.sidebar = document.querySelector('.exif-sidebar');
+        this.sidebar.style.transition = 'none';
+        this.sidebar.style.transform = `translateX(0)`;
+        this.isHidden = false;
     }
 
     static hide() {
