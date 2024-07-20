@@ -12,12 +12,13 @@
     --lineColor: #ddd;
     --bgColor: #f6f6f6;
     --fontFamily: Monda;
-    --headerHeight: 60px;--asideWidth: 240px;
+    --headerHeight: 60px;
+    --asideWidth: 240px;
 }
 
 @font-face {
-font-family: Monda;
-src: url(monda.woff2) format('woff2')
+    font-family: Monda;
+    src: url(monda.woff2) format("woff2")
 }
 
 .INFO {
@@ -246,12 +247,12 @@ svg.icon.favored {
 
 svg.icon.cross {
     fill: var(--fontColor);
-    stroke: unset;
+    stroke: none;
 }
 
 svg.icon.info {
     fill: #fff;
-    stroke: unset;
+    stroke: none;
 }
 
 .lazyload, .lazyloading {
@@ -354,7 +355,7 @@ svg.icon.info {
 }
 
 .photo-wall::after {
-    content: '';
+    content: "";
     flex-grow: 999999999;
 }
 
@@ -390,7 +391,7 @@ svg.icon.info {
 }
 
 .photo-wall > a input[type="checkbox"]:after {
-    content: '';
+    content: "";
     display: inline-block;
     width: 7px;
     height: 12px;
@@ -453,7 +454,7 @@ svg.icon.info {
     margin: 30px 0;
 }
 
-.exif-sidebar .field>*:last-child {
+.exif-sidebar .field > *:last-child {
     flex: 1;
     margin-left: 15px;
 }

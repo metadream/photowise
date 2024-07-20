@@ -1,10 +1,11 @@
-import PhotoSwipeLightbox from '/assets/photoswipe-lightbox@5.4.4.js';
-import PhotoSwipeVideo from '/assets/photoswipe-video@1.0.2.js';
+import PhotoSwipeLightbox from './photoswipe-lightbox@5.4.4.js';
+import PhotoSwipeVideo from './photoswipe-video@1.0.2.js';
 
 // 照片信息侧边栏
 class ExifSidebar {
     static width = '300px';
     static isHidden = true;
+    static sidebar = null;
 
     static {
         this.sidebar = Thyme.util.createElement('<div class="exif-sidebar"></div>');
@@ -51,7 +52,7 @@ export function initPhotoSwipe() {
 
     // 初始化 PhotoSwipe 组件
     const lightbox = new PhotoSwipeLightbox({
-        pswpModule: () => import ('/assets/photoswipe@5.4.4.js'),
+        pswpModule: () => import ('./photoswipe@5.4.4.js'),
         gallery: '.photo-wall',
         children: 'a',
         mainClass: 'pswp-with-perma-preloader',
@@ -107,7 +108,7 @@ export function initPhotoSwipe() {
                         pswp.element.style.right = ExifSidebar.width;
                         ExifSidebar.show();
                     } else {
-                        pswp.element.style.right = 0;
+                        pswp.element.style.right = '0';
                         ExifSidebar.hide();
                     }
                     pswp.updateSize();
@@ -115,7 +116,7 @@ export function initPhotoSwipe() {
                 // 设置侧边栏字段数据
                 pswp.on('change', () => {
                     const { photoId } = pswp.currSlide.data.element.dataset;
-                    Thyme.http.get('/photo/'+photoId).then(res => ExifSidebar.bind(res));
+                    Thyme.http.get('/photo/' + photoId).then(res => ExifSidebar.bind(res));
                 });
             }
         });

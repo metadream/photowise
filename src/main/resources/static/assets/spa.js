@@ -3,6 +3,11 @@ class Spa {
     route = null;
     router = new Router();
 
+    // Add unload handler to route
+    set onPageUnload(fn) {
+        this.router.update(location.pathname, fn);
+    }
+
     // Mount target and init
     mount(target) {
         this.$mount = document.querySelector(target);
@@ -17,11 +22,6 @@ class Spa {
         window.addEventListener('popstate', () => {
             this.navigate(location.pathname);
         });
-    }
-
-    // Add unload handler to route
-    set onPageUnload(fn) {
-        this.router.update(location.pathname, fn);
     }
 
     // Init routes by elements with 'data-path' attribute
@@ -94,13 +94,15 @@ class Router {
     routes = {};
 
     add(path, load) {
-        this.routes[path] = { load, unload: ()=>{} };
+        this.routes[path] = { load, unload: () => {} };
     }
+
     update(path, unload) {
         const route = this.find(path);
         if (!route) throw new Error('Route not found');
         route.unload = unload;
     }
+
     find(path) {
         return this.routes[path];
     }
