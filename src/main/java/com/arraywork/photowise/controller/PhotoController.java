@@ -6,6 +6,7 @@ import jakarta.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.arraywork.photowise.entity.PhotoIndex;
 import com.arraywork.photowise.enums.MediaType;
 import com.arraywork.photowise.service.PhotoService;
-import com.arraywork.photowise.service.SettingService;
 import com.arraywork.photowise.spa.SpaRoute;
 
 /**
@@ -28,8 +28,6 @@ import com.arraywork.photowise.spa.SpaRoute;
 @Controller
 public class PhotoController {
 
-    @Resource
-    private SettingService settingService;
     @Resource
     private PhotoService photoService;
 
@@ -67,19 +65,19 @@ public class PhotoController {
 
     @SpaRoute
     @GetMapping("/animals")
-    public String animals(Model model) {
+    public String animals() {
         return "animals";
     }
 
     @SpaRoute
     @GetMapping("/things")
-    public String things(Model model) {
+    public String things() {
         return "things";
     }
 
     @SpaRoute
     @GetMapping("/albums")
-    public String albums(Model model) {
+    public String albums() {
         return "albums";
     }
 
@@ -94,7 +92,7 @@ public class PhotoController {
 
     @SpaRoute
     @GetMapping("/folders")
-    public String folders(Model model) {
+    public String folders() {
         return "folders";
     }
 
@@ -111,6 +109,12 @@ public class PhotoController {
     @ResponseBody
     public PhotoIndex detail(@PathVariable String id) {
         return photoService.getPhoto(id);
+    }
+
+    @PutMapping("/photo")
+    @ResponseBody
+    public PhotoIndex save(@Validated @RequestBody PhotoIndex photo) {
+        return photoService.save(photo);
     }
 
     @PutMapping("/favorite")

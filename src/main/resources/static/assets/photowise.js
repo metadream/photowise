@@ -6,6 +6,7 @@ class ExifSidebar {
     static width = '300px';
     static isHidden = true;
     static element = null;
+    static photoIndex = null;
 
     static {
         this.element = Thyme.util.createElement('<div class="exif-sidebar"></div>');
@@ -13,6 +14,18 @@ class ExifSidebar {
         this.element.style.width = this.width;
         this.element.append(document.querySelector('#exif-sidebar').content);
         document.body.append(this.element);
+
+        const input = this.element.querySelector('input[name="title"]');
+        input.onblur = () => {
+            input.value = input.value.trim();
+            if (!input.value) return;
+            if (this.photoIndex.title === input.value) return;
+
+            this.photoIndex.title = input.value;
+            Thyme.http.put('/photo', this.photoIndex).then(() => {
+                Thyme.success('保存成功');
+            });
+        }
     }
 
     static show() {
@@ -28,9 +41,12 @@ class ExifSidebar {
     }
 
     static bind(data) {
+        this.photoIndex = data;
         const { mediaInfo, cameraInfo, geoLocation } = data;
         const { latitude, longitude, altitude } = geoLocation ?? {};
+
         Thyme.form.setJsonObject(this.element, {
+            title: data.title,
             photoTime: Thyme.util.formatDate(new Date(data.photoTime), 'yyyy-MM-dd hh:mm'),
             makeModel: cameraInfo.makeModel ?? '',
             apertureValue: cameraInfo.apertureValue ? 'ƒ/' + cameraInfo.apertureValue : '',
@@ -66,7 +82,7 @@ export function initPhotoSwipe() {
         trapFocus: false,
 
         // 图片视口根据容器大小适配（侧边栏带来的调整）
-        getViewportSizeFn: function(options, pswp) {
+        getViewportSizeFn: (options, pswp) => {
             if (!pswp.element) return;
             const rect = pswp.element.getBoundingClientRect();
             return {
