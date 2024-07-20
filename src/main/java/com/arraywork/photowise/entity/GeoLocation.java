@@ -15,5 +15,6 @@ public class GeoLocation {
     private double latitude;
     private double longitude;
     private double altitude;
+    private String location;
 
 }

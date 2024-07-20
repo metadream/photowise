@@ -433,7 +433,11 @@ svg.icon.info {
     bottom: 0;
     right: 0;
     background: #fff;
-    padding: 16px 25px;
+    padding: 25px;
+}
+
+.exif-sidebar h3 {
+    margin-top: -14px;
 }
 
 .exif-sidebar input[type="text"] {

@@ -68,7 +68,7 @@ class Spa {
 
     // Load page content in async
     async #loadPage(path) {
-        const response = await fetch(path, { headers: { 'x-spa-request': true } });
+        const response = await fetch(path, { headers: { 'x-spa-request': 'true' } });
         const html = await response.text();
         this.#renderPage(this.$mount, html);
     }

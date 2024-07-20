@@ -42,8 +42,8 @@
 </div>
 
 <template id="exif-sidebar">
-  <h4>信息</h4>
-  <div><input type="text" name="title" placeholder="添加标题"/></div>
+  <h3>信息</h3>
+  <div><input type="text" name="title" value="test" placeholder="添加标题"/></div>
 
   <div class="field">
     <svg class="icon"><use xlink:href="/icons/icons.svg#calendar"></use></svg>
@@ -52,11 +52,15 @@
     </div>
   </div>
   <div class="field">
-    <svg class="icon"><use xlink:href="/icons/icons.svg#aperture"></use></svg>
+    <svg class="icon"><use xlink:href="/icons/icons.svg#camera"></use></svg>
     <div>
-      <div name="makeModel">Apple iPhone 12</div>
-      <div class="footnote gapped">ƒ/1.6 1/785 4.2 mm ISO32</div>
-      <div class="footnote gapped"><span name="apertureValue"></span></div>
+      <div name="makeModel"></div>
+      <div class="footnote gapped">
+        <span name="apertureValue"></span>
+        <span name="shutterSpeed"></span>
+        <span name="focalLength"></span>
+        <span name="isoEquivalent"></span>
+      </div>
     </div>
   </div>
   <div class="field">
@@ -69,7 +73,7 @@
   <div class="field">
     <svg class="icon"><use xlink:href="/icons/icons.svg#place"></use></svg>
     <div>
-      <div>中国新余市</div>
+      <div name="location"></div>
       <div class="footnote gapped"><span name="latilong"></span><span name="altitude"></span></div>
     </div>
   </div>

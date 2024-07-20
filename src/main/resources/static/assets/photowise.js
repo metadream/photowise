@@ -1,53 +1,57 @@
 import PhotoSwipeLightbox from './photoswipe-lightbox@5.4.4.js';
 import PhotoSwipeVideo from './photoswipe-video@1.0.2.js';
 
-// 照片信息侧边栏
+/** 照片信息侧边栏 */
 class ExifSidebar {
     static width = '300px';
     static isHidden = true;
-    static sidebar = null;
+    static element = null;
 
     static {
-        this.sidebar = Thyme.util.createElement('<div class="exif-sidebar"></div>');
-        this.sidebar.style.transform = `translateX(${this.width})`;
-        this.sidebar.style.width = this.width;
-        this.sidebar.append(document.querySelector('#exif-sidebar').content);
-        document.body.append(this.sidebar);
+        this.element = Thyme.util.createElement('<div class="exif-sidebar"></div>');
+        this.element.style.transform = `translateX(${this.width})`;
+        this.element.style.width = this.width;
+        this.element.append(document.querySelector('#exif-sidebar').content);
+        document.body.append(this.element);
     }
 
     static show() {
-        this.sidebar = document.querySelector('.exif-sidebar');
-        this.sidebar.style.transition = 'none';
-        this.sidebar.style.transform = `translateX(0)`;
+        this.element.style.transition = 'none';
+        this.element.style.transform = `translateX(0)`;
         this.isHidden = false;
     }
 
     static hide() {
-        this.sidebar.style.transition = '.5s';
-        this.sidebar.style.transform = `translateX(${this.width})`;
+        this.element.style.transition = '.5s';
+        this.element.style.transform = `translateX(${this.width})`;
         this.isHidden = true;
     }
 
     static bind(data) {
-        console.log(data);
         const { mediaInfo, cameraInfo, geoLocation } = data;
-        const $ = (s) => this.sidebar.querySelector(s);
-        $('[name="photoTime"]').innerHTML = Thyme.util.formatDate(new Date(data.photoTime), 'yyyy-MM-dd hh:mm');
-        $('[name="makeModel"]').innerHTML = cameraInfo.makeModel;
-        $('[name="path"]').innerHTML = data.path.split('/').pop();
-        $('[name="size"]').innerHTML = mediaInfo.width + ' × ' + mediaInfo.height;
-        $('[name="length"]').innerHTML = Thyme.util.formatBytes(mediaInfo.length);
-        $('[name="latilong"]').innerHTML = geoLocation?.latitude?.toFixed(4) + ', ' + geoLocation?.longitude?.toFixed(4);
-        $('[name="altitude"]').innerHTML = geoLocation?.altitude?.toFixed(1) + 'm';
+        const { latitude, longitude, altitude } = geoLocation ?? {};
+        Thyme.form.setJsonObject(this.element, {
+            photoTime: Thyme.util.formatDate(new Date(data.photoTime), 'yyyy-MM-dd hh:mm'),
+            makeModel: cameraInfo.makeModel ?? '',
+            apertureValue: cameraInfo.apertureValue ? 'ƒ/' + cameraInfo.apertureValue : '',
+            shutterSpeed: cameraInfo.shutterSpeed ? cameraInfo.shutterSpeed + 's' : '',
+            focalLength: cameraInfo.focalLength ? cameraInfo.focalLength + 'mm' : '',
+            isoEquivalent: cameraInfo.isoEquivalent ? 'ISO' + cameraInfo.isoEquivalent : '',
+            path: data.path.split('/').pop(),
+            size: mediaInfo.width + ' × ' + mediaInfo.height,
+            length: Thyme.util.formatBytes(mediaInfo.length),
+            latilong: latitude && longitude ? latitude?.toFixed(4) + ', ' + longitude?.toFixed(4) : '',
+            altitude: altitude ? altitude.toFixed(1) + 'm' : ''
+        });
     }
 }
 
-// 照片墙初始化
+/** 照片墙初始化 */
 export function initPhotoSwipe() {
     // 勾选元素捕获 Photoswipe 点击缩略图事件以防止传播
     const checkboxes = document.querySelectorAll('.photo-wall input[type="checkbox"]');
     for (const checkbox of checkboxes) {
-        checkbox.onclick = (e) => e.stopPropagation();
+        checkbox.onclick = e => e.stopPropagation();
     }
 
     // 初始化 PhotoSwipe 组件
@@ -59,6 +63,7 @@ export function initPhotoSwipe() {
         loop: false,
         zoom: false,
         wheelToZoom: true,
+        trapFocus: false,
 
         // 图片视口根据容器大小适配（侧边栏带来的调整）
         getViewportSizeFn: function(options, pswp) {
