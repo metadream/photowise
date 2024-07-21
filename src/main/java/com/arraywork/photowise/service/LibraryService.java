@@ -134,14 +134,13 @@ public class LibraryService {
             } catch (Exception e) {
                 log.setLevel(LogLevel.ERROR);
                 log.setMessage(e.getMessage());
-            } finally {
                 channelService.broadcast("library", log);
                 scanningLogs.add(0, log);
             }
         }
 
         // 完成扫描
-        ScanningLog log = new ScanningLog(LogLevel.FINISHED, total, success);
+        ScanningLog log = new ScanningLog(LogLevel.FINISHED, total, count);
         log.setMessage("发现 " + total + " 个文件，成功创建 " + success + " 个索引，"
             + "共耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
         channelService.broadcast("library", log);
