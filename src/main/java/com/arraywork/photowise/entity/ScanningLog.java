@@ -28,7 +28,7 @@ public class ScanningLog {
         this.level = level;
         this.total = total;
         this.count = count;
-        this.progress = 100 * count / total;
+        this.progress = total > 0 ? 100 * count / total : -1;
     }
 
 }

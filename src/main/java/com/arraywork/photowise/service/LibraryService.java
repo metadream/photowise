@@ -67,9 +67,8 @@ public class LibraryService {
     private ChannelService channelService;
     @Resource
     private PhotoService photoService;
-
-    @Value("${photowise.library}")
-    private String library;
+    @Resource
+    private SettingService settingService;
 
     @Value("${photowise.thumbnails}")
     private String thumbnails;
@@ -80,16 +79,31 @@ public class LibraryService {
     /** 异步扫描照片库 */
     @Async
     public void startScan(ScanningOption option) {
+        String library = settingService.getSetting().getLibrary();
+        if (library == null) {
+            ScanningLog log = new ScanningLog(LogLevel.ERROR, 0, 0);
+            log.setMessage("请先设置照片库");
+            channelService.broadcast("library", log);
+            scanningLogs.add(log);
+            return;
+        }
         File lib = new File(library);
-        Assert.isTrue(lib.exists() && lib.isDirectory(), "照片库不存在或不是目录");
+        if (!lib.exists() || !lib.isDirectory()) {
+            ScanningLog log = new ScanningLog(LogLevel.ERROR, 0, 0);
+            log.setMessage("照片库不存在或不是目录");
+            channelService.broadcast("library", log);
+            scanningLogs.add(log);
+            return;
+        }
 
+        // 开始扫描...
         if (scanningProgress > -1) return;
         scanningProgress = 0;
         long startTime = System.currentTimeMillis();
 
         // 清理无效索引
         if (option.isCleanIndexes()) {
-            cleanIndexes();
+            cleanIndexes(library);
         }
 
         // 获取照片库下所有文件
@@ -119,7 +133,7 @@ public class LibraryService {
             // 实质性处理
             try {
                 // 1. 提取元数据
-                PhotoIndex photo = extractMetadata(file);
+                PhotoIndex photo = extractMetadata(library, file);
                 if (_photo != null) {
                     photo.setId(_photo.getId());
                 }
@@ -169,7 +183,7 @@ public class LibraryService {
     }
 
     /** 清理无效索引 */
-    private void cleanIndexes() {
+    private void cleanIndexes(String library) {
         long startTime = System.currentTimeMillis();
         List<PhotoIndex> photos = photoService.getIndexes();
         int total = photos.size();
@@ -203,7 +217,7 @@ public class LibraryService {
     }
 
     /** 提取元数据 */
-    private PhotoIndex extractMetadata(File file)
+    private PhotoIndex extractMetadata(String library, File file)
         throws IOException, ImageProcessingException, MetadataException {
 
         try (InputStream inputStream = new FileInputStream(file);

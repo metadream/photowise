@@ -10,9 +10,6 @@
 - 清空回收站：同时删除索引、trash文件、缩略图
 - 存储空间：usedSpace/(usedSpace+file.getUsableSpace())
 - thyme.http finally写法
-- library 显示：当前照片库路径：
-- 所有从配置文件读取的library改为从数据库读取
-- setting缓存
 - photowall独立成组件，可自由关联controlbar，type module和window.分开写
 - thyme radio 访问模式
 

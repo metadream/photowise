@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.arraywork.photowise.entity.ScanningOption;
 import com.arraywork.photowise.service.LibraryService;
+import com.arraywork.photowise.service.SettingService;
 import com.arraywork.photowise.spa.SpaRoute;
 
 /**
@@ -27,10 +28,13 @@ public class LibraryController {
 
     @Resource
     private LibraryService libraryService;
+    @Resource
+    private SettingService settingService;
 
     @SpaRoute
     @GetMapping("/library")
     public String library(Model model) {
+        model.addAttribute("setting", settingService.getSetting());
         model.addAttribute("scanningProgress", libraryService.getProgress());
         model.addAttribute("scanningLogs", libraryService.getLogs());
         return "library";

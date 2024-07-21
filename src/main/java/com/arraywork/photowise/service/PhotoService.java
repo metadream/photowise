@@ -37,9 +37,8 @@ public class PhotoService {
 
     @Resource
     private PhotoRepo photoRepo;
-
-    @Value("${photowise.library}")
-    private String library;
+    @Resource
+    private SettingService settingService;
 
     @Value("${photowise.trash}")
     private String trash;
@@ -108,6 +107,7 @@ public class PhotoService {
             PhotoIndex photo = photoRepo.getReferenceById(id);
             photo.setTrashed(true);
 
+            String library = settingService.getSetting().getLibrary();
             Path original = Path.of(library, photo.getPath());
             Path dest = Path.of(trash, photo.getPath());
             File parent = dest.getParent().toFile();

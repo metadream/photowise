@@ -18,9 +18,9 @@ class Spa {
             this.router.add(path, () => this.#loadPage(path));
         }
 
-        this.navigate(path);
+        this.navigate(path, false);
         window.addEventListener('popstate', () => {
-            this.navigate(location.pathname);
+            this.navigate(location.pathname, false);
         });
     }
 
@@ -32,19 +32,16 @@ class Spa {
         for (const $route of $routes) {
             const path = $route.dataset.path;
             this.router.add(path, () => this.#loadPage(path));
-
-            $route.onclick = () => {
-                history.pushState(null, null, path);
-                this.navigate(path);
-            };
+            $route.onclick = () => this.navigate(path);
         }
     }
 
     // Navigate specified path
-    navigate(path) {
+    navigate(path, pushState = true) {
         this.route && this.route.unload();
         this.route = this.router.find(path);
         if (!this.route) throw new Error('Route not found.');
+        if (pushState) history.pushState(null, null, path);
 
         Thyme.Progress.start(this.$mount);
         this.route.load().then(() => {

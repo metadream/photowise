@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.arraywork.photowise.service.SettingService;
 import com.arraywork.springforce.StaticResourceHandler;
 import com.arraywork.springforce.util.HttpUtils;
 
@@ -27,15 +28,15 @@ public class ResourceController {
 
     @Resource
     private StaticResourceHandler resourceHandler;
-
-    @Value("${photowise.library}")
-    private String library;
+    @Resource
+    private SettingService settingService;
 
     @Value("${photowise.thumbnails}")
     private String thumbnails;
 
     @GetMapping("/original/**")
     public void original(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String library = settingService.getSetting().getLibrary();
         String path = HttpUtils.getWildcard(request);
         path = URLDecoder.decode(path, StandardCharsets.UTF_8);
         resourceHandler.serve(Path.of(library, path), request, response);

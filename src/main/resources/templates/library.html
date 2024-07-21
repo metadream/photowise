@@ -1,6 +1,7 @@
 <h3>Library</h3>
 
 <section>
+  <div>当前照片库路径：[[${setting?.library}]]</div>
   <div class="progress" id="scan-progress"><div th:style="|width:${scanningProgress}%|"></div></div>
   <div class="footnote">点击下方按钮开始扫描...</div>
   <p class="option-group">
@@ -9,7 +10,7 @@
   </p>
   <p class="button-group" th:with="isScanning = ${scanningProgress > -1}">
     <th-button onclick="startScan()" id="scan-btn" th:disabled="${isScanning}">
-        [[${isScanning ? '正在扫描' : '开始扫描'}]]
+      [[${isScanning ? '正在扫描' : '开始扫描'}]]
     </th-button>
     <th-button variant="outlined" id="abort-btn" onclick="abortScan()" th:disabled="${!isScanning}">取消扫描</th-button>
     <th-button variant="outlined minor" onclick="clearLogs(this)" th:if="${scanningLogs.size > 0}">清空日志</th-button>
@@ -92,7 +93,7 @@ function render(log) {
     const $log = Thyme.util.createElement(`<div>[${time}]&#160;${html}</div>`);
     $logs.insertBefore($log, $logs.firstChild);
 
-    if (level == 'FINISHED') {
+    if (log.progress < 0) {
       $abortBtn.disabled = true;
       $scanBtn.disabled = false;
       $scanBtn.innerHTML = '开始扫描';

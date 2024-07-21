@@ -5,6 +5,8 @@ import java.nio.file.Path;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -53,6 +55,7 @@ public class SettingService implements SecurityService {
     }
 
     /** 获取设置 */
+    @Cacheable(value = "photowise", key = "'#setting'")
     public AppSetting getSetting() {
         return settingRepo.findById(SETTING_ID).orElse(null);
     }
@@ -75,6 +78,7 @@ public class SettingService implements SecurityService {
     }
 
     /** 保存设置 */
+    @CachePut(value = "photowise", key = "'#setting'")
     @Transactional(rollbackFor = Exception.class)
     public AppSetting save(AppSetting _setting) {
         String _library = Path.of(_setting.getLibrary()).toString();
