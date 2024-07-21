@@ -62,8 +62,8 @@
     <footer>
       <div class="storage">
         <div><svg class="icon"><use xlink:href="/icons/icons.svg#cloud"></use></svg>存储空间</div>
-        <div class="progress"><div style="width:80%"></div></div>
-        <div>已使用 14GB / 100GB</div>
+        <div class="progress"><div th:style="|width:${spaceInfo.percent}%|"></div></div>
+        <div>[[${spaceInfo.usedSpace}]] / [[${spaceInfo.totalSpace}]]</div>
       </div>
       <div class="copyright">&copy; 2024 Photowise</div>
     </footer>

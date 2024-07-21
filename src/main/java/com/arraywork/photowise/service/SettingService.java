@@ -101,12 +101,4 @@ public class SettingService implements SecurityService {
         return setting;
     }
 
-    /** 保存使用空间 */
-    @Transactional(rollbackFor = Exception.class)
-    public AppSetting saveUsedSpace(long usedSpace) {
-        AppSetting setting = getSetting();
-        setting.setUsedSpace(usedSpace);
-        return setting;
-    }
-
 }

@@ -53,8 +53,6 @@ public class AppSetting {
     @Size(max = 60, message = "访客密码不能超过 {max} 个字符")
     private String guestPass;
 
-    private long usedSpace;
-
     @UpdateTimestamp
     private LocalDateTime lastModified;
 

@@ -75,6 +75,11 @@ public class PhotoService {
         return photoRepo.findByPath(path);
     }
 
+    /** 累计占用空间 */
+    public long getUsedSpace() {
+        return photoRepo.sumFileLength();
+    }
+
     /** Save photo */
     @Transactional(rollbackFor = Exception.class)
     public PhotoIndex save(PhotoIndex photo) {

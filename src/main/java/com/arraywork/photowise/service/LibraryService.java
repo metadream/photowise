@@ -23,6 +23,7 @@ import com.arraywork.photowise.entity.MediaInfo;
 import com.arraywork.photowise.entity.PhotoIndex;
 import com.arraywork.photowise.entity.ScanningLog;
 import com.arraywork.photowise.entity.ScanningOption;
+import com.arraywork.photowise.entity.SpaceInfo;
 import com.arraywork.photowise.enums.LogLevel;
 import com.arraywork.photowise.enums.MediaType;
 import com.arraywork.springforce.channel.ChannelService;
@@ -125,7 +126,7 @@ public class LibraryService {
             // 根据扫描参数、文件大小和更新时间判断是否跳过扫描
             PhotoIndex _photo = photoService.getPhotoByPath(relativePath);
             if (!option.isFullScan() && _photo != null
-                && _photo.getMediaInfo().getLength() == file.length()
+                && _photo.getFileLength() == file.length()
                 && _photo.getModifiedTime() == file.lastModified()) {
                 continue;
             }
@@ -160,6 +161,24 @@ public class LibraryService {
         channelService.broadcast("library", log);
         scanningLogs.add(0, log);
         scanningProgress = -1;
+    }
+
+    /** 获取存储空间 */
+    public SpaceInfo getSpaceInfo() {
+        SpaceInfo spaceInfo = new SpaceInfo();
+        String library = settingService.getSetting().getLibrary();
+
+        if (library != null) {
+            File lib = new File(library);
+            if (lib.exists() && lib.isDirectory()) {
+                long usedSpace = photoService.getUsedSpace();
+                long totalSpace = usedSpace + new File(library).getUsableSpace();
+                spaceInfo.setUsedSpace(FileUtils.formatSize(usedSpace));
+                spaceInfo.setTotalSpace(FileUtils.formatSize(totalSpace));
+                spaceInfo.setPercent(100.0 * usedSpace / totalSpace);
+            }
+        }
+        return spaceInfo;
     }
 
     /** 获取扫描进度 */
@@ -228,15 +247,14 @@ public class LibraryService {
             String typeName = fileType.getName();
             Assert.isTrue(typeName.matches("(" + SUPPORTED_MEDIA + ")"), "不支持的媒体格式");
 
-            MediaInfo mediaInfo = new MediaInfo();
-            mediaInfo.setLength(file.length());
-
             PhotoIndex photo = new PhotoIndex();
+            MediaInfo mediaInfo = new MediaInfo();
             String mimeType = fileType.getMimeType();
             String type = mimeType.substring(0, mimeType.indexOf("/"));
             photo.setMediaType(MediaType.nameOf(type));
             photo.setMediaInfo(mediaInfo);
             photo.setPath(file.getPath().substring(library.length()));
+            photo.setFileLength(file.length());
             photo.setModifiedTime(file.lastModified());
 
             // 将元数据解析为照片索引

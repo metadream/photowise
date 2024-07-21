@@ -2,6 +2,7 @@ package com.arraywork.photowise.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 import com.arraywork.photowise.entity.PhotoIndex;
 
@@ -15,5 +16,8 @@ import com.arraywork.photowise.entity.PhotoIndex;
 public interface PhotoRepo extends JpaRepository<PhotoIndex, String>, JpaSpecificationExecutor<PhotoIndex> {
 
     PhotoIndex findByPath(String path);
+
+    @Query("SELECT IFNULL(SUM(fileLength), 0) FROM PhotoIndex WHERE isTrashed = false")
+    long sumFileLength();
 
 }

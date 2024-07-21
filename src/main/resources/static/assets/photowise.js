@@ -56,7 +56,7 @@ class ExifSidebar {
             isoEquivalent: cameraInfo.isoEquivalent ? 'ISO' + cameraInfo.isoEquivalent : '',
             path: data.path.split('/').pop(),
             size: mediaInfo.width + ' × ' + mediaInfo.height,
-            length: Thyme.util.formatBytes(mediaInfo.length),
+            length: Thyme.util.formatBytes(data.fileLength),
             latilong: latitude && longitude ? latitude?.toFixed(4) + ', ' + longitude?.toFixed(4) : '',
             altitude: altitude ? altitude.toFixed(1) + 'm' : ''
         });

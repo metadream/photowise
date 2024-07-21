@@ -45,6 +45,9 @@ public class PhotoIndex {
     @NotNull(message = "媒体类型不能为空")
     private MediaType mediaType;
 
+    // 文件大小
+    private long fileLength;
+
     ////////////////////////////// EXIF 元数据
 
     @Type(JsonStringType.class)

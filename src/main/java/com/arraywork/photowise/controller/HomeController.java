@@ -1,9 +1,13 @@
 package com.arraywork.photowise.controller;
 
+import jakarta.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import com.arraywork.photowise.service.LibraryService;
 
 /**
  * Home Controller
@@ -14,6 +18,9 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class HomeController {
+
+    @Resource
+    private LibraryService libraryService;
 
     @Value("${photowise.version}")
     private String version;
@@ -30,6 +37,7 @@ public class HomeController {
     public String layout(Model model) {
         model.addAttribute("version", version);
         model.addAttribute("title", title);
+        model.addAttribute("spaceInfo", libraryService.getSpaceInfo());
         return "index";
     }
 
