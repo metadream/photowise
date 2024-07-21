@@ -88,7 +88,7 @@ function render(log) {
   $progress.style.width = log.progress + '%';
   $message.innerHTML = html;
 
-  if (level != 'INFO') {
+  if (level !== 'INFO') {
     const time = Thyme.util.formatDate(new Date(log.time), 'yyyy-MM-dd hh:mm:ss');
     const $log = Thyme.util.createElement(`<div>[${time}]&#160;${html}</div>`);
     $logs.insertBefore($log, $logs.firstChild);
