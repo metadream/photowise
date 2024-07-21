@@ -6,9 +6,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import jakarta.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -230,7 +232,7 @@ public class LibraryService {
                 // 通用EXIF
                 if (dir instanceof ExifIFD0Directory) {
                     // 拍摄时间
-                    Date date = dir.getDate(ExifDirectoryBase.TAG_DATETIME);
+                    Date date = dir.getDate(ExifDirectoryBase.TAG_DATETIME, TimeZone.getDefault());
                     if (date != null) {
                         photo.setOriginalTime(date.getTime());
                     }
@@ -244,6 +246,15 @@ public class LibraryService {
                         cameraInfo.setMakeModel(make);
                     }
                 } else if (dir instanceof ExifSubIFDDirectory) {
+                    // 拍摄时间（含时区）
+                    String tz = dir.getString(ExifSubIFDDirectory.TAG_TIME_ZONE);
+                    TimeZone timeZone = tz != null ? TimeZone.getTimeZone(ZoneId.of(tz)) : TimeZone.getDefault();
+                    Date date = dir.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL, timeZone);
+                    if (date != null) {
+                        photo.setOriginalTime(date.getTime());
+                        photo.setTimeZone(timeZone.getDisplayName());
+                    }
+
                     // 拍摄参数
                     String apertureValue = dir.getString(ExifSubIFDDirectory.TAG_FNUMBER);
                     if (apertureValue != null) {
@@ -319,9 +330,10 @@ public class LibraryService {
                 }
             }
 
-            long photoTime = photo.getOriginalTime() > 0
-                ? photo.getOriginalTime() : FileUtils.getCreationTime(file);
+            long photoTime = photo.getOriginalTime() > 0 ? photo.getOriginalTime() : FileUtils.getCreationTime(file);
+            String timeZone = photo.getTimeZone() != null ? photo.getTimeZone() : TimeZone.getDefault().getDisplayName();
             photo.setPhotoTime(photoTime);
+            photo.setTimeZone(timeZone);
             return photo;
         }
     }

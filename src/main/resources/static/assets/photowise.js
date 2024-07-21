@@ -47,7 +47,8 @@ class ExifSidebar {
 
         Thyme.form.setJsonObject(this.element, {
             title: data.title,
-            photoTime: Thyme.util.formatDate(new Date(data.photoTime), 'yyyy-MM-dd hh:mm'),
+            timeZone: data.timeZone,
+            photoTime: Thyme.util.formatDate(new Date(data.photoTime), 'yyyy-MM-dd hh:mm:ss'),
             makeModel: cameraInfo.makeModel ?? '',
             apertureValue: cameraInfo.apertureValue ? 'ƒ/' + cameraInfo.apertureValue : '',
             shutterSpeed: cameraInfo.shutterSpeed ? cameraInfo.shutterSpeed + 's' : '',

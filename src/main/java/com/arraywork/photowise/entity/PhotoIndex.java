@@ -85,6 +85,9 @@ public class PhotoIndex {
 
     ////////////////////////////// 日期时间
 
+    // 时区
+    private String timeZone;
+
     // 照片创建时间（如果有拍摄时间则与之相等且不可修改，没有则取文件创建时间且可修改）
     private long photoTime;
 
