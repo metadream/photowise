@@ -1,12 +1,19 @@
-<head><title>[[${message}]]</title></head>
-<body>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
+  <script src="/assets/thyme@0.1.0.js"></script>
+  <link rel="stylesheet" href="/assets/photowise.css"/>
+  <title>[[${message}]]</title>
+</head>
 
-<main layout:fragment="main" style="display:flex">
+<body style="display: flex; justify-content: center; align-items: center">
   <div class="error-panel">
     <h1>[[${status}]]</h1>
     <div>[[${message}]]</div>
+    <p></p><a href="/"><strong>返回首页</strong></a>
   </div>
-</main>
-
 </body>
 </html>

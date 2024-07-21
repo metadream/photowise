@@ -38,6 +38,7 @@
 }
 
 body {
+    height: 100vh;
     overflow: hidden;
 }
 
@@ -467,6 +468,21 @@ svg.icon.info {
     display: flex;
     flex-wrap: wrap;
     gap: 0 10px;
+}
+
+.error-panel {
+    margin: 20px;
+    padding: 20px;
+    min-width: 200px;
+    max-width: 500px;
+    border-radius: 5px;
+    border: 1px solid var(--errorColor);
+    background: var(--bgColor);
+    text-align: center;
+}
+
+.error-panel h1 {
+    color: var(--errorColor);
 }
 
 .pswp__top-bar {
