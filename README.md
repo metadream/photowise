@@ -15,7 +15,7 @@
 - 所有从配置文件读取的library改为从数据库读取
 - setting缓存
 - photowall独立成组件，可自由关联controlbar，type module和window.分开写
-- thyme radio
+- thyme radio 访问模式
 
 ```
 @GetMapping("/test/video/stream")
