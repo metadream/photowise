@@ -10,6 +10,7 @@
 - 清空回收站：同时删除索引、trash文件、缩略图
 - photowall独立成组件，可自由关联controlbar，type module和window.分开写
 - thyme radio 访问模式
+- osmlocation获取与显示、设置城市
 
 ```
 @GetMapping("/test/video/stream")
