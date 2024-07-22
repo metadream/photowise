@@ -7,23 +7,25 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Access Mode
+ * Photo Tag
  *
  * @author AiChen
  * @copyright ArrayWork Inc.
- * @since 2024/07/15
+ * @since 2024/07/22
  */
 @AllArgsConstructor
 @Getter
-public enum AccessMode implements GenericEnum<Integer> {
+public enum PhotoTag implements GenericEnum<Integer> {
 
-    PUBLIC(1, "任何人均可访问"),
-    PROTECTED(2, "以访客身份访问"),
-    PRIVATE(3, "仅管理员可访问");
+    PLACE(1, "地点"),
+    PEOPLE(2, "人物"),
+    ANIMAL(3, "动物"),
+    THINGS(4, "事物"),
+    ALBUM(9, "影集");
 
     private final Integer code;
     private final String label;
 
-    public static class Converter extends GenericEnumConverter<AccessMode, Integer> {}
+    public static class Converter extends GenericEnumConverter<PhotoTag, Integer> {}
 
 }

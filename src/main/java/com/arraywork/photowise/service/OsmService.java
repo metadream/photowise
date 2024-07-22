@@ -6,6 +6,7 @@ import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Service;
@@ -62,6 +63,7 @@ public class OsmService {
             JsonNode address = result.get("address");
             OsmAddress osmAddress = jackson.convertToEntity(address, OsmAddress.class);
             osmAddress.setOsmId(osmId.asText());
+            return osmAddress;
         }
         return null;
     }
@@ -71,9 +73,13 @@ public class OsmService {
         @Override
         public void handle(HttpRequest request, ClientHttpResponse response) throws IOException {
             String body = new String(response.getBody().readAllBytes());
-            JsonNode error = jackson.parse(body, JsonNode.class).path("error");
-            String message = error.path("message").asText("Request '" + BASE_URL + "' failed.");
-            throw new HttpException(response.getStatusCode(), message);
+            try {
+                JsonNode error = jackson.parse(body, JsonNode.class).path("error");
+                String message = error.path("message").asText("Request '" + BASE_URL + "' failed.");
+                throw new HttpException(response.getStatusCode(), message);
+            } catch (Exception e) {
+                throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, body);
+            }
         }
     }
 

@@ -91,12 +91,6 @@ public class PhotoController {
     }
 
     @SpaRoute
-    @GetMapping("/folders")
-    public String folders() {
-        return "folders";
-    }
-
-    @SpaRoute
     @GetMapping("/trash")
     public String trash(Model model) {
         PhotoIndex condition = new PhotoIndex();

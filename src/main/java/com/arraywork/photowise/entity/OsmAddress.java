@@ -18,6 +18,7 @@ import lombok.Data;
 public class OsmAddress {
 
     private String osmId;
+    private String displayName;
     private String country_code;
     private String country;     // 国家
     private String state;       // 省、州、直辖市
@@ -29,7 +30,8 @@ public class OsmAddress {
     private String village;     // 村
     private String road;        // 道路
 
-    public String toString() {
+    /** 获取显示全名 */
+    public String getDisplayName() {
         // Arrays.asList允许插入null，而List.of不允许
         // Arrays.asList不可修改，因此需要new以便删除null元素
         List<String> address = new ArrayList<>(Arrays.asList(
@@ -41,6 +43,15 @@ public class OsmAddress {
             return String.join("", address);
         }
         return String.join(", ", address);
+    }
+
+    /** 获取地点名称（通常为城市） */
+    public String getCity() {
+        if (city != null) return city;
+        if (region != null) return region;
+        if (district != null) return district;
+        if (county != null) return county;
+        return state;
     }
 
 }

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.TreeMap;
 import jakarta.annotation.Resource;
 
@@ -19,6 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.arraywork.photowise.entity.GeoLocation;
+import com.arraywork.photowise.entity.OsmAddress;
 import com.arraywork.photowise.entity.PhotoIndex;
 import com.arraywork.photowise.repo.PhotoFilter;
 import com.arraywork.photowise.repo.PhotoRepo;
@@ -39,6 +40,8 @@ public class PhotoService {
     private PhotoRepo photoRepo;
     @Resource
     private SettingService settingService;
+    @Resource
+    private OsmService osmService;
 
     @Value("${photowise.trash}")
     private String trash;
@@ -65,9 +68,16 @@ public class PhotoService {
 
     /** 根据ID获取照片索引 */
     public PhotoIndex getPhoto(String id) {
-        Optional<PhotoIndex> optional = photoRepo.findById(id);
-        Assert.isTrue(optional.isPresent(), "照片索引不存在");
-        return optional.get();
+        PhotoIndex photo = photoRepo.findById(id).orElse(null);
+        Assert.notNull(photo, "照片索引不存在");
+
+        // 如果有经纬度但没有地址信息，调用OSM API获取
+        GeoLocation location = photo.getGeoLocation();
+        if (location != null && location.getAddress() == null) {
+            OsmAddress address = osmService.reverse(location.getLatitude(), location.getLongitude());
+            location.setAddress(address);
+        }
+        return photoRepo.save(photo);
     }
 
     /** 根据路径获取照片索引 */

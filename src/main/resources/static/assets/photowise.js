@@ -43,7 +43,7 @@ class ExifSidebar {
     static bind(data) {
         this.photoIndex = data;
         const { mediaInfo, cameraInfo, geoLocation } = data;
-        const { latitude, longitude, altitude } = geoLocation ?? {};
+        const { coordinates, altitude, address } = geoLocation ?? {};
 
         Thyme.form.setJsonObject(this.element, {
             title: data.title,
@@ -57,7 +57,8 @@ class ExifSidebar {
             path: data.path.split('/').pop(),
             size: mediaInfo.width + ' × ' + mediaInfo.height,
             length: Thyme.util.formatBytes(data.fileLength),
-            latilong: latitude && longitude ? latitude?.toFixed(4) + ', ' + longitude?.toFixed(4) : '',
+            address: address?.displayName ?? '',
+            coordinates: coordinates,
             altitude: altitude ? altitude.toFixed(1) + 'm' : ''
         });
     }
