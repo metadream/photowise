@@ -1,8 +1,6 @@
 package com.arraywork.photowise.service;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import jakarta.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +8,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import com.arraywork.photowise.entity.OsmLocation;
+import com.arraywork.photowise.entity.OsmAddress;
 import com.arraywork.springforce.error.HttpException;
 import com.arraywork.springforce.util.Jackson;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Open Street Map APIs
+ * The original API 'https://nominatim.openstreetmap.org' has been blocked in mainland China.
+ * Maybe you need a proxy like this:
+ * <pre>
+ *   Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8889));
+ *   SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+ *   requestFactory.setProxy(proxy);
+ *   RestClient.builder().requestFactory(requestFactory)...
+ * </pre>
  *
  * @author AiChen
  * @copyright ArrayWork Inc.
@@ -29,7 +34,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 @Service
 public class OsmService {
 
-    private static final String BASE_URL = "https://nominatim.openstreetmap.org";
+    private static final String BASE_URL = "https://api.unpkg.net/geo";
     private final RestClient restClient;
 
     @Resource
@@ -38,20 +43,14 @@ public class OsmService {
     /** Initialize rest client */
     @Autowired
     public OsmService(@Value("${photowise.title}") String title, @Value("${photowise.version}") String version) {
-        // 国内无法访问 nominatim API，因此需要代理
-        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8889));
-        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setProxy(proxy);
-
         restClient = RestClient.builder()
-            .requestFactory(requestFactory)
             .baseUrl(BASE_URL)
             .defaultHeader("User-Agent", title + "@" + version)
             .build();
     }
 
     /** Reverse geographic coordinates */
-    public OsmLocation reverse(double lat, double lon) {
+    public OsmAddress reverse(double lat, double lon) {
         JsonNode result = restClient.get()
             .uri("/reverse?format=json&lat={lat}&lon={lon}", lat, lon)
             .retrieve()
@@ -61,8 +60,8 @@ public class OsmService {
         JsonNode osmId = result.get("osm_id");
         if (osmId != null) {
             JsonNode address = result.get("address");
-            OsmLocation osmLocation = jackson.convertToEntity(address, OsmLocation.class);
-            osmLocation.setOsmId(osmId.asText());
+            OsmAddress osmAddress = jackson.convertToEntity(address, OsmAddress.class);
+            osmAddress.setOsmId(osmId.asText());
         }
         return null;
     }
