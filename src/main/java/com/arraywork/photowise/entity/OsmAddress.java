@@ -19,6 +19,8 @@ public class OsmAddress {
 
     private String osmId;
     private String displayName;
+    private String place;
+
     private String country_code;
     private String country;     // 国家
     private String state;       // 省、州、直辖市
@@ -46,7 +48,7 @@ public class OsmAddress {
     }
 
     /** 获取地点名称（通常为城市） */
-    public String getCity() {
+    public String getPlace() {
         if (city != null) return city;
         if (region != null) return region;
         if (district != null) return district;
