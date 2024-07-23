@@ -2,10 +2,12 @@
 
 <section>
   <p><th-field label="照片库路径" name="library" th:value="${setting.library}" required1></th-field></p>
-  <p><th-checkgroup label="访问模式" class="option-group" name="accessMode" required>
-    <th-checkbox th:each="accessMode: ${accessModes}"
-     th:value="${accessMode.code}" th:checked="${accessMode==setting.accessMode}">[[${accessMode.label}]]</th-checkbox>
-  </th-checkgroup></p>
+  <p><th-field label="访问模式" class="option-group">
+    <label th:each="accessMode: ${accessModes}">
+      <input type="radio" name="accessMode" th:value="${accessMode.code}" th:checked="${accessMode == setting.accessMode}"/>
+      <span>[[${accessMode.label}]]</span>
+    </label>
+  </th-field></p>
 
   <p><th-field label="管理员账号" name="adminUser" th:value="${setting.adminUser}" required></th-field></p>
   <p><th-field label="管理员密码" type="password" name="adminPass" placeholder="留空保持原密码"></th-field></p>

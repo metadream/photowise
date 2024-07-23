@@ -9,9 +9,8 @@
 - 设置：语言、回收站清理周期（1天、1周、1月）;public,protected,private
 - 清空回收站：同时删除索引、trash文件、缩略图
 - photowall独立成组件，可自由关联controlbar，type module和window.分开写
-- thyme radio 访问模式
-- 获取OSM同时设置地点
-- 增加目录监听、library公共静态、设置环境变量？
+- 定时任务：获取OSM同时设置地点
+- 增加目录监听
 - 日志保存到数据库？
 
 ```

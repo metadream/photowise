@@ -2,21 +2,19 @@
   <div>
     <p><th-field label="账号" name="username" required></th-field></p>
     <p><th-field label="密码" type="password" name="password" required></th-field></p>
-  
+
     <br><th-button onclick="login(this)">登录</th-button>
   </div>
 </section>
 
-<script type="module">
-import spa from '/assets/spa.js';
-
-window.login = function(btn) {
+<script>
+function login(btn) {
   const data = Thyme.form.getJsonObject('section');
   if (!data) return;
-  
+
   btn.loading = true;
   Thyme.http.post('/login', data).then(res => {
-    spa.navigate(res.settled ? '/photos' : '/settings'); 
+    location.href = res.settled ? '/photos' : '/settings';
   }).finally(() => {
     btn.loading = false;
   });

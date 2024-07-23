@@ -37,8 +37,14 @@
       <input type="search" placeholder="搜索你的照片"/>
     </div>
     <div class="toolbar">
-      <a class="round" data-path="/library" title="照片库"><svg class="icon"><use xlink:href="/icons/icons.svg#library"></use></svg></a>
-      <a class="round" data-path="/settings" title="设置"><svg class="icon"><use xlink:href="/icons/icons.svg#setting"></use></svg></a>
+      <th:block th:if="${principal}">
+        <a class="round" data-path="/library" title="照片库"><svg class="icon"><use xlink:href="/icons/icons.svg#library"></use></svg></a>
+        <a class="round" data-path="/settings" title="设置"><svg class="icon"><use xlink:href="/icons/icons.svg#setting"></use></svg></a>
+        <a class="round" href="/logout" title="退出"><svg class="icon"><use xlink:href="/icons/icons.svg#logout"></use></svg></a>
+      </th:block>
+      <th:block th:unless="${principal}">
+        <a class="round" data-path="/login" title="登录"><svg class="icon"><use xlink:href="/icons/icons.svg#login"></use></svg></a>
+      </th:block>
     </div>
   </header>
 
