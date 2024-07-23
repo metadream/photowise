@@ -77,6 +77,33 @@ public class LibraryService {
     @Value("${photowise.thumb-size}")
     private int thumbSize;
 
+    /** 根据文件构建照片索引 */
+    public void createPhotoIndex(File file, boolean forceCreate) {
+        String filePath = file.getPath();
+        String relativePath = filePath.substring(library.length());
+
+        // 根据扫描参数、文件大小和更新时间判断是否跳过扫描
+        PhotoIndex _photo = photoService.getPhotoByPath(relativePath);
+        if (!forceCreate && _photo != null
+            && _photo.getFileLength() == file.length()
+            && _photo.getModifiedTime() == file.lastModified()) {
+            return;
+        }
+
+        // 1. 提取元数据
+        PhotoIndex photo = extractMetadata(library, file);
+        if (_photo != null) {
+            photo.setId(_photo.getId());
+        }
+        // 2. 生成缩略图
+        String output = Path.of(thumbnails, photo.getPath()) + ".jpg";
+        if (photo.isVideo()) OpenCv.captureVideo(filePath, output, thumbSize);
+        else OpenCv.resizeImage(filePath, output, thumbSize);
+
+        // 3. 保存索引
+        photoService.save(photo);
+    }
+
     /** 异步扫描照片库 */
     @Async
     public void startScan(ScanningOption option) {

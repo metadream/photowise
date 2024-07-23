@@ -5,12 +5,11 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
-import org.apache.commons.io.monitor.FileAlterationMonitor;
-import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.arraywork.photowise.service.SettingService;
+import com.arraywork.springforce.filewatch.DirectoryWatcher;
 
 /**
  * Application Context Initializer
@@ -22,7 +21,7 @@ import com.arraywork.photowise.service.SettingService;
 @Component
 public class ContextInitializer implements ServletContextListener {
 
-    private FileAlterationMonitor libraryMonitor;
+    private DirectoryWatcher watcher;
     @Resource
     private LibraryListener libraryListener;
     @Resource
@@ -47,26 +46,13 @@ public class ContextInitializer implements ServletContextListener {
 
         // Start library monitor
         String library = settingService.getSetting().getLibrary();
-        // TODO library maybe null
-        FileAlterationObserver observer = new FileAlterationObserver(library);
-        observer.addListener(libraryListener);
-
-        libraryMonitor = new FileAlterationMonitor(3000);
-        libraryMonitor.addObserver(observer);
-        try {
-            libraryMonitor.start();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        watcher = new DirectoryWatcher(10, 5, libraryListener);
+        watcher.start(library, false);
     }
 
     /** Stop monitor when context destroyed */
     public void contextDestroyed(ServletContextEvent sce) {
-        try {
-            libraryMonitor.stop();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        watcher.stop();
     }
 
 }

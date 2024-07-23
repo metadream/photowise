@@ -3,10 +3,10 @@ package com.arraywork.photowise;
 import java.io.File;
 import jakarta.annotation.Resource;
 
-import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.springframework.stereotype.Component;
 
-import com.arraywork.photowise.service.PhotoService;
+import com.arraywork.photowise.service.LibraryService;
+import com.arraywork.springforce.filewatch.FileSystemListener;
 
 /**
  * Library Listener
@@ -16,25 +16,30 @@ import com.arraywork.photowise.service.PhotoService;
  * @since 2024/06/04
  */
 @Component
-public class LibraryListener extends FileAlterationListenerAdaptor {
+public class LibraryListener implements FileSystemListener {
 
     @Resource
-    private PhotoService photoService;
+    private LibraryService libraryService;
 
     @Override
-    public void onFileChange(final File file) {
-        System.out.println("onFileChange---------------：" + file.getPath());
+    public void onStarted(File file, int count, int total) {
+        System.out.println("onStarted---------------：" + file.getPath());
     }
 
     @Override
-    public void onFileCreate(final File file) {
+    public void onAdded(final File file, int count, int total) {
+        System.out.println("onAdded---------------：" + file.getPath());
+    }
+
+    @Override
+    public void onModified(final File file, int count, int total) {
         photoService.save(file);
-        System.out.println("onFileCreate---------------：" + file.getPath());
+        System.out.println("onModified---------------：" + file.getPath());
     }
 
     @Override
-    public void onFileDelete(final File file) {
-        System.out.println("onFileDelete---------------：" + file.getPath());
+    public void onDeleted(final File file, int count, int total) {
+        System.out.println("onDeleted---------------：" + file.getPath());
     }
 
 }

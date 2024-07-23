@@ -10,7 +10,7 @@
 - 清空回收站：同时删除索引、trash文件、缩略图
 - photowall独立成组件，可自由关联controlbar，type module和window.分开写
 - 定时任务：获取OSM同时设置地点
-- 增加目录监听
+- 目录监听
 - 日志保存到数据库？
 
 ```
