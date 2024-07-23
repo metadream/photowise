@@ -96,6 +96,13 @@ public class PhotoService {
         return photoRepo.save(photo);
     }
 
+    /** Save photo */
+    @Transactional(rollbackFor = Exception.class)
+    public PhotoIndex save(File file) {
+        System.out.println(file);
+        return null;
+    }
+
     /** Delete photo */
     @Transactional(rollbackFor = Exception.class)
     public void delete(PhotoIndex photo) {

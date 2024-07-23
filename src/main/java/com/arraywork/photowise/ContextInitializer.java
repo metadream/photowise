@@ -24,6 +24,8 @@ public class ContextInitializer implements ServletContextListener {
 
     private FileAlterationMonitor libraryMonitor;
     @Resource
+    private LibraryListener libraryListener;
+    @Resource
     private Environment env;
     @Resource
     private SettingService settingService;
@@ -45,8 +47,10 @@ public class ContextInitializer implements ServletContextListener {
 
         // Start library monitor
         String library = settingService.getSetting().getLibrary();
+        // TODO library maybe null
         FileAlterationObserver observer = new FileAlterationObserver(library);
-        observer.addListener(new LibraryListener());
+        observer.addListener(libraryListener);
+
         libraryMonitor = new FileAlterationMonitor(3000);
         libraryMonitor.addObserver(observer);
         try {
