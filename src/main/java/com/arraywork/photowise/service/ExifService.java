@@ -91,7 +91,7 @@ public class ExifService {
             OpenCv.resizeImage(filePath, output, thumbSize);
         }
 
-        // 3. Save the index
+        // 3. Save the photo index
         return photoService.save(photo);
     }
 
