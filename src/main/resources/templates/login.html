@@ -14,7 +14,7 @@ function login(btn) {
 
   btn.loading = true;
   Thyme.http.post('/login', data).then(res => {
-    location.href = res.settled ? '/photos' : '/settings';
+    location.href = res.hasLibrary ? '/photos' : '/settings';
   }).finally(() => {
     btn.loading = false;
   });

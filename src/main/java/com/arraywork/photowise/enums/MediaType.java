@@ -16,7 +16,8 @@ public enum MediaType {
 
     IMAGE, VIDEO;
 
-    public static MediaType nameOf(String type) {
+    public static MediaType of(String mimeType) {
+        String type = mimeType.substring(0, mimeType.indexOf("/"));
         for (MediaType e : values()) {
             if (e.name().equals(type.toUpperCase())) return e;
         }

@@ -23,9 +23,9 @@ public class ContextInitializer implements ServletContextListener {
 
     private DirectoryWatcher watcher;
     @Resource
-    private LibraryListener libraryListener;
-    @Resource
     private Environment env;
+    @Resource
+    private LibraryListener libraryListener;
     @Resource
     private SettingService settingService;
 
@@ -45,12 +45,12 @@ public class ContextInitializer implements ServletContextListener {
         if (!dir.exists()) dir.mkdirs();
 
         // Start library monitor
-        String library = settingService.getSetting().getLibrary();
+        String library = settingService.getLibrary();
         watcher = new DirectoryWatcher(10, 5, libraryListener);
         watcher.start(library, false);
     }
 
-    /** Stop monitor when context destroyed */
+    /** Stop monitor before context destroyed */
     public void contextDestroyed(ServletContextEvent sce) {
         watcher.stop();
     }

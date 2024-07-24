@@ -36,7 +36,7 @@ public class ResourceController {
 
     @GetMapping("/original/**")
     public void original(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String library = settingService.getSetting().getLibrary();
+        String library = settingService.getLibrary();
         String path = HttpUtils.getWildcard(request);
         path = URLDecoder.decode(path, StandardCharsets.UTF_8);
         resourceHandler.serve(Path.of(library, path), request, response);

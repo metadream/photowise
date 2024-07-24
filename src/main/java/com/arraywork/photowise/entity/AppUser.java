@@ -22,7 +22,7 @@ import lombok.EqualsAndHashCode;
 public class AppUser extends Principal {
 
     private UserRole role;
-    private boolean settled;
+    private boolean hasLibrary;
 
     @Override
     public List<SecurityRole> getSecurityRoles() {

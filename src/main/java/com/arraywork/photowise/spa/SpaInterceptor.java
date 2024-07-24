@@ -40,7 +40,7 @@ public class SpaInterceptor implements HandlerInterceptor, WebMvcConfigurer {
             Principal principal = context.getPrincipal();
             AppSetting setting = settingService.getSetting();
 
-            // 未登录且非公开跳转至登录页
+            // Redirect to login page if NOT login and NOT public mode
             if (principal == null && setting.getAccessMode() != AccessMode.PUBLIC) {
                 response.sendRedirect("/login");
                 return false;

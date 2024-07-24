@@ -46,27 +46,26 @@ public class PhotoService {
     @Value("${photowise.trash}")
     private String trash;
 
-    /** 获取所有索引 */
-    public List<PhotoIndex> getIndexes() {
+    /** Get all photo indexes */
+    public List<PhotoIndex> getPhotos() {
         return photoRepo.findAll();
     }
 
-    /** 根据条件获取索引并按年月分组 */
-    public Map<String, List<PhotoIndex>> getIndexes(PhotoIndex condition) {
+    /** Get photo indexes with condition and group by year and month */
+    public Map<String, List<PhotoIndex>> getPhotos(PhotoIndex condition) {
         Map<String, List<PhotoIndex>> photoGroup = new TreeMap<>(Comparator.reverseOrder());
         List<PhotoIndex> indexes = photoRepo.findAll(new PhotoFilter(condition));
 
         for (PhotoIndex photo : indexes) {
             LocalDateTime photoTime = Times.toLocal(photo.getPhotoTime());
             String yearMonth = photoTime.format(DateTimeFormatter.ofPattern("yyyy-MM"));
-
             List<PhotoIndex> photos = photoGroup.computeIfAbsent(yearMonth, k -> new ArrayList<>());
             photos.add(photo);
         }
         return photoGroup;
     }
 
-    /** 根据ID获取照片索引 */
+    /** Get photo index by primary ID */
     public PhotoIndex getPhoto(String id) {
         PhotoIndex photo = photoRepo.findById(id).orElse(null);
         Assert.notNull(photo, "照片索引不存在");
@@ -80,36 +79,31 @@ public class PhotoService {
         return photoRepo.save(photo);
     }
 
-    /** 根据路径获取照片索引 */
+    /** Get photo index by file path */
     public PhotoIndex getPhotoByPath(String path) {
         return photoRepo.findByPath(path);
     }
 
-    /** 累计占用空间 */
+    /** Cumulative used space */
     public long getUsedSpace() {
         return photoRepo.sumFileLength();
     }
 
-    /** Save photo */
+    /** Save photo index */
     @Transactional(rollbackFor = Exception.class)
     public PhotoIndex save(PhotoIndex photo) {
+        // TODO validate
         return photoRepo.save(photo);
     }
 
-    /** Save photo */
-    @Transactional(rollbackFor = Exception.class)
-    public PhotoIndex save(File file) {
-        System.out.println(file);
-        return null;
-    }
-
-    /** Delete photo */
+    /** Delete photo index */
     @Transactional(rollbackFor = Exception.class)
     public void delete(PhotoIndex photo) {
+        // TODO delete thumbnails...
         photoRepo.delete(photo);
     }
 
-    /** 批量切换收藏 */
+    /** Switch favorites in batches */
     @Transactional(rollbackFor = Exception.class)
     public int favorite(String[] photoIds, boolean favored) {
         int result = 0;
@@ -121,7 +115,7 @@ public class PhotoService {
         return result;
     }
 
-    /** 批量移入回收站 */
+    /** Move to the trash in batches */
     @Transactional(rollbackFor = Exception.class)
     public int trash(String[] photoIds) throws IOException {
         int result = 0;
@@ -129,8 +123,7 @@ public class PhotoService {
             PhotoIndex photo = photoRepo.getReferenceById(id);
             photo.setTrashed(true);
 
-            String library = settingService.getSetting().getLibrary();
-            Path original = Path.of(library, photo.getPath());
+            Path original = Path.of(settingService.getLibrary(), photo.getPath());
             Path dest = Path.of(trash, photo.getPath());
             File parent = dest.getParent().toFile();
             if (!parent.exists()) parent.mkdirs();

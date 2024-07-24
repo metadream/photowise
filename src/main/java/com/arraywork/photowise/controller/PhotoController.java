@@ -36,7 +36,7 @@ public class PhotoController {
     public String photos(Model model) {
         PhotoIndex condition = new PhotoIndex();
         condition.setMediaType(MediaType.IMAGE);
-        model.addAttribute("photoGroup", photoService.getIndexes(condition));
+        model.addAttribute("photoGroup", photoService.getPhotos(condition));
         return "photos";
     }
 
@@ -45,7 +45,7 @@ public class PhotoController {
     public String videos(Model model) {
         PhotoIndex condition = new PhotoIndex();
         condition.setMediaType(MediaType.VIDEO);
-        model.addAttribute("photoGroup", photoService.getIndexes(condition));
+        model.addAttribute("photoGroup", photoService.getPhotos(condition));
         return "photos";
     }
 
@@ -86,7 +86,7 @@ public class PhotoController {
     public String favorites(Model model) {
         PhotoIndex condition = new PhotoIndex();
         condition.setFavored(true);
-        model.addAttribute("photoGroup", photoService.getIndexes(condition));
+        model.addAttribute("photoGroup", photoService.getPhotos(condition));
         return "photos";
     }
 
@@ -95,7 +95,7 @@ public class PhotoController {
     public String trash(Model model) {
         PhotoIndex condition = new PhotoIndex();
         condition.setTrashed(true);
-        model.addAttribute("photoGroup", photoService.getIndexes(condition));
+        model.addAttribute("photoGroup", photoService.getPhotos(condition));
         return "/photos";
     }
 

@@ -33,7 +33,6 @@ public class LibraryListener implements FileSystemListener {
 
     @Override
     public void onModified(final File file, int count, int total) {
-        photoService.save(file);
         System.out.println("onModified---------------：" + file.getPath());
     }
 
