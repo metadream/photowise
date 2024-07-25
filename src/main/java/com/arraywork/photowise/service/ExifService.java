@@ -67,18 +67,27 @@ public class ExifService {
     private int thumbSize;
 
     /**
-     * Build a photo index from the file
-     * If the photoId is not null, update the index, otherwise create it
+     * Build photo index from a file
+     * If overwrite is true, enforce update the index and thumbnails
      */
     @Transactional(rollbackFor = Exception.class)
-    public PhotoIndex build(File file, String photoId)
+    public PhotoIndex build(File file, boolean overwrite)
         throws ImageProcessingException, IOException, MetadataException {
         String library = settingService.getLibrary();
         String filePath = file.getPath();
+        String relativePath = filePath.substring(library.length());
+
+        // 0. Determines whether to skip the scan based on the scan parameters, file size, and modified time
+        PhotoIndex _photo = photoService.getPhotoByPath(relativePath);
+        if (!overwrite && _photo != null
+            && _photo.getFileLength() == file.length()
+            && _photo.getModifiedTime() == file.lastModified()) {
+            return null;
+        }
 
         // 1. Extract metadata
         PhotoIndex photo = extractMetadata(file);
-        photo.setId(photoId);
+        photo.setId(_photo != null ? _photo.getId() : null);
         photo.setPath(filePath.substring(library.length())); // Relative path to the library
         photo.setFileLength(file.length());
         photo.setModifiedTime(file.lastModified());

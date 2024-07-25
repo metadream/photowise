@@ -24,10 +24,10 @@ public class ScanningLog {
     private int progress;
     private long time = System.currentTimeMillis();
 
-    public ScanningLog(LogLevel level, int total, int count) {
-        this.level = level;
-        this.total = total;
+    public ScanningLog(String path, int count, int total) {
+        this.path = path;
         this.count = count;
+        this.total = total;
         this.progress = total > 0 ? 100 * count / total : -1;
     }
 

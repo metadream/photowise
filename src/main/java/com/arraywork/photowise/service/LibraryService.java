@@ -1,21 +1,25 @@
 package com.arraywork.photowise.service;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.arraywork.photowise.entity.PhotoIndex;
 import com.arraywork.photowise.entity.ScanningLog;
 import com.arraywork.photowise.entity.ScanningOption;
+import com.arraywork.photowise.entity.ScanningStatus;
 import com.arraywork.photowise.entity.SpaceInfo;
 import com.arraywork.photowise.enums.LogLevel;
 import com.arraywork.springforce.channel.ChannelService;
+import com.arraywork.springforce.filesystem.DirectoryWatcher;
+import com.arraywork.springforce.util.Assert;
 import com.arraywork.springforce.util.FileUtils;
 
 /**
@@ -28,9 +32,8 @@ import com.arraywork.springforce.util.FileUtils;
 @Service
 public class LibraryService {
 
-    public static int scanningProgress = -1;
-    public static List<ScanningLog> scanningLogs = new ArrayList<>();
-
+    @Resource
+    private DirectoryWatcher watcher;
     @Resource
     private ChannelService channelService;
     @Resource
@@ -43,86 +46,43 @@ public class LibraryService {
     @Value("${photowise.thumbnails}")
     private String thumbnails;
 
-    /** Scan the library asynchronously */
-    @Async
-    public void startScan(ScanningOption option) {
+    /** Start library watcher */
+    @PostConstruct
+    public void startWatcher() {
         String library = settingService.getLibrary();
-        if (library == null) {
-            ScanningLog log = new ScanningLog(LogLevel.ERROR, 0, 0);
-            log.setMessage("请先设置照片库");
-            channelService.broadcast("library", log);
-            scanningLogs.add(log);
-            return;
+        if (library != null) {
+            watcher.start(library);
         }
-        File lib = new File(library);
-        if (!lib.exists() || !lib.isDirectory()) {
-            ScanningLog log = new ScanningLog(LogLevel.ERROR, 0, 0);
-            log.setMessage("照片库不存在或不是目录");
-            channelService.broadcast("library", log);
-            scanningLogs.add(log);
-            return;
-        }
+    }
 
-        // Start Scanning...
-        if (scanningProgress > -1) return;
-        scanningProgress = 0;
+    /** Stop watcher before context destroyed */
+    @PreDestroy
+    public void destroyWatcher() {
+        watcher.stop();
+    }
+
+    /** Scan the library */
+    public void startScan(ScanningOption option) throws IOException {
+        String library = settingService.getLibrary();
+        Assert.notNull(library, "请先设置照片库");
+        File lib = new File(library);
+        Assert.isTrue(lib.exists() && lib.isDirectory(), "照片库不存在或不是目录");
+
+        if (ScanningStatus.progress > -1) return;
+        ScanningStatus.progress = 0;
+        watcher.scan();
+
         long startTime = System.currentTimeMillis();
 
         // Clean up invalid indexes
         if (option.isCleanIndexes()) {
             cleanIndexes(library);
         }
-
-        // Get all the files in the library
-        List<File> files = new ArrayList<>();
-        FileUtils.walk(lib, files);
-        int total = files.size();
-        int count = 0, success = 0;
-
-        // Traverse the files
-        for (File file : files) {
-            if (scanningProgress == -1) return;
-            String filePath = file.getPath();
-            String relativePath = filePath.substring(library.length());
-
-            ScanningLog log = new ScanningLog(LogLevel.INFO, total, ++count);
-            log.setPath(relativePath);
-            scanningProgress = log.getProgress();
-
-            // Determines whether to skip the scan based on the scan parameters, file size, and modified time
-            PhotoIndex _photo = photoService.getPhotoByPath(relativePath);
-            if (!option.isFullScan() && _photo != null
-                && _photo.getFileLength() == file.length()
-                && _photo.getModifiedTime() == file.lastModified()) {
-                continue;
-            }
-
-            try {
-                // Build photo index file by file
-                String photoId = _photo != null ? _photo.getId() : null;
-                exifService.build(file, photoId);
-                success++;
-            } catch (Exception e) {
-                log.setLevel(LogLevel.ERROR);
-                log.setMessage(e.getMessage());
-                channelService.broadcast("library", log);
-                scanningLogs.add(0, log);
-            }
-        }
-
-        // Finish the scan
-        ScanningLog log = new ScanningLog(LogLevel.FINISHED, total, count);
-        log.setMessage("发现 " + total + " 个文件，成功创建 " + success + " 个索引，"
-            + "共耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
-        channelService.broadcast("library", log);
-        scanningLogs.add(0, log);
-        scanningProgress = -1;
     }
 
     /** Get the library storage */
     public SpaceInfo getSpaceInfo() {
         SpaceInfo spaceInfo = new SpaceInfo();
-        String library = settingService.getLibrary();
 
         if (library != null) {
             File lib = new File(library);

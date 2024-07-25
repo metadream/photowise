@@ -5,11 +5,11 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import com.arraywork.photowise.service.SettingService;
-import com.arraywork.springforce.filewatch.DirectoryWatcher;
+import com.arraywork.springforce.filesystem.DirectoryWatcher;
 
 /**
  * Application Context Initializer
@@ -21,17 +21,13 @@ import com.arraywork.springforce.filewatch.DirectoryWatcher;
 @Component
 public class ContextInitializer implements ServletContextListener {
 
-    private DirectoryWatcher watcher;
     @Resource
     private Environment env;
     @Resource
     private LibraryListener libraryListener;
-    @Resource
-    private SettingService settingService;
 
     /**
      * Create the required storage directories (must be before JPA starts)
-     * and start library monitor
      * Auto-started order: Static Block -> ServletContextListener -> @PostConstruct
      * However, static blocks cannot get the configuration parameters
      */
@@ -43,16 +39,12 @@ public class ContextInitializer implements ServletContextListener {
         if (!dir.exists()) dir.mkdirs();
         dir = new File(env.getProperty("photowise.trash"));
         if (!dir.exists()) dir.mkdirs();
-
-        // Start library monitor
-        String library = settingService.getLibrary();
-        watcher = new DirectoryWatcher(10, 5, libraryListener);
-        watcher.start(library, false);
     }
 
-    /** Stop monitor before context destroyed */
-    public void contextDestroyed(ServletContextEvent sce) {
-        watcher.stop();
+    /** Directory watcher instance */
+    @Bean
+    public DirectoryWatcher directoryWatcher() {
+        return new DirectoryWatcher(10, 5, libraryListener);
     }
 
 }
