@@ -36,6 +36,7 @@ public class LibraryListener implements DirectoryListener {
 
     @Override
     public void onDelete(final File file, int count, int total) {
+        // TODO delete index
         //        libraryService.buildPhotoIndex(file, count, total, false);
     }
 
