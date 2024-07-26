@@ -24,5 +24,6 @@ public class ScanningLog {
     private int count;
     private int total;
     private int progress;
+    private long time = System.currentTimeMillis();
 
 }
