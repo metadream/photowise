@@ -9,14 +9,16 @@ import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.arraywork.photowise.entity.PhotoIndex;
+import com.arraywork.photowise.entity.ScanningInfo;
 import com.arraywork.photowise.entity.ScanningLog;
 import com.arraywork.photowise.entity.ScanningOption;
-import com.arraywork.photowise.entity.ScanningStatus;
 import com.arraywork.photowise.entity.SpaceInfo;
-import com.arraywork.photowise.enums.LogLevel;
+import com.arraywork.photowise.enums.ScanningAction;
+import com.arraywork.photowise.enums.ScanningResult;
 import com.arraywork.springforce.channel.ChannelService;
 import com.arraywork.springforce.filesystem.DirectoryWatcher;
 import com.arraywork.springforce.util.Assert;
@@ -35,13 +37,13 @@ public class LibraryService {
     @Resource
     private DirectoryWatcher watcher;
     @Resource
+    private ScanningInfo scanningInfo;
+    @Resource
     private ChannelService channelService;
     @Resource
     private SettingService settingService;
     @Resource
     private PhotoService photoService;
-    @Resource
-    private ExifService exifService;
 
     @Value("${photowise.thumbnails}")
     private String thumbnails;
@@ -61,29 +63,67 @@ public class LibraryService {
         watcher.stop();
     }
 
-    /** Scan the library */
+    /** Scan the library asynchronously */
+    @Async
     public void startScan(ScanningOption option) throws IOException {
         String library = settingService.getLibrary();
         Assert.notNull(library, "请先设置照片库");
         File lib = new File(library);
         Assert.isTrue(lib.exists() && lib.isDirectory(), "照片库不存在或不是目录");
 
-        if (ScanningStatus.progress > -1) return;
-        ScanningStatus.progress = 0;
-        watcher.scan();
-
+        if (scanningInfo.getProgress() > -1) return;
+        scanningInfo.setProgress(0);
         long startTime = System.currentTimeMillis();
 
         // Clean up invalid indexes
         if (option.isCleanIndexes()) {
-            cleanIndexes(library);
+            cleanPhotoIndexes(library);
         }
+
+        // Traversal file to build photo index
+        List<File> files = FileUtils.walk(Path.of(library));
+        int total = files.size();
+        int count = 0, success = 0;
+        for (File file : files) {
+            if (scanningInfo.getProgress() > -1) return;
+            success += buildPhotoIndex(file, ++count, total, option.isFullScan());
+        }
+
+        // Finish the scan
+        ScanningLog log = scanningInfo.createLog(ScanningAction.SCAN, null, count, total);
+        log.setMessage("本次扫描共发现 " + total + " 个文件，成功创建 " + success + " 个索引，"
+            + "耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
+        scanningInfo.sendLog(log);
+    }
+
+    /** Build photo index by file */
+    public int buildPhotoIndex(File file, int count, int total, boolean overwrite) {
+        String library = settingService.getLibrary();
+        String relativePath = file.getPath().substring(library.length());
+        ScanningLog log = scanningInfo.createLog(ScanningAction.SCAN, relativePath, ++count, total);
+        int success = 0;
+
+        try {
+            PhotoIndex photo = photoService.build(file, overwrite);
+            if (photo != null) {
+                log.setResult(ScanningResult.SUCCESS);
+                success++;
+            } else {
+                log.setResult(ScanningResult.SKIPPED);
+            }
+        } catch (Exception e) {
+            log.setResult(ScanningResult.FAILED);
+            log.setMessage(e.getMessage());
+        } finally {
+            scanningInfo.sendLog(log);
+        }
+        return success;
     }
 
     /** Get the library storage */
     public SpaceInfo getSpaceInfo() {
+        String library = settingService.getLibrary();
         SpaceInfo spaceInfo = new SpaceInfo();
-
         if (library != null) {
             File lib = new File(library);
             if (lib.exists() && lib.isDirectory()) {
@@ -97,58 +137,54 @@ public class LibraryService {
         return spaceInfo;
     }
 
-    /** Get the progress of the scan */
-    public int getProgress() {
-        return scanningProgress;
-    }
-
     /** Abort the scan */
     public void abortScan() {
-        scanningProgress = -1;
+        scanningInfo.setProgress(-1);
     }
 
-    /** Get the scan logs */
-    public List<ScanningLog> getLogs() {
-        return scanningLogs;
-    }
-
-    /** Clear the log */
+    /** Clear the logs */
     public void clearLogs() {
-        scanningLogs.clear();
+        scanningInfo.clearLogs();
     }
 
     /** Clean up invalid indexes */
-    private void cleanIndexes(String library) {
+    private void cleanPhotoIndexes(String library) {
         long startTime = System.currentTimeMillis();
         List<PhotoIndex> photos = photoService.getPhotos();
         int total = photos.size();
         int count = 0, success = 0;
 
+        // Traverse photo indexes
         for (PhotoIndex photo : photos) {
-            if (scanningProgress == -1) return;
+            if (scanningInfo.getProgress() == -1) return;
             count++;
 
+            String photoPath = photo.getPath();
+            Path path = Path.of(library, photoPath);
+            if (path.toFile().exists()) continue;
+
             // Delete indexes and thumbnails where the file path does not exist
-            Path path = Path.of(library, photo.getPath());
-            if (!path.toFile().exists()) {
-                File thumbnail = Path.of(thumbnails, photo.getPath() + ".jpg").toFile();
+            ScanningLog log = scanningInfo.createLog(ScanningAction.PURGE, photoPath, count, total);
+            try {
+                File thumbnail = Path.of(thumbnails, photoPath + ".jpg").toFile();
                 thumbnail.delete();
                 photoService.delete(photo);
-
-                ScanningLog log = new ScanningLog(LogLevel.CLEAN, total, count);
-                log.setPath(photo.getPath());
-                channelService.broadcast("library", log);
-                scanningLogs.add(0, log);
+                log.setResult(ScanningResult.SUCCESS);
                 success++;
+            } catch (Exception e) {
+                log.setMessage(e.getMessage());
+                log.setResult(ScanningResult.FAILED);
+            } finally {
+                scanningInfo.sendLog(log);
             }
         }
 
-        // 完成清理
-        ScanningLog log = new ScanningLog(LogLevel.FINISHED, total, success);
-        log.setMessage("发现 " + total + " 个索引，清理 " + success + " 个，"
-            + "共耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
-        channelService.broadcast("library", log);
-        scanningLogs.add(0, log);
+        // Finished
+        ScanningLog log = scanningInfo.createLog(ScanningAction.PURGE, null, count, total);
+        log.setResult(ScanningResult.FINISHED);
+        log.setMessage("本次扫描共发现 " + total + " 个索引，成功清理 " + success + " 个，"
+            + "耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
+        scanningInfo.sendLog(log);
     }
 
 }

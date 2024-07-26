@@ -5,15 +5,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.TimeZone;
-import jakarta.annotation.Resource;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.arraywork.photowise.entity.CameraInfo;
 import com.arraywork.photowise.entity.GeoLocation;
@@ -22,7 +18,6 @@ import com.arraywork.photowise.entity.PhotoIndex;
 import com.arraywork.photowise.enums.MediaType;
 import com.arraywork.springforce.util.Assert;
 import com.arraywork.springforce.util.FileUtils;
-import com.arraywork.springforce.util.OpenCv;
 import com.drew.imaging.FileType;
 import com.drew.imaging.FileTypeDetector;
 import com.drew.imaging.ImageMetadataReader;
@@ -55,57 +50,10 @@ public class ExifService {
 
     private static final String SUPPORTED_FORMATS = "JPEG|PNG|WebP|HEIC|HEIF|MP4|MOV";
 
-    @Resource
-    private SettingService settingService;
-    @Resource
-    private PhotoService photoService;
-
-    @Value("${photowise.thumbnails}")
-    private String thumbnails;
-
-    @Value("${photowise.thumb-size}")
-    private int thumbSize;
-
-    /**
-     * Build photo index from a file
-     * If overwrite is true, enforce update the index and thumbnails
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public PhotoIndex build(File file, boolean overwrite)
-        throws ImageProcessingException, IOException, MetadataException {
-        String library = settingService.getLibrary();
-        String filePath = file.getPath();
-        String relativePath = filePath.substring(library.length());
-
-        // 0. Determines whether to skip the scan based on the scan parameters, file size, and modified time
-        PhotoIndex _photo = photoService.getPhotoByPath(relativePath);
-        if (!overwrite && _photo != null
-            && _photo.getFileLength() == file.length()
-            && _photo.getModifiedTime() == file.lastModified()) {
-            return null;
-        }
-
-        // 1. Extract metadata
-        PhotoIndex photo = extractMetadata(file);
-        photo.setId(_photo != null ? _photo.getId() : null);
-        photo.setPath(filePath.substring(library.length())); // Relative path to the library
-        photo.setFileLength(file.length());
-        photo.setModifiedTime(file.lastModified());
-
-        // 2. Generate thumbnails
-        String output = Path.of(thumbnails, photo.getPath()) + ".jpg";
-        if (photo.isVideo()) {
-            OpenCv.captureVideo(filePath, output, thumbSize);
-        } else {
-            OpenCv.resizeImage(filePath, output, thumbSize);
-        }
-
-        // 3. Save the photo index
-        return photoService.save(photo);
-    }
-
     /** Extract image or video metadata from a file */
-    private PhotoIndex extractMetadata(File file) throws IOException, ImageProcessingException, MetadataException {
+    public PhotoIndex extractMetadata(File file)
+        throws IOException, ImageProcessingException, MetadataException {
+
         try (InputStream inputStream = new FileInputStream(file);
              BufferedInputStream bufferedStream = new BufferedInputStream(inputStream)) {
 

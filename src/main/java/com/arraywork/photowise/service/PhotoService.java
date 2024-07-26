@@ -24,7 +24,10 @@ import com.arraywork.photowise.entity.PhotoIndex;
 import com.arraywork.photowise.repo.PhotoFilter;
 import com.arraywork.photowise.repo.PhotoRepo;
 import com.arraywork.springforce.util.Assert;
+import com.arraywork.springforce.util.OpenCv;
 import com.arraywork.springforce.util.Times;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.MetadataException;
 
 /**
  * Photo Service
@@ -37,11 +40,19 @@ import com.arraywork.springforce.util.Times;
 public class PhotoService {
 
     @Resource
-    private PhotoRepo photoRepo;
-    @Resource
     private SettingService settingService;
     @Resource
+    private ExifService exifService;
+    @Resource
     private OsmService osmService;
+    @Resource
+    private PhotoRepo photoRepo;
+
+    @Value("${photowise.thumbnails}")
+    private String thumbnails;
+
+    @Value("${photowise.thumb-size}")
+    private int thumbSize;
 
     @Value("${photowise.trash}")
     private String trash;
@@ -70,7 +81,7 @@ public class PhotoService {
         PhotoIndex photo = photoRepo.findById(id).orElse(null);
         Assert.notNull(photo, "照片索引不存在");
 
-        // 如果有经纬度但没有地址信息，调用OSM API获取
+        // If there is latitude and longitude but no address, obtain from the OSM API
         GeoLocation location = photo.getGeoLocation();
         if (location != null && location.getAddress() == null) {
             OsmAddress address = osmService.reverse(location.getLatitude(), location.getLongitude());
@@ -89,7 +100,46 @@ public class PhotoService {
         return photoRepo.sumFileLength();
     }
 
-    /** Save photo index */
+    /**
+     * Build photo index from a file
+     * If overwrite is true, enforce update the index and thumbnails
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public PhotoIndex build(File file, boolean overwrite)
+        throws ImageProcessingException, IOException, MetadataException {
+        String library = settingService.getLibrary();
+        String absolutePath = file.getPath();
+        String relativePath = absolutePath.substring(library.length());
+
+        // 0. Determines whether to skip build photo index
+        //    based on the scan parameters, file length, and modified time
+        PhotoIndex _photo = getPhotoByPath(relativePath);
+        if (!overwrite && _photo != null
+            && _photo.getFileLength() == file.length()
+            && _photo.getModifiedTime() == file.lastModified()) {
+            return null;
+        }
+
+        // 1. Extract metadata
+        PhotoIndex photo = exifService.extractMetadata(file);
+        photo.setId(_photo != null ? _photo.getId() : null);
+        photo.setPath(relativePath);
+        photo.setFileLength(file.length());
+        photo.setModifiedTime(file.lastModified());
+
+        // 2. Generate thumbnails
+        String output = Path.of(thumbnails, photo.getPath()) + ".jpg";
+        if (photo.isVideo()) {
+            OpenCv.captureVideo(absolutePath, output, thumbSize);
+        } else {
+            OpenCv.resizeImage(absolutePath, output, thumbSize);
+        }
+
+        // 3. Save the photo index
+        return save(photo);
+    }
+
+    /** Save photo index metadata */
     @Transactional(rollbackFor = Exception.class)
     public PhotoIndex save(PhotoIndex photo) {
         // TODO validate

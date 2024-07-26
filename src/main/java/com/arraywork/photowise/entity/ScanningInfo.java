@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 import com.arraywork.photowise.enums.ScanningAction;
 import com.arraywork.springforce.channel.ChannelService;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Scanning Info (Singleton)
@@ -19,11 +20,13 @@ import lombok.Data;
  * @since 2024/07/09
  */
 @Component
-@Data
 public class ScanningInfo {
 
     private static final String CHANNEL_NAME = "library";
     private static final List<ScanningLog> logs = new ArrayList<>();
+
+    @Setter
+    @Getter
     private int progress = -1;
 
     @Resource
@@ -45,6 +48,11 @@ public class ScanningInfo {
     public void sendLog(ScanningLog log) {
         channelService.broadcast(CHANNEL_NAME, log);
         logs.add(0, log);
+    }
+
+    /** Clear all logs */
+    public List<ScanningLog> getLogs() {
+        return logs;
     }
 
     /** Clear all logs */
