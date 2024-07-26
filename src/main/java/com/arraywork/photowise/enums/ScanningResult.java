@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Log Level
+ * Scanning Result
  *
  * @author AiChen
  * @copyright ArrayWork Inc.
@@ -15,18 +15,16 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum LogLevel {
+public enum ScanningResult {
 
-    INFO(1, "信息"),
-    SKIPPED(2, "跳过"),
-    CLEAN(3, "清理"),
-    ERROR(8, "错误"),
-    FINISHED(9, "完成");
+    SUCCESS("成功"),
+    SKIPPED("跳过"),
+    FAILED("失败"),
+    FINISHED("完成");
 
-    private final Integer code;
     private final String label;
 
-    /** 序列化字面量属性 */
+    /** Serializing literal field */
     public String getName() {
         return this.name();
     }
