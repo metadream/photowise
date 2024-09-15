@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 @Service
 public class OsmService {
 
-    private static final String BASE_URL = "https://api.unpkg.net/nominatim";
+    private static final String BASE_URL = "https://api.arraywork.com/osm";
     private final RestClient restClient;
 
     @Resource
