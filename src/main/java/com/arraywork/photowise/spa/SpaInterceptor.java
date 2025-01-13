@@ -14,8 +14,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.arraywork.photowise.entity.AppSetting;
 import com.arraywork.photowise.enums.AccessMode;
 import com.arraywork.photowise.service.SettingService;
-import com.arraywork.springforce.security.Principal;
-import com.arraywork.springforce.security.SecurityContext;
+import com.arraywork.vernal.security.Principal;
+import com.arraywork.vernal.security.SecuritySession;
 
 /**
  * Spa Interceptor
@@ -28,7 +28,7 @@ import com.arraywork.springforce.security.SecurityContext;
 public class SpaInterceptor implements HandlerInterceptor, WebMvcConfigurer {
 
     @Resource
-    private SecurityContext context;
+    private SecuritySession session;
     @Resource
     private SettingService settingService;
 
@@ -37,7 +37,7 @@ public class SpaInterceptor implements HandlerInterceptor, WebMvcConfigurer {
         throws IOException {
 
         if (handler instanceof HandlerMethod) {
-            Principal principal = context.getPrincipal();
+            Principal principal = session.getPrincipal();
             AppSetting setting = settingService.getSetting();
 
             // Redirect to login page if NOT login and NOT public mode

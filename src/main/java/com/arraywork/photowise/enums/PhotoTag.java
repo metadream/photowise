@@ -1,7 +1,7 @@
 package com.arraywork.photowise.enums;
 
-import com.arraywork.springforce.databind.GenericEnum;
-import com.arraywork.springforce.databind.GenericEnumConverter;
+import com.arraywork.vernal.type.GenericEnum;
+import com.arraywork.vernal.type.GenericEnumConverter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +26,6 @@ public enum PhotoTag implements GenericEnum<Integer> {
     private final Integer code;
     private final String label;
 
-    public static class Converter extends GenericEnumConverter<PhotoTag, Integer> {}
+    public static class Converter extends GenericEnumConverter<PhotoTag, Integer> { }
 
 }

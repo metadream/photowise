@@ -23,9 +23,9 @@ import com.arraywork.photowise.entity.OsmAddress;
 import com.arraywork.photowise.entity.PhotoIndex;
 import com.arraywork.photowise.repo.PhotoFilter;
 import com.arraywork.photowise.repo.PhotoRepo;
-import com.arraywork.springforce.util.Assert;
-import com.arraywork.springforce.util.OpenCv;
-import com.arraywork.springforce.util.Times;
+import com.arraywork.vernal.helper.OpenCv;
+import com.arraywork.vernal.util.Assert;
+import com.arraywork.vernal.util.TimeUtils;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.MetadataException;
 
@@ -68,7 +68,7 @@ public class PhotoService {
         List<PhotoIndex> indexes = photoRepo.findAll(new PhotoFilter(condition));
 
         for (PhotoIndex photo : indexes) {
-            LocalDateTime photoTime = Times.toLocal(photo.getPhotoTime());
+            LocalDateTime photoTime = TimeUtils.toLocal(photo.getPhotoTime());
             String yearMonth = photoTime.format(DateTimeFormatter.ofPattern("yyyy-MM"));
             List<PhotoIndex> photos = photoGroup.computeIfAbsent(yearMonth, k -> new ArrayList<>());
             photos.add(photo);

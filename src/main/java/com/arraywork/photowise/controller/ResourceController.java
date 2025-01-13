@@ -13,8 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.arraywork.photowise.service.SettingService;
-import com.arraywork.springforce.StaticResourceHandler;
-import com.arraywork.springforce.util.HttpUtils;
+import com.arraywork.vernal.StaticResourceHandler;
+import com.arraywork.vernal.util.HttpUtils;
 
 /**
  * Resource Controller

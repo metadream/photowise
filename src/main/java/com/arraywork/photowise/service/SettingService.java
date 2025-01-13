@@ -14,10 +14,10 @@ import com.arraywork.photowise.entity.AppUser;
 import com.arraywork.photowise.enums.AccessMode;
 import com.arraywork.photowise.enums.UserRole;
 import com.arraywork.photowise.repo.SettingRepo;
-import com.arraywork.springforce.external.BCryptEncoder;
-import com.arraywork.springforce.security.Principal;
-import com.arraywork.springforce.security.SecurityService;
-import com.arraywork.springforce.util.Assert;
+import com.arraywork.vernal.crypto.BCryptCipher;
+import com.arraywork.vernal.security.Principal;
+import com.arraywork.vernal.security.SecurityService;
+import com.arraywork.vernal.util.Assert;
 
 /**
  * AppSetting Service
@@ -34,8 +34,6 @@ public class SettingService implements SecurityService {
     private static AppSetting appSetting;
 
     @Resource
-    protected BCryptEncoder bCryptEncoder;
-    @Resource
     private SettingRepo settingRepo;
 
     /** Initialize the settings */
@@ -48,7 +46,7 @@ public class SettingService implements SecurityService {
             appSetting.setId(SETTING_ID);
             appSetting.setAccessMode(AccessMode.PRIVATE);
             appSetting.setAdminUser(DEFAULT_USER_PSWD);
-            appSetting.setAdminPass(bCryptEncoder.encode(DEFAULT_USER_PSWD));
+            appSetting.setAdminPass(BCryptCipher.encode(DEFAULT_USER_PSWD));
             settingRepo.save(appSetting);
         }
     }
@@ -78,10 +76,10 @@ public class SettingService implements SecurityService {
         appSetting.setGuestUser(setting.getGuestUser());
 
         if (StringUtils.hasText(setting.getAdminPass())) {
-            appSetting.setAdminPass(bCryptEncoder.encode(setting.getAdminPass()));
+            appSetting.setAdminPass(BCryptCipher.encode(setting.getAdminPass()));
         }
         if (StringUtils.hasText(setting.getGuestPass())) {
-            appSetting.setGuestPass(bCryptEncoder.encode(setting.getGuestPass()));
+            appSetting.setGuestPass(BCryptCipher.encode(setting.getGuestPass()));
         }
         return settingRepo.save(appSetting);
     }
@@ -89,8 +87,8 @@ public class SettingService implements SecurityService {
     /** Login */
     @Override
     public Principal login(String username, String rawPassword) {
-        boolean isAdmin = username.equals(appSetting.getAdminUser()) && bCryptEncoder.matches(rawPassword, appSetting.getAdminPass());
-        boolean isGuest = username.equals(appSetting.getGuestUser()) && bCryptEncoder.matches(rawPassword, appSetting.getGuestPass());
+        boolean isAdmin = username.equals(appSetting.getAdminUser()) && BCryptCipher.matches(rawPassword, appSetting.getAdminPass());
+        boolean isGuest = username.equals(appSetting.getGuestUser()) && BCryptCipher.matches(rawPassword, appSetting.getGuestPass());
         Assert.isTrue(isAdmin || isGuest, "账号或密码错误");
 
         AppUser appUser = new AppUser();

@@ -1,6 +1,6 @@
 package com.arraywork.photowise.enums;
 
-import com.arraywork.springforce.security.SecurityRole;
+import com.arraywork.vernal.security.SecurityRole;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

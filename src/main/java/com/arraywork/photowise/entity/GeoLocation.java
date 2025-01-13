@@ -1,6 +1,6 @@
 package com.arraywork.photowise.entity;
 
-import com.arraywork.springforce.util.Numbers;
+import com.arraywork.vernal.util.NumberUtils;
 
 import lombok.Data;
 
@@ -22,6 +22,6 @@ public class GeoLocation {
 
     public String getCoordinates() {
         return latitude > 0 && longitude > 0
-            ? Numbers.formatDecimal(latitude, 4) + ", " + Numbers.formatDecimal(longitude, 4) : "";
+            ? NumberUtils.formatDecimal(latitude, 4) + ", " + NumberUtils.formatDecimal(longitude, 4) : "";
     }
 }

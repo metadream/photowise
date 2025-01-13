@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import com.arraywork.springforce.filesystem.DirectoryWatcher;
+import com.arraywork.vernal.helper.DirectoryWatcher;
 
 /**
  * Application Context Initializer
@@ -23,8 +23,6 @@ public class ContextInitializer implements ServletContextListener {
 
     @Resource
     private Environment env;
-    @Resource
-    private LibraryListener libraryListener;
 
     /**
      * Create the required storage directories (must be before JPA starts)
@@ -44,7 +42,7 @@ public class ContextInitializer implements ServletContextListener {
     /** Directory watcher instance */
     @Bean
     public DirectoryWatcher directoryWatcher() {
-        return new DirectoryWatcher(10, 5, libraryListener);
+        return new DirectoryWatcher(new LibraryListener());
     }
 
 }

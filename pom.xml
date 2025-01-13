@@ -21,9 +21,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.arraywork.springforce</groupId>
-            <artifactId>spring-force</artifactId>
-            <version>0.0.1</version>
+            <groupId>com.arraywork</groupId>
+            <artifactId>vernal</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>

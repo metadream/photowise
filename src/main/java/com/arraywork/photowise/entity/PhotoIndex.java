@@ -14,7 +14,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.arraywork.photowise.enums.MediaType;
-import com.arraywork.springforce.id.NanoIdGeneration;
+import com.arraywork.vernal.id.NanoIdGeneration;
 
 import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import lombok.Data;

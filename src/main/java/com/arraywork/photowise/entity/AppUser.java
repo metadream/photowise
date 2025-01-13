@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 import com.arraywork.photowise.enums.UserRole;
-import com.arraywork.springforce.security.Principal;
-import com.arraywork.springforce.security.SecurityRole;
+import com.arraywork.vernal.security.Principal;
+import com.arraywork.vernal.security.SecurityRole;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

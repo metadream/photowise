@@ -7,7 +7,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.arraywork.photowise.enums.ScanningAction;
-import com.arraywork.springforce.channel.ChannelService;
+import com.arraywork.vernal.channel.ChannelService;
 
 import lombok.Getter;
 import lombok.Setter;

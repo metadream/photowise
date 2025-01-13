@@ -14,8 +14,8 @@ import com.arraywork.photowise.entity.AppSetting;
 import com.arraywork.photowise.enums.AccessMode;
 import com.arraywork.photowise.service.SettingService;
 import com.arraywork.photowise.spa.SpaRoute;
-import com.arraywork.springforce.security.Authority;
-import com.arraywork.springforce.security.SecurityController;
+import com.arraywork.vernal.security.Permission;
+import com.arraywork.vernal.security.SecurityController;
 
 /**
  * Setting Controller
@@ -37,7 +37,7 @@ public class SettingController extends SecurityController {
 
     @SpaRoute
     @GetMapping("/settings")
-    @Authority("ADMIN")
+    @Permission("ADMIN")
     public String settings(Model model) {
         model.addAttribute("setting", settingService.getSetting());
         model.addAttribute("accessModes", AccessMode.values());
@@ -45,7 +45,7 @@ public class SettingController extends SecurityController {
     }
 
     @PutMapping("/settings")
-    @Authority("ADMIN")
+    @Permission("ADMIN")
     @ResponseBody
     public AppSetting settings(@Validated @RequestBody AppSetting setting) {
         return settingService.save(setting);

@@ -6,7 +6,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.arraywork.photowise.service.LibraryService;
-import com.arraywork.springforce.filesystem.DirectoryListener;
+import com.arraywork.vernal.helper.DirectoryWatcher;
 
 /**
  * Library Listener
@@ -16,28 +16,31 @@ import com.arraywork.springforce.filesystem.DirectoryListener;
  * @since 2024/06/04
  */
 @Component
-public class LibraryListener implements DirectoryListener {
+public class LibraryListener implements DirectoryWatcher.ChangeListener {
 
     @Resource
     private LibraryService libraryService;
 
     @Override
-    public void onScan(File file, int count, int total) {}
-
-    @Override
-    public void onAdd(final File file, int count, int total) {
-        libraryService.buildPhotoIndex(file, count, total, false);
+    public void onCreate(final File file) {
+        //        libraryService.buildPhotoIndex(file, count, total, false);
+        if (file.isDirectory()) System.out.println("Directory created: " + file);
+        else System.out.println("File created: " + file);
     }
 
     @Override
-    public void onModify(final File file, int count, int total) {
-        libraryService.buildPhotoIndex(file, count, total, true);
+    public void onModify(final File file) {
+        //        libraryService.buildPhotoIndex(file, count, total, true);
+        if (file.isDirectory()) System.out.println("Directory modified: " + file);
+        else System.out.println("File modified: " + file);
     }
 
     @Override
-    public void onDelete(final File file, int count, int total) {
+    public void onDelete(final File file) {
         // TODO delete index
         //        libraryService.buildPhotoIndex(file, count, total, false);
+        if (file.isDirectory()) System.out.println("Directory deleted: " + file);
+        else System.out.println("File deleted: " + file);
     }
 
 }

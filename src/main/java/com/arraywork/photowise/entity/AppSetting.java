@@ -13,7 +13,7 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.arraywork.photowise.enums.AccessMode;
-import com.arraywork.springforce.util.Validator;
+import com.arraywork.vernal.util.Validator;
 
 import lombok.Data;
 

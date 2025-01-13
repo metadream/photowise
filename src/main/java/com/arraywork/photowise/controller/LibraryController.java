@@ -1,5 +1,6 @@
 package com.arraywork.photowise.controller;
 
+import java.io.IOException;
 import jakarta.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
@@ -42,7 +43,7 @@ public class LibraryController {
 
     @PostMapping("/library")
     @ResponseBody
-    public void startScan(@RequestBody ScanningOption option) {
+    public void startScan(@RequestBody ScanningOption option) throws IOException {
         libraryService.startScan(option);
     }
 

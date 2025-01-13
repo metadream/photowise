@@ -19,10 +19,10 @@ import com.arraywork.photowise.entity.ScanningOption;
 import com.arraywork.photowise.entity.SpaceInfo;
 import com.arraywork.photowise.enums.ScanningAction;
 import com.arraywork.photowise.enums.ScanningResult;
-import com.arraywork.springforce.channel.ChannelService;
-import com.arraywork.springforce.filesystem.DirectoryWatcher;
-import com.arraywork.springforce.util.Assert;
-import com.arraywork.springforce.util.FileUtils;
+import com.arraywork.vernal.channel.ChannelService;
+import com.arraywork.vernal.helper.DirectoryWatcher;
+import com.arraywork.vernal.util.Assert;
+import com.arraywork.vernal.util.FileUtils;
 
 /**
  * Library Service
@@ -35,7 +35,7 @@ import com.arraywork.springforce.util.FileUtils;
 public class LibraryService {
 
     @Resource
-    private DirectoryWatcher watcher;
+    private DirectoryWatcher directoryWatcher;
     @Resource
     private ScanningInfo scanningInfo;
     @Resource
@@ -50,17 +50,17 @@ public class LibraryService {
 
     /** Start library watcher */
     @PostConstruct
-    public void startWatcher() {
+    public void startWatcher() throws IOException {
         String library = settingService.getLibrary();
         if (library != null) {
-            watcher.start(library);
+            directoryWatcher.start(Path.of(library), true);
         }
     }
 
     /** Stop watcher before context destroyed */
     @PreDestroy
-    public void destroyWatcher() {
-        watcher.stop();
+    public void destroyWatcher() throws IOException {
+        directoryWatcher.stop();
     }
 
     /** Scan the library asynchronously */
@@ -145,6 +145,14 @@ public class LibraryService {
     /** Clear the logs */
     public void clearLogs() {
         scanningInfo.clearLogs();
+    }
+
+    public List<ScanningLog> getLogs() {
+        return scanningInfo.getLogs();
+    }
+
+    public int getProgress() {
+        return scanningInfo.getProgress();
     }
 
     /** Clean up invalid indexes */

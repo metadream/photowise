@@ -1,7 +1,6 @@
 package com.arraywork.photowise.service;
 
 import java.io.IOException;
-import jakarta.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,8 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import com.arraywork.photowise.entity.OsmAddress;
-import com.arraywork.springforce.error.HttpException;
-import com.arraywork.springforce.util.Jackson;
+import com.arraywork.vernal.error.HttpException;
+import com.arraywork.vernal.util.JsonUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -38,9 +37,6 @@ public class OsmService {
     private static final String BASE_URL = "https://api.arraywork.com/osm";
     private final RestClient restClient;
 
-    @Resource
-    private Jackson jackson;
-
     /** Initialize rest client */
     @Autowired
     public OsmService(@Value("${photowise.title}") String title, @Value("${photowise.version}") String version) {
@@ -61,7 +57,7 @@ public class OsmService {
         JsonNode osmId = result.get("osm_id");
         if (osmId != null) {
             JsonNode address = result.get("address");
-            OsmAddress osmAddress = jackson.convertToEntity(address, OsmAddress.class);
+            OsmAddress osmAddress = JsonUtils.convertToEntity(address, OsmAddress.class);
             osmAddress.setOsmId(osmId.asText());
             return osmAddress;
         }
@@ -74,7 +70,7 @@ public class OsmService {
         public void handle(HttpRequest request, ClientHttpResponse response) throws IOException {
             String body = new String(response.getBody().readAllBytes());
             try {
-                JsonNode error = jackson.parse(body, JsonNode.class).path("error");
+                JsonNode error = JsonUtils.parse(body, JsonNode.class).path("error");
                 String message = error.path("message").asText("Request '" + BASE_URL + "' failed.");
                 throw new HttpException(response.getStatusCode(), message);
             } catch (Exception e) {

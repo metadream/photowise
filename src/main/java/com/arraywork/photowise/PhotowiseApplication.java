@@ -8,8 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-import com.arraywork.springforce.BaseApplication;
-import com.arraywork.springforce.util.OpenCv;
+import com.arraywork.vernal.BaseApplication;
+import com.arraywork.vernal.helper.OpenCv;
 
 /**
  * Application Bootstrap
