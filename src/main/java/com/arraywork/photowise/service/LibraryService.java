@@ -9,7 +9,6 @@ import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.arraywork.photowise.entity.PhotoIndex;
@@ -64,7 +63,6 @@ public class LibraryService {
     }
 
     /** Scan the library asynchronously */
-    @Async
     public void startScan(ScanningOption option) throws IOException {
         String library = settingService.getLibrary();
         Assert.notNull(library, "请先设置照片库");
@@ -79,21 +77,8 @@ public class LibraryService {
         if (option.isCleanIndexes()) {
             cleanPhotoIndexes(library);
         }
-
-        // Traversal file to build photo index
-        List<File> files = FileUtils.walk(Path.of(library));
-        int total = files.size();
-        int count = 0, success = 0;
-        for (File file : files) {
-            if (scanningInfo.getProgress() > -1) return;
-            success += buildPhotoIndex(file, ++count, total, option.isFullScan());
-        }
-
-        // Finish the scan
-        ScanningLog log = scanningInfo.createLog(ScanningAction.SCAN, null, count, total);
-        log.setMessage("本次扫描共发现 " + total + " 个文件，成功创建 " + success + " 个索引，"
-            + "耗时 " + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
-        scanningInfo.sendLog(log);
+        // Scan the entire library
+        directoryWatcher.scan();
     }
 
     /** Build photo index by file */
