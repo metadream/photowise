@@ -5,11 +5,13 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.arraywork.vernal.helper.DirectoryWatcher;
+import com.arraywork.vernal.helper.OpenCv;
 
 /**
  * Application Context Initializer
@@ -21,6 +23,8 @@ import com.arraywork.vernal.helper.DirectoryWatcher;
 @Component
 public class ContextInitializer implements ServletContextListener {
 
+    @Value("${app.lib.opencv}")
+    private String opencvLib;
     @Resource
     private Environment env;
 
@@ -31,6 +35,8 @@ public class ContextInitializer implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        OpenCv.loadLibrary(opencvLib);
+
         File dir = new File(env.getProperty("photowise.covers"));
         if (!dir.exists()) dir.mkdirs();
         dir = new File(env.getProperty("photowise.thumbnails"));
