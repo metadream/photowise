@@ -36,10 +36,10 @@ public class ResourceController {
 
     @GetMapping("/original/**")
     public void original(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String library = settingService.getLibrary();
+        Path library = settingService.getLibrary();
         String path = HttpUtils.getWildcard(request);
         path = URLDecoder.decode(path, StandardCharsets.UTF_8);
-        resourceHandler.serve(Path.of(library, path), request, response);
+        resourceHandler.serve(library.resolve(path), request, response);
     }
 
     @GetMapping("/thumbnail/**")

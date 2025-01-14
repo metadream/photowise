@@ -33,7 +33,11 @@ public class LibraryService {
     /** Start library watcher */
     @PostConstruct
     public void startWatcher() throws IOException {
-        directoryWatcher.start(settingService.getLibrary(), true);
+        try {
+            directoryWatcher.start(settingService.getLibrary(), true);
+        } catch (Exception e) {
+
+        }
     }
 
     /** Stop watcher before context destroyed */

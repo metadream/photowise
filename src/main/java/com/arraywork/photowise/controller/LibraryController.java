@@ -53,7 +53,7 @@ public class LibraryController {
     @PutMapping("/library")
     @ResponseBody
     public void abortScan() {
-        scanningService.abortScan();
+        scanningService.abort();
     }
 
     @DeleteMapping("/library/logs")

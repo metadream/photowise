@@ -107,7 +107,7 @@ public class PhotoService {
     @Transactional(rollbackFor = Exception.class)
     public PhotoIndex build(File file, boolean overwrite)
         throws ImageProcessingException, IOException, MetadataException {
-        String library = settingService.getLibrary();
+        String library = settingService.getLibrary().toString();
         String absolutePath = file.getPath();
         String relativePath = absolutePath.substring(library.length());
 
@@ -173,7 +173,7 @@ public class PhotoService {
             PhotoIndex photo = photoRepo.getReferenceById(id);
             photo.setTrashed(true);
 
-            Path original = Path.of(settingService.getLibrary(), photo.getPath());
+            Path original = settingService.getLibrary().resolve(photo.getPath());
             Path dest = Path.of(trash, photo.getPath());
             File parent = dest.getParent().toFile();
             if (!parent.exists()) parent.mkdirs();
