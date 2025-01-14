@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class ScanningOption {
 
-    private boolean isFullScan;
-    private boolean isCleanIndexes;
+    private boolean forceOverwriteIndex;
+    private boolean cleanInvalidIndexes;
 
 }

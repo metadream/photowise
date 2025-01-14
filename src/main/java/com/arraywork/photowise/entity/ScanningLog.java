@@ -1,6 +1,6 @@
 package com.arraywork.photowise.entity;
 
-import com.arraywork.photowise.enums.ScanningAction;
+import com.arraywork.photowise.enums.ScanningEvent;
 import com.arraywork.photowise.enums.ScanningResult;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -17,7 +17,7 @@ import lombok.Data;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public class ScanningLog {
 
-    private ScanningAction action;
+    private ScanningEvent event;
     private ScanningResult result;
     private String path;
     private String message;

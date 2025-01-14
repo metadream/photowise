@@ -57,8 +57,12 @@ public class SettingService implements SecurityService {
     }
 
     /** Get the library path */
-    public String getLibrary() {
-        return appSetting.getLibrary();
+    public Path getLibrary() {
+        String library = appSetting.getLibrary();
+        Assert.notNull(library, "请先设置照片库");
+        File lib = new File(library);
+        Assert.isTrue(lib.exists() && lib.isDirectory(), "照片库不存在或不是目录");
+        return Path.of(library);
     }
 
     /** Save settings */

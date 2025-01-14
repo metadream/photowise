@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.arraywork.photowise.entity.ScanningOption;
 import com.arraywork.photowise.service.LibraryService;
+import com.arraywork.photowise.service.ScanningService;
 import com.arraywork.photowise.service.SettingService;
 import com.arraywork.photowise.spa.SpaRoute;
 
@@ -31,13 +32,15 @@ public class LibraryController {
     private LibraryService libraryService;
     @Resource
     private SettingService settingService;
+    @Resource
+    private ScanningService scanningService;
 
     @SpaRoute
     @GetMapping("/library")
     public String library(Model model) {
         model.addAttribute("library", settingService.getLibrary());
-        model.addAttribute("scanningProgress", libraryService.getProgress());
-        model.addAttribute("scanningLogs", libraryService.getLogs());
+        model.addAttribute("scanningProgress", scanningService.getProgress());
+        model.addAttribute("scanningLogs", scanningService.getLogs());
         return "library";
     }
 
@@ -50,13 +53,13 @@ public class LibraryController {
     @PutMapping("/library")
     @ResponseBody
     public void abortScan() {
-        libraryService.abortScan();
+        scanningService.abortScan();
     }
 
     @DeleteMapping("/library/logs")
     @ResponseBody
     public void clearLogs() {
-        libraryService.clearLogs();
+        scanningService.clearLogs();
     }
 
 }

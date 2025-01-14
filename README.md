@@ -7,10 +7,14 @@
 - 国际化
 - 时间轴
 - 设置：语言、回收站清理周期（1天、1周、1月）;public,protected,private
+- 设置：无法保存private选项
 - 清空回收站：同时删除索引、trash文件、缩略图
 - photowall独立成组件，可自由关联controlbar，type module和window.分开写
 - 定时任务：获取OSM同时设置地点
-- 扫描、目录监听测试
+- 扫描、目录监听测试（哪些变量需要保证线程安全）
+- if (!scanningService.isScanning()) return; 对比旧版本写法
+- 搜索TODO
+- author to marco
 
 ```
 @GetMapping("/test/video/stream")
